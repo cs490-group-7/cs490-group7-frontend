@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/coach-lookup",
-        element: <CoachLookup/>
+        element: <CoachLookup/>,
       },
       {
         path: "/account-settings",
@@ -46,7 +46,7 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <RouterProvider router={router} />
+   <RouterProvider router={router} />
   </React.StrictMode>
 );
 

@@ -1,0 +1,48 @@
+.side-nav {
+    align-items: center;
+    height: 100%;
+    width: 14%;
+    position: fixed;
+    z-index: 1;
+    background-color: white;
+    padding-top: 20px;
+    border: 1px solid rgba(0,0,0,0.10);
+  }
+  
+  .side-nav a {
+    font-weight: bold;
+    text-align: left;
+    padding: 4% 0% 4% 15%;
+    margin-top: 10%;
+    margin-bottom: 10%;
+    text-decoration: none;
+    font-size: 2vwx;
+    color: black;
+    display: block;
+    caret-color: transparent;
+  }
+  
+  .side-nav a:hover {
+    background-color: rgba(0,0,0,0.15);
+  }
+
+  .side-nav a.active {
+    background-color: lightgrey;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0;
+        bottom: 0;
+        width: 15px; 
+        background-color: darkblue; 
+      }
+  }
+
+  .title{
+    padding-top: 3px;
+    margin-left: 5%;
+    font-size: xx-large;
+  }
