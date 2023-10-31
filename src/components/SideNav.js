@@ -7,7 +7,7 @@ export default function SideNav() {
 
   return (
     <div className="side-nav">
-      <h2 className="title">APP NAME</h2>
+      <h2 className="title">Fitness App</h2>
       <a className={location.pathname === '/' ? 'active' : ''} href="/">
         Home
       </a>
