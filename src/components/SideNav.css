@@ -16,7 +16,7 @@
         height: auto;
     }
   }
-  
+
   .side-nav a {
     font-weight: bold;
     text-align: left;
@@ -51,6 +51,6 @@
 
   .title{
     padding-top: 3px;
-    margin-left: 15%;
+    margin-left: 10%;
     font-size: xx-large;
   }
