@@ -86,7 +86,7 @@ function CreateAccountPage () {
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <TextField id="inpEmail" label="Email" variant="filled" error={emailError} helperText={emailError} required value={email} onChange={(event) => {
+          <TextField sx={{ width: '398px' }}id="inpEmail" label="Email" variant="filled" error={emailError} helperText={emailError} required value={email} onChange={(event) => {
             setEmail(event.target.value);
           }}/>
         </Grid>
