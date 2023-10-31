@@ -7,7 +7,7 @@ function App() {
     <div className="App">
       <hr className='top-bar'></hr>
       <SideNav/>
-      <div className='container'>
+      <div className='page-container'>
         <Outlet/>
       </div>
     </div>

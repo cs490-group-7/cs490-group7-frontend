@@ -1,9 +1,7 @@
 export default function Workouts () {
     return (
-        <div>
-            <h1>
-                My Workouts
-            </h1>
+        <div className="workouts-page">
+            <h1>Workouts</h1>
         </div>
-    );
+    )
 }

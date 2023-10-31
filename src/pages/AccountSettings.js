@@ -1,9 +1,7 @@
 export default function AccountSettings () {
     return (
-        <div>
-            <h1>
-                Settings
-            </h1>
+        <div className="account-settings-page">
+            <h1>Account Settings</h1>
         </div>
-    );
+    )
 }

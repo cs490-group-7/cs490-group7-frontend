@@ -1,9 +1,7 @@
 export default function MyCoachClient () {
     return (
-        <div>
-            <h1>
-                My Coach/Clients
-            </h1>
+        <div className="my-coach-client-page">
+            <h1>My Coach/Client</h1>
         </div>
-    );
+    )
 }
