@@ -2,6 +2,8 @@
   text-align: left;
   display: block;
   background-color:rgba(0,0,0,0.10);
+  height:max-content;
+  padding-bottom: 10px;
 }
 
 .top-bar{
@@ -15,8 +17,10 @@
 .container {
   margin-top: 20px;
   margin-left: 15.5%;
+  margin-bottom: 15.5px;
+  margin-right: 1%;
   height: 100%;
-  border: 1px solid rgba(0,0,0,0.10); /* Adjust the shadow as needed */
-  padding: 20px; /* Add padding for spacing inside the container */
+  border: 1px solid rgba(0,0,0,0.10); 
+  padding: 20px;
   background-color: white;
 }
