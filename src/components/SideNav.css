@@ -9,14 +9,6 @@
     border: 1px solid rgba(0,0,0,0.10);
   }
   
-  @media (max-width: 768px){
-    .side-nav{
-        width: 100%;
-        position: static;
-        height: auto;
-    }
-  }
-
   .side-nav a {
     font-weight: bold;
     text-align: left;
