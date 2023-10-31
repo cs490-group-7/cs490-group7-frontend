@@ -1,7 +1,7 @@
 .App {
   text-align: left;
   display: block;
-  background-color:rgba(0,0,0,0.10);
+  background-color: rgba(0,0,0,0.05);
   height:max-content;
   padding-bottom: 10px;
 }
@@ -23,4 +23,5 @@
   border: 1px solid rgba(0,0,0,0.10); 
   padding: 20px;
   background-color: white;
+  border-radius: 5px;
 }
