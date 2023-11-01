@@ -31,9 +31,9 @@ function CreateAccountPage () {
     if (lastName.length === 0) {
       setLastNameError("Missing last name.");
     } else if (lastName.length > 32) {
-      setLastNameError("First name too long.");
+      setLastNameError("Last name too long.");
     } else if (!/^[a-zA-Z]( ?[a-zA-Z]*)*$/.test(lastName)) {
-      setLastNameError("First name disallowed format.");
+      setLastNameError("Last name disallowed format.");
     } else {
       setLastNameError(null);
     }
@@ -51,7 +51,7 @@ function CreateAccountPage () {
     if (password.length === 0) {
       setPasswordError("Missing password.");
     } else if (password.length > 32) {
-      setPasswordError("Email too long.");
+      setPasswordError("Password too long.");
     } else if (!/^[a-zA-Z0-9!#$%&()*+,./:;<=>?@[\]^_{|}~]+$/.test(password)) {
       setPasswordError("Incorrect password format.");
     } else {
