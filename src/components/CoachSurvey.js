@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
 
-function CoachSurvey () {
+export default function CoachSurvey () {
 
   const [certifications, setCertifications] = useState("");
   const [experience, setExperience] = useState("");
@@ -75,5 +75,3 @@ function CoachSurvey () {
   )
 
 }
-
-export default CoachSurvey
