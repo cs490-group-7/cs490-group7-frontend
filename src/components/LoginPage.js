@@ -1,13 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography, TextField, Button, Link } from '@mui/material'
+import Alert from '@mui/material/Alert';
+import AlertTitle from '@mui/material/AlertTitle';
 
 function LoginPage () {
-
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function login () {
 
@@ -35,6 +39,13 @@ function LoginPage () {
   }
 
   return (
+    <div>
+      {errorMessage && (
+        <Alert severity="error">
+          <AlertTitle>Error</AlertTitle>
+          {errorMessage}
+        </Alert>
+      )}
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
       <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Log In</Typography>
       <Grid container spacing={2} sx={{ padding: 2 }}>
@@ -60,6 +71,7 @@ function LoginPage () {
         </Grid>
       </Grid>
     </Box>
+    </div>
   )
 
 }
