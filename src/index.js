@@ -10,11 +10,20 @@ import CoachLookup from './pages/CoachLookup';
 import AccountSettings from './pages/AccountSettings';
 import Home from './pages/Home';
 import Workouts from './pages/Workouts';
+import CreateAccountPage from './components/CreateAccountPage';
+import LoginPage from './components/LoginPage';
+import InitialSurvey from './components/InitialSurvey';
+import LandingPage from './pages/LandingPage'
 
 const router = createBrowserRouter([
   {
     element: <App/>,
     children: [
+      // added here check
+      {
+        path: "/landing",
+        element: <LandingPage isAuthenticated={false}/>,// Assuming default not authenticated
+      },
       {
         path: "/",
         element: <Home/>,
@@ -38,7 +47,20 @@ const router = createBrowserRouter([
       {
         path: "/account-settings",
         element: <AccountSettings/>
+      },
+      {
+        path: "/login",
+        element: <LoginPage/>
+      },
+      {
+        path: "/register",
+        element: <CreateAccountPage/>
+      },
+      {
+        path: "/initial-survey", 
+        element: <InitialSurvey/>
       }
+      
     ]
   },
 ]);
