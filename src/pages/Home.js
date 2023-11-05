@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Typography, TextField, Button, Card, Link, LinearProgress } from '@mui/material'
+import { Box, Grid, Typography, TextField, Button, Card, Link } from '@mui/material'
+import LinearProgress from '@mui/joy/LinearProgress';
 
 function Home () {
 
@@ -59,16 +60,16 @@ function Home () {
                             </div> 
                             :
                             <div>
-                                <TextField id="inpCalories" label="Calories Consumed" variant="filled" error={caloriesError} helperText={caloriesError} required type="number" value={calories} onChange={(event) => {
+                                <TextField id="inpCalories" label="Calories Consumed" variant="filled" sx={{ margin: 1 }} error={caloriesError} helperText={caloriesError} required type="number" value={calories} onChange={(event) => {
                                     setCalories(event.target.value);
                                 }}/>
-                                <TextField id="inpWaterIntake" label="Water Intake (in mL)" variant="filled" error={waterIntakeError} helperText={waterIntakeError} required type="number" value={waterIntake} onChange={(event) => {
+                                <TextField id="inpWaterIntake" label="Water Intake (in mL)" variant="filled" sx={{ margin: 1 }} error={waterIntakeError} helperText={waterIntakeError} required type="number" value={waterIntake} onChange={(event) => {
                                     setWaterIntake(event.target.value);
                                 }}/>
-                                <TextField id="inpWeight" label="Weight" variant="filled" error={weightError} helperText={weightError} required type="number" value={weight} onChange={(event) => {
+                                <TextField id="inpWeight" label="Weight" variant="filled" sx={{ margin: 1 }} error={weightError} helperText={weightError} required type="number" value={weight} onChange={(event) => {
                                     setWeight(event.target.value);
                                 }}/>
-                                <Button id="submitDailyBtn" variant="contained" onClick={() => {
+                                <Button id="submitDailyBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                     submitDaily();
                                 }}>
                                     Submit Check-in
@@ -96,7 +97,7 @@ function Home () {
                 <Grid item xs={4}>
 
                     {/* today's workout */}
-                    <Card variant="outlined" sx={{ padding: 2 }}>
+                    <Card variant="outlined" sx={{ padding: 2, mb: 2 }}>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Today's Workout</Typography>
                         {workoutName !== null ?
                             <div>
@@ -119,16 +120,16 @@ function Home () {
                     <Card variant="outlined" sx={{ padding: 2 }}>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Progress Status</Typography>
                         {goalMessage !== null ? <div>
-                            {Math.floor(progress*100)}%
-                            <LinearProgress variant="determinate" value={progress*100} />
-                            <div>{
+                            <Typography align="center" variant="h6" color="primary" sx={{ margin: 2 }}>{Math.floor(progress*100)}%</Typography>
+                            <LinearProgress determinate thickness={15} value={progress*100} />
+                            <Typography align="center" sx={{ margin: 2 }}>{
                                 progress === 0 ? 
                                     "Let's get started!"
                                 : progress < 1 ?
                                     "Keep it up!"
                                 :
                                     "Nice work!"
-                            }</div>
+                            }</Typography>
                         </div> : 
                         <i>No current goal.</i>}
                     </Card>
