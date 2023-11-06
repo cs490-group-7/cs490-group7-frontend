@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
+import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button, Alert } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-
+import axios from 'axios';
 export default function InitialSurvey () {
 
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
@@ -18,6 +18,8 @@ export default function InitialSurvey () {
   const [weightError, setWeightError] = useState("");
   const [fitnessGoalError, setFitnessGoalError] = useState("");
 
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
   function submit () {
     
@@ -60,7 +62,34 @@ export default function InitialSurvey () {
     }
 
     // trigger call to the backend
-
+    try {
+      axios.post('/api/users/surveys', {
+        dateOfBirth: dateOfBirth,
+        gender: gender,
+        height: height,
+        weight: weight,
+        fitnessGoal: fitnessGoal,
+      }).then((response) => {
+        if (response.status === 200) {
+          setErrorMessage(null);
+          setSuccessMessage("Survey submitted successfully");
+        } else {
+          if (response.status === 400) {
+            setErrorMessage("Invalid input data");
+          } else if (response.status === 500) {
+            setErrorMessage("Server error");
+          } else {
+            setErrorMessage("An unexpected error occurred");
+          }
+        }
+      }).catch((error) => {
+        console.error('Survey submission error:', error);
+        setErrorMessage("An unexpected error occurred");
+      });
+    } catch (error) {
+      console.error('Survey submission error:', error);
+      setErrorMessage("An unexpected error occurred");
+    }
   }
 
   return (
@@ -131,6 +160,8 @@ export default function InitialSurvey () {
       }}>
         Submit
       </Button>
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      {successMessage && <Alert severity="success">{successMessage}</Alert>}
     </Box>
   )
 
