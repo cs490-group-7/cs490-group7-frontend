@@ -1,19 +1,17 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Typography, TextField, Button, Link } from '@mui/material'
+import { Box, Grid, Typography, TextField, Button, Link, Alert } from '@mui/material';
 import axios from 'axios';
 
-function LoginPage () {
-  
+function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
-
   const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
-function login () {
-
+  async function login() {
     if (email.length === 0) {
       setEmailError("Missing email.");
     } else if (email.length > 32) {
@@ -34,40 +32,69 @@ function login () {
       setPasswordError(null);
     }
 
-    // trigger call to the backend
-  
+    if (!emailError && !passwordError) {
+      try {
+        const response = await axios.post('/api/users/login', {
+          email: email,
+          password: password,
+        });
+
+        if (response.status === 200) {
+          // Successful login
+          setErrorMessage(null);
+          setSuccessMessage("Login successful"); // Set success message
+          // You can redirect the user or perform any necessary actions here
+        } else {
+          // Handle other status codes
+          if (response.status === 400) {
+            setErrorMessage("Invalid email or password");
+          } else if (response.status === 500) {
+            setErrorMessage("Server error");
+          } else {
+            // Handle other status codes as needed
+            setErrorMessage("An unexpected error occurred");
+          }
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+        setErrorMessage("An unexpected error occurred");
+      }
+    }
   }
 
   return (
     <div>
-    <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Log In</Typography>
-      <Grid container spacing={2} sx={{ padding: 2 }}>
-        <Grid item xs={12}>
-          <TextField sx={{ width: '398px' }}id="inpEmail" label="Email" variant="filled" error={emailError} helperText={emailError} required value={email} onChange={(event) => {
-            setEmail(event.target.value);
-          }}/>
+      <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Log In</Typography>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          <Grid item xs={12}>
+            <TextField sx={{ width: '398px' }} id="inpEmail" label="Email" variant="filled" error={emailError} helperText={emailError} required value={email} onChange={(event) => {
+              setEmail(event.target.value);
+            }} />
+          </Grid>
+          <Grid item xs={12}>
+            <TextField id="inpPassword" label="Password" variant="filled" error={passwordError} helperText={passwordError} required type="password" value={password} onChange={(event) => {
+              setPassword(event.target.value);
+            }} />
+          </Grid>
+          <Grid item xs={12}>
+            <Button id="loginBtn" variant="contained" onClick={() => {
+              login();
+            }}>
+              Log In
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            {successMessage && <Alert severity="success">{successMessage}</Alert>}
+          </Grid>
+          <Grid item xs={12}>
+            Don't have an account? <Link to="/register">Sign up</Link>
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <TextField id="inpPassword" label="Password" variant="filled" error={passwordError} helperText={passwordError} required type="password" value={password} onChange={(event) => {
-            setPassword(event.target.value);
-          }}/>
-        </Grid>
-        <Grid item xs={12}>
-          <Button id="loginBtn" variant="contained" onClick={() => {
-            login();
-          }}>
-            Log In
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          Don't have an account? <Link to="/register">Sign up</Link>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
     </div>
   )
-
 }
 
-export default LoginPage
+export default LoginPage;

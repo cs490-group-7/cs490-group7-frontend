@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
+import { Box, Grid, Typography, TextField, Select, MenuItem, Button, Alert } from '@mui/material';
+import axios from 'axios';
 
-function CreateAccountPage () {
-
+function CreateAccountPage() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -15,9 +15,10 @@ function CreateAccountPage () {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfError, setPasswordConfError] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
 
-  function createAccount () {
-    
+  async function createAccount() {
     if (firstName.length === 0) {
       setFirstNameError("Missing first name.");
     } else if (firstName.length > 32) {
@@ -64,73 +65,108 @@ function CreateAccountPage () {
       setPasswordConfError(null);
     }
 
-    // trigger call to the backend
+    if (!firstNameError && !lastNameError && !emailError && !passwordError && !passwordConfError) {
+      try {
+        const response = await axios.post('/api/users/register', {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          isCoach: isCoach,
+        });
+
+        if (response.status === 201) {
+          // Successful registration
+          setErrorMessage(null);
+          setSuccessMessage("Account created successfully"); // Set success message
+          // You can redirect the user or perform any necessary actions here
+        } else {
+          // Handle other status codes
+          if (response.status === 400) {
+            setErrorMessage("User already exists");
+          } else if (response.status === 500) {
+            setErrorMessage("Server error");
+          } else {
+            // Handle other status codes as needed
+            setErrorMessage("An unexpected error occurred");
+          }
+        }
+      } catch (error) {
+        console.error('Registration error:', error);
+        setErrorMessage("An unexpected error occurred");
+      }
+    }
   }
 
   return (
-    <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Create Account</Typography>
-      <Grid container spacing={2} sx={{ padding: 2 }}>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item>
-              <TextField id="inpFirstName" label="First Name" variant="filled" error={firstNameError} helperText={firstNameError} required value={firstName} onChange={(event) => {
-                setFirstName(event.target.value);
-              }}/>
-            </Grid>
-            <Grid item>
-              <TextField id="inpLastName" label="Last Name" variant="filled" error={lastNameError} helperText={lastNameError} required value={lastName} onChange={(event) => {
-                setLastName(event.target.value);
-              }}/>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <TextField sx={{ width: '398px' }}id="inpEmail" label="Email" variant="filled" error={emailError} helperText={emailError} required value={email} onChange={(event) => {
-            setEmail(event.target.value);
-          }}/>
-        </Grid>
-        <Grid item xs={12}>
-          <Grid container spacing={2}>
-            <Grid item>
-              <TextField id="inpPassword" label="Password" variant="filled" error={passwordError} helperText={passwordError} required type="password" value={password} onChange={(event) => {
-                setPassword(event.target.value);
-              }}/>
-            </Grid>
-            <Grid item>
-              <TextField id="inpPasswordConf" label="Confirm Password" variant="filled" error={passwordConfError} helperText={passwordConfError} required type="password" value={passwordConf} onChange={(event) => {
-                setPasswordConf(event.target.value);
-              }}/>
+    <div>
+      <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
+        <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Create Account</Typography>
+        <Grid container spacing={2} sx={{ padding: 2 }}>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item>
+                <TextField id="inpFirstName" label="First Name" variant="filled" error={firstNameError} helperText={firstNameError} required value={firstName} onChange={(event) => {
+                  setFirstName(event.target.value);
+                }}/>
+              </Grid>
+              <Grid item>
+                <TextField id="inpLastName" label="Last Name" variant="filled" error={lastNameError} helperText={lastNameError} required value={lastName} onChange={(event) => {
+                  setLastName(event.target.value);
+                }}/>
+              </Grid>
             </Grid>
           </Grid>
+          <Grid item xs={12}>
+            <TextField sx={{ width: '398px' }} id="inpEmail" label="Email" variant="filled" error={emailError} helperText={emailError} required value={email} onChange={(event) => {
+              setEmail(event.target.value);
+            }}/>
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={2}>
+              <Grid item>
+                <TextField id="inpPassword" label="Password" variant="filled" error={passwordError} helperText={passwordError} required type="password" value={password} onChange={(event) => {
+                  setPassword(event.target.value);
+                }}/>
+              </Grid>
+              <Grid item>
+                <TextField id="inpPasswordConf" label="Confirm Password" variant="filled" error={passwordConfError} helperText={passwordConfError} required type="password" value={passwordConf} onChange={(event) => {
+                  setPasswordConf(event.target.value);
+                }}/>
+              </Grid>
+            </Grid>
+          </Grid>
+          <Grid item xs={12}>
+            <TextField
+              value={isCoach}
+              onChange={(event) => setIsCoach(event.target.value)}
+              select
+              sx={{ width: "150px" }}
+              label="I am primarily a..."
+            >
+              <MenuItem value={false}>
+                Client
+              </MenuItem>
+              <MenuItem value={true}>
+                Coach
+              </MenuItem>
+            </TextField>
+          </Grid>
+          <Grid item xs={12}>
+            <Button id="createAccountBtn" variant="contained" onClick={() => {
+              createAccount();
+            }}>
+              Create Account
+            </Button>
+          </Grid>
+          <Grid item xs={12}>
+            {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+            {successMessage && <Alert severity="success">{successMessage}</Alert>}
+          </Grid>
         </Grid>
-        <Grid item xs={12}>
-          <TextField
-            value={isCoach}
-            onChange={(event) => setIsCoach(event.target.value)}
-            select
-            sx={{width: "150px"}}
-            label="I am primarily a..."
-          >
-            <MenuItem value={false}>
-              Client
-            </MenuItem>
-            <MenuItem value={true}>
-              Coach
-            </MenuItem>
-          </TextField>
-        </Grid>
-        <Grid item xs={12}>
-          <Button id="createAccountBtn" variant="contained" onClick={() => {
-            createAccount();
-          }}>
-            Create Account
-          </Button>
-        </Grid>
-      </Grid>
-    </Box>
+      </Box>
+    </div>
   )
-
 }
 
-export default CreateAccountPage
+export default CreateAccountPage;
