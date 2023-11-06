@@ -12,7 +12,7 @@ function LoginPage () {
 
   const [errorMessage, setErrorMessage] = useState(null);
 
- async function login () {
+function login () {
 
     if (email.length === 0) {
       setEmailError("Missing email.");
@@ -35,17 +35,7 @@ function LoginPage () {
     }
 
     // trigger call to the backend
-    if (!emailError && !passwordError) {
-      try {
-        const response = await axios.post('/api/login', { email, password });
-        if (response.data.message === "Logged in successfully") {
-          // Handle successful login, e.g., redirect to another page.
-        } else {
-        }
-      } catch (error) {
-        console.error('Login error:', error);
-      }
-    }
+  
   }
 
   return (
