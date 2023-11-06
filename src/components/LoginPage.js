@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography, TextField, Button, Link } from '@mui/material'
-import Alert from '@mui/material/Alert';
-import AlertTitle from '@mui/material/AlertTitle';
+import axios from 'axios';
 
 function LoginPage () {
   
@@ -13,7 +12,7 @@ function LoginPage () {
 
   const [errorMessage, setErrorMessage] = useState(null);
 
-  function login () {
+ async function login () {
 
     if (email.length === 0) {
       setEmailError("Missing email.");
@@ -36,16 +35,21 @@ function LoginPage () {
     }
 
     // trigger call to the backend
+    if (!emailError && !passwordError) {
+      try {
+        const response = await axios.post('/api/login', { email, password });
+        if (response.data.message === "Logged in successfully") {
+          // Handle successful login, e.g., redirect to another page.
+        } else {
+        }
+      } catch (error) {
+        console.error('Login error:', error);
+      }
+    }
   }
 
   return (
     <div>
-      {errorMessage && (
-        <Alert severity="error">
-          <AlertTitle>Error</AlertTitle>
-          {errorMessage}
-        </Alert>
-      )}
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
       <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Log In</Typography>
       <Grid container spacing={2} sx={{ padding: 2 }}>
