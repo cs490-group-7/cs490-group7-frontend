@@ -11,7 +11,7 @@ function LoginPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  async function login() {
+  function login() {
     if (email.length === 0) {
       setEmailError("Missing email.");
     } else if (email.length > 32) {
@@ -32,33 +32,19 @@ function LoginPage() {
       setPasswordError(null);
     }
 
-    if (!emailError && !passwordError) {
-      try {
-        const response = await axios.post('/api/users/login', {
-          email: email,
-          password: password,
-        });
-
-        if (response.status === 200) {
-          // Successful login
-          setErrorMessage(null);
-          setSuccessMessage("Login successful"); // Set success message
-          // You can redirect the user or perform any necessary actions here
-        } else {
-          // Handle other status codes
-          if (response.status === 400) {
-            setErrorMessage("Invalid email or password");
-          } else if (response.status === 500) {
-            setErrorMessage("Server error");
-          } else {
-            // Handle other status codes as needed
-            setErrorMessage("An unexpected error occurred");
+    if (emailError == null && passwordError == null) {
+      
+        axios.post('/api/users/login', { email: email, password: password,})
+        .then((res) => {
+          if(res.data.length === 0){
+            setErrorMessage(null);
+            setSuccessMessage("Login successful");
           }
-        }
-      } catch (error) {
-        console.error('Login error:', error);
-        setErrorMessage("An unexpected error occurred");
-      }
+        })
+        .catch((err) => {
+          setErrorMessage("Server error");
+          console.error(err)
+        });
     }
   }
 

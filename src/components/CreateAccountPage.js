@@ -18,7 +18,7 @@ function CreateAccountPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  async function createAccount() {
+ function createAccount() {
     if (firstName.length === 0) {
       setFirstNameError("Missing first name.");
     } else if (firstName.length > 32) {
@@ -65,38 +65,22 @@ function CreateAccountPage() {
       setPasswordConfError(null);
     }
 
-    if (!firstNameError && !lastNameError && !emailError && !passwordError && !passwordConfError) {
-      try {
-        const response = await axios.post('/api/users/register', {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-          isCoach: isCoach,
-        });
+    if (firstNameError == null && lastNameError == null && emailError == null && passwordError == null && passwordConfError == null) {
 
-        if (response.status === 201) {
-          // Successful registration
-          setErrorMessage(null);
-          setSuccessMessage("Account created successfully"); // Set success message
-          // You can redirect the user or perform any necessary actions here
-        } else {
-          // Handle other status codes
-          if (response.status === 400) {
-            setErrorMessage("User already exists");
-          } else if (response.status === 500) {
-            setErrorMessage("Server error");
-          } else {
-            // Handle other status codes as needed
-            setErrorMessage("An unexpected error occurred");
-          }
-        }
-      } catch (error) {
-        console.error('Registration error:', error);
-        setErrorMessage("An unexpected error occurred");
+     axios.post('/api/users/register', { firstName: firstName, lastName: lastName, email: email, password: password, isCoach: isCoach,})
+     .then((res) => {
+      if(res.data.length === 0){
+        setErrorMessage(null);
+        setSuccessMessage("Account Successfully Created");
       }
+    })
+    .catch((err) => {
+      setErrorMessage("Server error: Could not create account");
+      console.error(err)
+    });
+}
     }
-  }
+  
 
   return (
     <div>

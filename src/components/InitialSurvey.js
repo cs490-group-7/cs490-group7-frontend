@@ -62,34 +62,20 @@ export default function InitialSurvey () {
     }
 
     // trigger call to the backend
-    try {
-      axios.post('/api/users/surveys', {
-        dateOfBirth: dateOfBirth,
-        gender: gender,
-        height: height,
-        weight: weight,
-        fitnessGoal: fitnessGoal,
-      }).then((response) => {
-        if (response.status === 200) {
+    if(dateOfBirthError == null && genderError == null && heightError == null && weightError == null && fitnessGoalError == null){
+
+      axios.post('/api/surveys', { dateOfBirth: dateOfBirth, gender: gender, height: height, weight: weight, fitnessGoal: fitnessGoal,})
+      .then((res) => {
+        if(res.data.length === 0){
           setErrorMessage(null);
-          setSuccessMessage("Survey submitted successfully");
-        } else {
-          if (response.status === 400) {
-            setErrorMessage("Invalid input data");
-          } else if (response.status === 500) {
-            setErrorMessage("Server error");
-          } else {
-            setErrorMessage("An unexpected error occurred");
-          }
+          setSuccessMessage("Survey Successfully Added");
         }
-      }).catch((error) => {
-        console.error('Survey submission error:', error);
-        setErrorMessage("An unexpected error occurred");
+      })
+      .catch((err) => {
+        setErrorMessage("Server error: Could not Add Survey");
+        console.error(err)
       });
-    } catch (error) {
-      console.error('Survey submission error:', error);
-      setErrorMessage("An unexpected error occurred");
-    }
+  }
   }
 
   return (
