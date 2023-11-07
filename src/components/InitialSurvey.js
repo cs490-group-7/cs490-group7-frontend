@@ -64,17 +64,23 @@ export default function InitialSurvey () {
     // trigger call to the backend
     if(dateOfBirthError == null && genderError == null && heightError == null && weightError == null && fitnessGoalError == null){
 
-      axios.post('/api/surveys', { dateOfBirth: dateOfBirth, gender: gender, height: height, weight: weight, fitnessGoal: fitnessGoal,})
+      axios.post('/api/surveys/initial-survey', { dateOfBirth: dateOfBirth, gender: gender, height: height, weight: weight, fitnessGoal: fitnessGoal,})
       .then((res) => {
-        if(res.data.length === 0){
+        if (res.status === 200) {
+          // Successful Survey creation
           setErrorMessage(null);
-          setSuccessMessage("Survey Successfully Added");
+          setSuccessMessage(res.data.message);
+        } else if (res.status === 400) {
+         // Database fail
+         setErrorMessage(res.data.message);
+         setSuccessMessage(null);
         }
       })
       .catch((err) => {
-        setErrorMessage("Server error: Could not Add Survey");
-        console.error(err)
-      });
+       // Server error
+       setErrorMessage("Server error");
+       console.error(err);
+     });
   }
   }
 

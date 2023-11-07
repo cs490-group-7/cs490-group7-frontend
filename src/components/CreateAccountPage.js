@@ -69,15 +69,21 @@ function CreateAccountPage() {
 
      axios.post('/api/users/register', { firstName: firstName, lastName: lastName, email: email, password: password, isCoach: isCoach,})
      .then((res) => {
-      if(res.data.length === 0){
+      if (res.status === 200) {
+        // Successful account creation
         setErrorMessage(null);
-        setSuccessMessage("Account Successfully Created");
+        setSuccessMessage(res.data.message);
+      } else if (res.status === 400) {
+       // Invalid credentials
+       setErrorMessage(res.data.message);
+       setSuccessMessage(null);
       }
     })
     .catch((err) => {
-      setErrorMessage("Server error: Could not create account");
-      console.error(err)
-    });
+     // Server error
+     setErrorMessage("Server error");
+     console.error(err);
+   });
 }
     }
   

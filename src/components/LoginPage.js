@@ -34,17 +34,24 @@ function LoginPage() {
 
     if (emailError == null && passwordError == null) {
       
-        axios.post('/api/users/login', { email: email, password: password,})
-        .then((res) => {
-          if(res.data.length === 0){
-            setErrorMessage(null);
-            setSuccessMessage("Login successful");
-          }
-        })
-        .catch((err) => {
-          setErrorMessage("Server error");
-          console.error(err)
-        });
+      axios.post('/api/users/login', { email: email, password: password })
+      .then((res) => {
+      if (res.status === 200) {
+        // Successful login
+        setErrorMessage(null);
+        setSuccessMessage(res.data.message);
+      } else if (res.status === 400) {
+       // Invalid email or password
+       setErrorMessage(res.data.message);
+       setSuccessMessage(null);
+      }
+    })
+    .catch((err) => {
+     // Server error
+     setErrorMessage("Server error");
+     console.error(err);
+   });
+   
     }
   }
 
