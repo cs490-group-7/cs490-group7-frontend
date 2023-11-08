@@ -4,6 +4,8 @@ import LinearProgress from '@mui/joy/LinearProgress';
 
 function Home () {
 
+    const [signedIn, setSignedIn] = useState(false);
+
     const [dailyFilled, setDailyFilled] = useState(false);
     const [calories, setCalories] = useState(null);
     const [waterIntake, setWaterIntake] = useState(null);
@@ -45,9 +47,35 @@ function Home () {
         return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
     }
 
+    function login () {
+
+        // TODO: login
+
+    }
+
+    function logout () {
+
+        // TODO: logout
+
+    }
+
     return (
         <div className="home-page">
-            <h1>Home</h1>
+
+            {/* title and sign in/out button */}
+            <Grid container spacing={2}>
+                <Grid item xs={8}>
+                    <h1>Home</h1>
+                </Grid>
+                <Grid item xs={4} container justifyContent="flex-end" alignItems="center">
+                    <Button id="logInOutBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                        signedIn ? logout() : login();
+                    }}>
+                        {signedIn ? "Logout" : "Login"}
+                    </Button>
+                </Grid>
+            </Grid>
+
             <Grid container spacing={2}>
 
                 {/* daily check-in */}

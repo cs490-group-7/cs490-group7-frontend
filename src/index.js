@@ -10,7 +10,6 @@ import CoachLookup from './pages/CoachLookup';
 import AccountSettings from './pages/AccountSettings';
 import Home from './pages/Home';
 import Workouts from './pages/Workouts';
-import LandingPage from './pages/LandingPage';
 
 const router = createBrowserRouter([
   {
@@ -39,10 +38,6 @@ const router = createBrowserRouter([
       {
         path: "/account-settings",
         element: <AccountSettings/>
-      },
-      {
-        path: "/landing",
-        element: <LandingPage/>
       }
     ]
   },
