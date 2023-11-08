@@ -13,17 +13,11 @@ import Workouts from './pages/Workouts';
 import CreateAccountPage from './components/CreateAccountPage';
 import LoginPage from './components/LoginPage';
 import InitialSurvey from './components/InitialSurvey';
-import LandingPage from './pages/LandingPage'
-
+import CoachSurvey from './components/CoachSurvey';
 const router = createBrowserRouter([
   {
     element: <App/>,
     children: [
-      // added here check
-      {
-        path: "/landing",
-        element: <LandingPage isAuthenticated={false}/>,// Assuming default not authenticated
-      },
       {
         path: "/",
         element: <Home/>,
@@ -59,6 +53,10 @@ const router = createBrowserRouter([
       {
         path: "/initial-survey", 
         element: <InitialSurvey/>
+      },
+      {
+        path: "/coach-survey",
+        element: <CoachSurvey/>
       }
       
     ]

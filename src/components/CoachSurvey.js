@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom';
 
 export default function CoachSurvey () {
 
@@ -12,13 +13,17 @@ export default function CoachSurvey () {
   const [experienceError, setExperienceError] = useState("");
   const [specializationsError, setSpecializationsError] = useState("");
 
+  const navigate = useNavigate();
 
   function submit () {
-    
+    let valid = true;
+
     if (certifications.length === 0) {
         setCertificationsError("Please enter certifications");
+        valid = false;
     } else if (certifications.length > 1000) {
         setCertificationsError("Maximum 1000 characters");
+        valid = false;
     } else {
         setCertificationsError(null);
     }
@@ -26,21 +31,29 @@ export default function CoachSurvey () {
 
     if (experience.length === 0) {
         setExperienceError("Please enter experience");
+        valid = false;
     } else if (experience.length > 1000) {
         setExperienceError("Maximum 1000 characters");
+        valid = false;
     } else {
         setExperienceError(null);
     }
 
     if (specializations.length === 0) {
         setSpecializationsError("Please enter specializations");
+        valid = false;
     } else if (specializations.length > 1000) {
         setSpecializationsError("Maximum 1000 characters");
+        valid = false;
     } else {
         setSpecializationsError(null);
     }
 
     // trigger call to the backend
+    
+    if (valid){
+        navigate('/');
+    }
   }
 
   return (
