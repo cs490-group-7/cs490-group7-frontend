@@ -62,20 +62,7 @@ function Home () {
     return (
         <div className="home-page">
 
-            {/* title and sign in/out button */}
-            <Grid container spacing={2}>
-                <Grid item xs={8}>
-                    <h1>Home</h1>
-                </Grid>
-                <Grid item xs={4} container justifyContent="flex-end" alignItems="center">
-                    <Button id="logInOutBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
-                        signedIn ? logout() : login();
-                    }}>
-                        {signedIn ? "Logout" : "Login"}
-                    </Button>
-                </Grid>
-            </Grid>
-
+            <h1>Home</h1>
             <Grid container spacing={2}>
 
                 {/* daily check-in */}
