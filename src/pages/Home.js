@@ -24,15 +24,31 @@ function Home () {
     const [workoutCompletion, setWorkoutCompletion] = useState(false);
 
     useEffect(() => {
-
         // TODO: backend call to retrieve whether or not daily check-in has been filled today
-        
         // TODO: backend call to retrieve goal overview
-
         // TODO: backend call to retrieve today's workout
-
         // TODO: backend call to retrieve progress status
-
+        fetch('/api/client/mock-data')
+            .then((response) => response.json())
+            .then((data) => {
+                setDailyFilled(data.dailyFilled);
+                setCalories(data.calories);
+                setWaterIntake(data.waterIntake);
+                setWeight(data.weight);
+                setCaloriesError(data.caloriesError);
+                setWaterIntakeError(data.waterIntakeError);
+                setWeightError(data.weightError);
+                setGoalMessage(data.goalMessage);
+                setGoalBaseline(data.goalBaseline);
+                setGoalTarget(data.goalTarget);
+                setGoalCurrent(data.goalCurrent);
+                setProgress(data.progress);
+                setWorkoutName(data.workoutName);
+                setWorkoutCompletion(data.workoutCompletion);
+            })
+            .catch((error) => {
+                console.error('Error fetching mock data:', error);
+            });
         setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
 
     }, []);
