@@ -64,7 +64,7 @@ export default function CoachSurvey() {
             specializations,
           });
 
-          if (res.status === 200) {
+          if (res.status === 201) {
             // Successful Survey creation
             setErrorMessage(null);
             setSuccessMessage(res.data.message);
