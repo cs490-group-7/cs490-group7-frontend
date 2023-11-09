@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Typography, TextField, Button, Link } from '@mui/material'
+import { Link } from 'react-router-dom';
+import { Box, Grid, Typography, TextField, Button} from '@mui/material'
 
 function LoginPage () {
 
@@ -56,7 +57,7 @@ function LoginPage () {
           </Button>
         </Grid>
         <Grid item xs={12}>
-          Don't have an account? <Link to="/create-account">Sign up</Link>
+          Don't have an account? <Link to="/register">Sign up</Link>
         </Grid>
       </Grid>
     </Box>

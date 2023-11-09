@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
+import { useNavigate } from 'react-router-dom';
 
 function CreateAccountPage () {
 
@@ -16,55 +17,73 @@ function CreateAccountPage () {
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfError, setPasswordConfError] = useState("");
 
+  const navigate = useNavigate();
+
   function createAccount () {
-    
+    let valid = true;
+
     if (firstName.length === 0) {
       setFirstNameError("Missing first name.");
+      valid = false
     } else if (firstName.length > 32) {
       setFirstNameError("First name too long.");
+      valid = false
     } else if (!/^[a-zA-Z]( ?[a-zA-Z]*)*$/.test(firstName)) {
       setFirstNameError("First name disallowed format.");
+      valid = false
     } else {
       setFirstNameError(null);
     }
 
     if (lastName.length === 0) {
       setLastNameError("Missing last name.");
+      valid = false
     } else if (lastName.length > 32) {
       setLastNameError("Last name too long.");
+      valid = false
     } else if (!/^[a-zA-Z]( ?[a-zA-Z]*)*$/.test(lastName)) {
       setLastNameError("Last name disallowed format.");
+      valid = false
     } else {
       setLastNameError(null);
     }
 
     if (email.length === 0) {
       setEmailError("Missing email.");
+      valid = false
     } else if (email.length > 32) {
       setEmailError("Email too long.");
+      valid = false
     } else if (!/^[a-zA-Z][a-zA-Z0-9]*\@[a-zA-Z][a-zA-Z0-9]*\.[a-zA-Z]{2,4}$/.test(email)) {
       setEmailError("Incorrect email format.");
+      valid = false
     } else {
       setEmailError(null);
     }
 
     if (password.length === 0) {
       setPasswordError("Missing password.");
+      valid = false
     } else if (password.length > 32) {
       setPasswordError("Password too long.");
+      valid = false
     } else if (!/^[a-zA-Z0-9!#$%&()*+,./:;<=>?@[\]^_{|}~]+$/.test(password)) {
       setPasswordError("Incorrect password format.");
+      valid = false
     } else {
       setPasswordError(null);
     }
 
     if (password !== passwordConf) {
       setPasswordConfError("Passwords don't match.");
+      valid = false
     } else {
       setPasswordConfError(null);
     }
-
-    // trigger call to the backend
+    if (valid) {
+      navigate('/initial-survey', { state: { isCoach: isCoach } });
+    }
+        // trigger call to the backend
   }
 
   return (
