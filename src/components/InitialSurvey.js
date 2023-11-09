@@ -4,6 +4,8 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 export default function InitialSurvey () {
 
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
@@ -18,50 +20,63 @@ export default function InitialSurvey () {
   const [weightError, setWeightError] = useState("");
   const [fitnessGoalError, setFitnessGoalError] = useState("");
 
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { isCoach } = location.state || { isCoach: false };
+  
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
   function submit () {
-    
+    let valid = true;
     if (dateOfBirth.length === 0) {
       setDateOfBirthError("Missing date of birth");
+      valid = false
     } else {
       setDateOfBirthError(null);
     }
 
     if (gender.length === 0) {
       setGenderError("Select a value");
+      valid = false
     } else {
       setGenderError(null);
     }
     
     if (height.length === 0) {
       setHeightError("Missing height.");
+      valid = false
     } else if (!/^[1-9]'([0-9]|1[01])''$/.test(height)) {
       setHeightError("Incorrect Height format.");
+      valid = false
     } else {
       setHeightError(null);
     }
 
     if (weight.length === 0) {
       setWeightError("Missing weight.");
+      valid = false
     } else if (weight.length > 3) {
       setWeightError("Weight too long.");
+      valid = false
     } else if (!/^[1-9][0-9]*$/.test(weight)) {
       setWeightError("Incorrect weight format.");
+      valid = false
     } else {
       setWeightError(null);
     }
 
     if (fitnessGoal.length === 0) {
       setFitnessGoalError("Missing goal.");
+      valid = false
     } else if (fitnessGoal.length > 1000) {
       setFitnessGoalError("Maximum 1000 characters");
+      valid = false
     }  else {
       setFitnessGoalError(null);
     }
-
-    // trigger call to the backend
+ let serverCheck = false;
+        // trigger call to the backend
     if(dateOfBirthError == null && genderError == null && heightError == null && weightError == null && fitnessGoalError == null){
 
       axios.post('/api/surveys/initial-survey', { dateOfBirth: dateOfBirth, gender: gender, height: height, weight: weight, fitnessGoal: fitnessGoal,})
@@ -70,6 +85,7 @@ export default function InitialSurvey () {
           // Successful Survey creation
           setErrorMessage(null);
           setSuccessMessage(res.data.message);
+          serverCheck = true;
         } else if (res.status === 400) {
          // Database fail
          setErrorMessage(res.data.message);
@@ -82,6 +98,15 @@ export default function InitialSurvey () {
        console.error(err);
      });
   }
+
+  if (valid && serverCheck) {
+    if (isCoach) {
+      navigate('/coach-survey');
+    } else {
+      navigate('/');
+    }
+  }
+
   }
 
   return (

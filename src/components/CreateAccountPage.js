@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography, TextField, Select, MenuItem, Button, Alert } from '@mui/material';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 function CreateAccountPage() {
   const [firstName, setFirstName] = useState("");
@@ -18,7 +19,10 @@ function CreateAccountPage() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
+  const navigate = useNavigate();
  function createAccount() {
+  let valid = true;
+
     if (firstName.length === 0) {
       setFirstNameError("Missing first name.");
     } else if (firstName.length > 32) {
@@ -65,6 +69,7 @@ function CreateAccountPage() {
       setPasswordConfError(null);
     }
 
+    let serverCheck = false;
     if (firstNameError == null && lastNameError == null && emailError == null && passwordError == null && passwordConfError == null) {
 
      axios.post('/api/users/register', { firstName: firstName, lastName: lastName, email: email, password: password, isCoach: isCoach,})
@@ -73,6 +78,7 @@ function CreateAccountPage() {
         // Successful account creation
         setErrorMessage(null);
         setSuccessMessage(res.data.message);
+        serverCheck = true;
       } else if (res.status === 400) {
        // Invalid credentials
        setErrorMessage(res.data.message);
@@ -84,6 +90,11 @@ function CreateAccountPage() {
      setErrorMessage("Server error");
      console.error(err);
    });
+  
+
+   if (valid && serverCheck) {
+    navigate('/initial-survey', { state: { isCoach: isCoach } });
+  }
 }
     }
   
