@@ -1,111 +1,119 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button, Alert } from '@mui/material'
+import React, { useEffect, useState } from 'react';
+import { Box, Typography, TextField, Button, Alert, MenuItem } from '@mui/material';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
-export default function InitialSurvey () {
-
+export default function InitialSurvey() {
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
-  const [gender, setGender] = useState("");
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
-  const [fitnessGoal, setFitnessGoal] = useState("");
+  const [gender, setGender] = useState('');
+  const [height, setHeight] = useState('');
+  const [weight, setWeight] = useState('');
+  const [fitnessGoal, setFitnessGoal] = useState('');
 
-  const [dateOfBirthError, setDateOfBirthError] = useState("");
-  const [genderError, setGenderError] = useState("");
-  const [heightError, setHeightError] = useState("");
-  const [weightError, setWeightError] = useState("");
-  const [fitnessGoalError, setFitnessGoalError] = useState("");
+  const [dateOfBirthError, setDateOfBirthError] = useState('');
+  const [genderError, setGenderError] = useState('');
+  const [heightError, setHeightError] = useState('');
+  const [weightError, setWeightError] = useState('');
+  const [fitnessGoalError, setFitnessGoalError] = useState('');
 
   const navigate = useNavigate();
   const location = useLocation();
   const { isCoach } = location.state || { isCoach: false };
-  
+
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  function submit () {
+  async function submit() {
     let valid = true;
-    if (dateOfBirth.length === 0) {
-      setDateOfBirthError("Missing date of birth");
-      valid = false
+    if (dateOfBirth == null) {
+      setDateOfBirthError('Missing date of birth');
+      valid = false;
     } else {
       setDateOfBirthError(null);
     }
 
     if (gender.length === 0) {
-      setGenderError("Select a value");
-      valid = false
+      setGenderError('Select a value');
+      valid = false;
     } else {
       setGenderError(null);
     }
-    
+
     if (height.length === 0) {
-      setHeightError("Missing height.");
-      valid = false
+      setHeightError('Missing height.');
+      valid = false;
     } else if (!/^[1-9]'([0-9]|1[01])''$/.test(height)) {
-      setHeightError("Incorrect Height format.");
-      valid = false
+      setHeightError('Incorrect Height format.');
+      valid = false;
     } else {
       setHeightError(null);
     }
 
     if (weight.length === 0) {
-      setWeightError("Missing weight.");
-      valid = false
+      setWeightError('Missing weight.');
+      valid = false;
     } else if (weight.length > 3) {
-      setWeightError("Weight too long.");
-      valid = false
+      setWeightError('Weight too long.');
+      valid = false;
     } else if (!/^[1-9][0-9]*$/.test(weight)) {
-      setWeightError("Incorrect weight format.");
-      valid = false
+      setWeightError('Incorrect weight format.');
+      valid = false;
     } else {
       setWeightError(null);
     }
 
     if (fitnessGoal.length === 0) {
-      setFitnessGoalError("Missing goal.");
-      valid = false
+      setFitnessGoalError('Missing goal.');
+      valid = false;
     } else if (fitnessGoal.length > 1000) {
-      setFitnessGoalError("Maximum 1000 characters");
-      valid = false
-    }  else {
+      setFitnessGoalError('Maximum 1000 characters');
+      valid = false;
+    } else {
       setFitnessGoalError(null);
     }
- let serverCheck = false;
-        // trigger call to the backend
-    if(dateOfBirthError == null && genderError == null && heightError == null && weightError == null && fitnessGoalError == null){
 
-      axios.post('/api/surveys/initial-survey', { dateOfBirth: dateOfBirth, gender: gender, height: height, weight: weight, fitnessGoal: fitnessGoal,})
-      .then((res) => {
+    // trigger call to the backend
+    let serverCheck = false;
+
+    if (
+      dateOfBirthError == null &&
+      genderError == null &&
+      heightError == null &&
+      weightError == null &&
+      fitnessGoalError == null
+    ) {
+      try {
+        const res = await axios.post('/api/surveys/initial-survey', {
+          dateOfBirth,
+          gender,
+          height,
+          weight,
+          fitnessGoal,
+        });
+
         if (res.status === 200) {
           // Successful Survey creation
           setErrorMessage(null);
           setSuccessMessage(res.data.message);
-          serverCheck = true;
+          if (isCoach) {
+            navigate('/coach-survey');
+          } else {
+            navigate('/');
+          }
         } else if (res.status === 400) {
-         // Database fail
-         setErrorMessage(res.data.message);
-         setSuccessMessage(null);
+          // Database fail
+          setErrorMessage(res.data.message);
+          setSuccessMessage(null);
         }
-      })
-      .catch((err) => {
-       // Server error
-       setErrorMessage("Server error");
-       console.error(err);
-     });
-  }
-
-  if (valid && serverCheck) {
-    if (isCoach) {
-      navigate('/coach-survey');
-    } else {
-      navigate('/');
+      } catch (err) {
+        // Server error
+        setErrorMessage('Server error');
+        console.error(err);
+      }
     }
-  }
 
   }
 

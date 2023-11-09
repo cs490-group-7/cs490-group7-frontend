@@ -1,67 +1,85 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button, Alert, AlertTitle } from '@mui/material'
+import React, { useState } from 'react';
+import { Box, Typography, TextField, Button, Alert } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
-export default function CoachSurvey () {
+export default function CoachSurvey() {
+  const [certifications, setCertifications] = useState('');
+  const [experience, setExperience] = useState('');
+  const [specializations, setSpecializations] = useState('');
 
-  const [certifications, setCertifications] = useState("");
-  const [experience, setExperience] = useState("");
-  const [specializations, setSpecializations] = useState("");
-
-
-  const [certificationsError, setCertificationsError] = useState("");
-  const [experienceError, setExperienceError] = useState("");
-  const [specializationsError, setSpecializationsError] = useState("");
+  const [certificationsError, setCertificationsError] = useState('');
+  const [experienceError, setExperienceError] = useState('');
+  const [specializationsError, setSpecializationsError] = useState('');
 
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
 
-  function submit () {
-    
+  const navigate = useNavigate();
+
+  async function submit() {
+    let valid = true;
+
     if (certifications.length === 0) {
-        setCertificationsError("Please enter certifications");
+      setCertificationsError('Please enter certifications');
+      valid = false;
     } else if (certifications.length > 1000) {
-        setCertificationsError("Maximum 1000 characters");
+      setCertificationsError('Maximum 1000 characters');
+      valid = false;
     } else {
-        setCertificationsError(null);
+      setCertificationsError(null);
     }
 
-
     if (experience.length === 0) {
-        setExperienceError("Please enter experience");
+      setExperienceError('Please enter experience');
+      valid = false;
     } else if (experience.length > 1000) {
-        setExperienceError("Maximum 1000 characters");
+      setExperienceError('Maximum 1000 characters');
+      valid = false;
     } else {
-        setExperienceError(null);
+      setExperienceError(null);
     }
 
     if (specializations.length === 0) {
-        setSpecializationsError("Please enter specializations");
+      setSpecializationsError('Please enter specializations');
+      valid = false;
     } else if (specializations.length > 1000) {
-        setSpecializationsError("Maximum 1000 characters");
+      setSpecializationsError('Maximum 1000 characters');
+      valid = false;
     } else {
-        setSpecializationsError(null);
+      setSpecializationsError(null);
     }
 
     // trigger call to the backend
-    if(certificationsError == null && experienceError == null && specializationsError == null){
-        axios.post('/api/surveysCO/initial-survey', { certifications, experience, specializations})
-        .then((res) => {
+    if (valid) {
+      if (
+        certificationsError == null &&
+        experienceError == null &&
+        specializationsError == null
+      ) {
+        try {
+          const res = await axios.post('/api/surveysCO/coach-survey', {
+            certifications,
+            experience,
+            specializations,
+          });
+
           if (res.status === 200) {
             // Successful Survey creation
             setErrorMessage(null);
             setSuccessMessage(res.data.message);
+            navigate('/');
           } else if (res.status === 400) {
-           // Database fail
-           setErrorMessage(res.data.message);
-           setSuccessMessage(null);
+            // Database fail
+            setErrorMessage(res.data.message);
+            setSuccessMessage(null);
           }
-        })
-        .catch((err) => {
-         // Server error
-         setErrorMessage("Server error");
-         console.error(err);
-       });
+        } catch (err) {
+          // Server error
+          setErrorMessage('Server error');
+          console.error(err);
+        }
+      }
     }
   }
 
@@ -74,7 +92,7 @@ export default function CoachSurvey () {
       <TextField
         id="inpCertifications"
         variant="filled"
-        error={Boolean(certificationsError)}
+        error={certificationsError}
         helperText={certificationsError}
         required
         value={certifications}
@@ -86,7 +104,7 @@ export default function CoachSurvey () {
       <TextField
         id="inpExperience"
         variant="filled"
-        error={Boolean(experienceError)}
+        error={experienceError}
         helperText={experienceError}
         required
         value={experience}
@@ -98,7 +116,7 @@ export default function CoachSurvey () {
       <TextField
         id="inpSpecializations"
         variant="filled"
-        error={Boolean(specializationsError)}
+        error={specializationsError}
         helperText={specializationsError}
         required
         value={specializations}
@@ -108,26 +126,11 @@ export default function CoachSurvey () {
       />
       <br />
       <br />
-      <Button
-        id="submitBtn"
-        variant="contained"
-        onClick={submit}
-      >
+      <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
-      {successMessage && (
-        <Alert severity="success">
-          <AlertTitle>Success</AlertTitle>
-          {successMessage}
-        </Alert>
-      )}
-      {errorMessage && (
-        <Alert severity="error">
-          <AlertTitle>Error</AlertTitle>
-          {errorMessage}
-        </Alert>
-      )}
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      {successMessage && <Alert severity="success">{successMessage}</Alert>}
     </Box>
   );
-
 }

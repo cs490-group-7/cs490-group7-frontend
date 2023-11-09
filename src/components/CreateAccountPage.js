@@ -20,7 +20,7 @@ function CreateAccountPage() {
   const [successMessage, setSuccessMessage] = useState(null);
 
   const navigate = useNavigate();
- function createAccount() {
+ async function createAccount() {
   let valid = true;
 
     if (firstName.length === 0) {
@@ -69,34 +69,34 @@ function CreateAccountPage() {
       setPasswordConfError(null);
     }
 
-    let serverCheck = false;
-    if (firstNameError == null && lastNameError == null && emailError == null && passwordError == null && passwordConfError == null) {
+    if (valid) {
+      try {
+        const res = await axios.post('/api/users/register', {
+          firstName,
+          lastName,
+          email,
+          password,
+          isCoach,
+        });
 
-     axios.post('/api/users/register', { firstName: firstName, lastName: lastName, email: email, password: password, isCoach: isCoach,})
-     .then((res) => {
-      if (res.status === 200) {
-        // Successful account creation
-        setErrorMessage(null);
-        setSuccessMessage(res.data.message);
-        serverCheck = true;
-      } else if (res.status === 400) {
-       // Invalid credentials
-       setErrorMessage(res.data.message);
-       setSuccessMessage(null);
+        if (res.status === 201) {
+          // Successful account creation
+          setErrorMessage(null);
+          setSuccessMessage(res.data.message);
+          navigate('/initial-survey', { state: { isCoach } });
+        } else if (res.status === 400) {
+          // Invalid credentials
+          setErrorMessage(res.data.message);
+          setSuccessMessage(null);
+        }
+      } catch (err) {
+        // Server error
+        setErrorMessage('Server error');
+        console.error(err);
       }
-    })
-    .catch((err) => {
-     // Server error
-     setErrorMessage("Server error");
-     console.error(err);
-   });
-  
-
-   if (valid && serverCheck) {
-    navigate('/initial-survey', { state: { isCoach: isCoach } });
-  }
-}
     }
+}
+    
   
 
   return (
