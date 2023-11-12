@@ -7,11 +7,11 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 export default function InitialSurvey() {
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [date_of_birth_unformatted, setDateOfBirth] = useState(new Date());
   const [gender, setGender] = useState('');
   const [height, setHeight] = useState('');
   const [weight, setWeight] = useState('');
-  const [fitnessGoal, setFitnessGoal] = useState('');
+  const [fitness_goal, setFitnessGoal] = useState('');
 
   const [dateOfBirthError, setDateOfBirthError] = useState('');
   const [genderError, setGenderError] = useState('');
@@ -28,7 +28,7 @@ export default function InitialSurvey() {
 
   async function submit() {
     let valid = true;
-    if (dateOfBirth == null) {
+    if (date_of_birth_unformatted == null) {
       setDateOfBirthError('Missing date of birth');
       valid = false;
     } else {
@@ -65,10 +65,10 @@ export default function InitialSurvey() {
       setWeightError(null);
     }
 
-    if (fitnessGoal.length === 0) {
+    if (fitness_goal.length === 0) {
       setFitnessGoalError('Missing goal.');
       valid = false;
-    } else if (fitnessGoal.length > 1000) {
+    } else if (fitness_goal.length > 1000) {
       setFitnessGoalError('Maximum 1000 characters');
       valid = false;
     } else {
@@ -86,12 +86,14 @@ export default function InitialSurvey() {
       fitnessGoalError == null
     ) {
       try {
-        const res = await axios.post('/api/surveys/initial-survey', {
-          dateOfBirth,
+        const isoDate = date_of_birth_unformatted.toISOString();
+        const date_of_birth = isoDate.split('T')[0];
+        const res = await axios.post('http://localhost:4000/api/surveys/initial-survey', {
+          date_of_birth,
           gender,
           height,
           weight,
-          fitnessGoal,
+          fitness_goal,
         });
 
         if (res.status === 201) {
@@ -126,7 +128,7 @@ export default function InitialSurvey() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             label="Date of Birth"
-            onChange={(dateOfBirth) => setDateOfBirth(dateOfBirth)}
+            onChange={(date_of_birth_unformatted) => setDateOfBirth(date_of_birth_unformatted)}
           />
         </LocalizationProvider>
         
@@ -175,7 +177,7 @@ export default function InitialSurvey() {
             <h4>
               Fitness Goal
             </h4>
-          <TextField id="inpFitnessGoal" variant="filled" error={fitnessGoalError} helperText={fitnessGoalError} required value={fitnessGoal} onChange={(event) => {
+          <TextField id="inpFitnessGoal" variant="filled" error={fitnessGoalError} helperText={fitnessGoalError} required value={fitness_goal} onChange={(event) => {
             setFitnessGoal(event.target.value);
           }}/>
         <br/>
