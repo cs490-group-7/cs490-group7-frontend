@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 export default function CoachSurvey () {
 
@@ -49,12 +50,25 @@ export default function CoachSurvey () {
         setSpecializationsError(null);
     }
 
-    // trigger call to the backend
+    // trigger call to the backend added here
     
-    if (valid){
-        navigate('/');
-    }
-  }
+    if (valid) {
+        const surveyData = {
+          certifications,
+          experience,
+          specializations
+        };
+  
+        axios.post('http://localhost:4000/api/surveys/coach/initial-survey', surveyData)
+          .then(response => {
+            console.log('Coach survey submitted:', response.data);
+            navigate('/');
+          })
+          .catch(error => {
+            console.error('Coach survey submission error:', error.response ? error.response.data : error.message);
+          });
+      }
+    } //ends here
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
@@ -62,19 +76,19 @@ export default function CoachSurvey () {
         <h4>
             Certifications
         </h4>
-        <TextField id="inpCertifications" variant="filled" error={certificationsError} helperText={certificationsError} required value={certifications} onChange={(event) => {
+        <TextField id="inpCertifications" variant="filled" error={Boolean(certificationsError)} helperText={certificationsError || ' '} required value={certifications} onChange={(event) => {
         setCertifications(event.target.value);
         }}/>
         <h4>
             Experience
         </h4>
-        <TextField id="inpExperience" variant="filled" error={experienceError} helperText={experienceError} required value={experience} onChange={(event) => {
+        <TextField id="inpExperience" variant="filled" error={Boolean(experienceError)} helperText={experienceError || ' '} required value={experience} onChange={(event) => {
         setExperience(event.target.value);
         }}/>
         <h4>
             Specializations
         </h4>
-        <TextField id="inpSpecializations" variant="filled" error={specializationsError} helperText={specializationsError} required value={specializations} onChange={(event) => {
+        <TextField id="inpSpecializations" variant="filled" error={Boolean(specializationsError)} helperText={specializationsError || ' '} required value={specializations} onChange={(event) => {
         setSpecializations(event.target.value);
         }}/>
         <br/>

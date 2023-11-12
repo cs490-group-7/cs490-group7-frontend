@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 
+//added here
+import axios from 'axios';
+
 function CreateAccountPage () {
 
   const [firstName, setFirstName] = useState("");
@@ -18,6 +21,7 @@ function CreateAccountPage () {
   const [passwordConfError, setPasswordConfError] = useState("");
 
   const navigate = useNavigate();
+  const [generalError, setGeneralError] = useState("");
 
   function createAccount () {
     let valid = true;
@@ -79,12 +83,33 @@ function CreateAccountPage () {
       valid = false
     } else {
       setPasswordConfError(null);
-    }
+    } 
+    //added here 
     if (valid) {
-      navigate('/initial-survey', { state: { isCoach: isCoach } });
+      // Prepare the data to send to the backend
+      const accountData = {
+        firstName,
+        lastName,
+        email,
+        password,
+        isCoach
+      };
+
+      // Make a POST request to the backend registration endpoint
+      axios.post('http://localhost:4000/api/users/register', accountData)
+        .then(response => {
+          // Handle success
+          console.log(response.data.message);
+          // Navigate to the initial survey or other user-specific page
+          navigate('/initial-survey', { state: { isCoach } });
+        })
+        .catch(error => {
+          // Handle errors
+          console.error('Registration error:', error.response ? error.response.data : error.message);
+          setGeneralError(error.response ? error.response.data.message : error.message);
+        });
     }
-        // trigger call to the backend
-  }
+  }//end here
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
@@ -93,31 +118,31 @@ function CreateAccountPage () {
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item>
-              <TextField id="inpFirstName" label="First Name" variant="filled" error={firstNameError} helperText={firstNameError} required value={firstName} onChange={(event) => {
+              <TextField id="inpFirstName" label="First Name" variant="filled" error={Boolean(firstNameError)} helperText={firstNameError || ' '} required value={firstName} onChange={(event) => {
                 setFirstName(event.target.value);
               }}/>
             </Grid>
             <Grid item>
-              <TextField id="inpLastName" label="Last Name" variant="filled" error={lastNameError} helperText={lastNameError} required value={lastName} onChange={(event) => {
+              <TextField id="inpLastName" label="Last Name" variant="filled" error={Boolean(lastNameError)} helperText={lastNameError || ' '} required value={lastName} onChange={(event) => {
                 setLastName(event.target.value);
               }}/>
             </Grid>
           </Grid>
         </Grid>
         <Grid item xs={12}>
-          <TextField sx={{ width: '398px' }}id="inpEmail" label="Email" variant="filled" error={emailError} helperText={emailError} required value={email} onChange={(event) => {
+          <TextField sx={{ width: '398px' }}id="inpEmail" label="Email" variant="filled" error={Boolean(emailError)} helperText={emailError || ' '} required value={email} onChange={(event) => {
             setEmail(event.target.value);
           }}/>
         </Grid>
         <Grid item xs={12}>
           <Grid container spacing={2}>
             <Grid item>
-              <TextField id="inpPassword" label="Password" variant="filled" error={passwordError} helperText={passwordError} required type="password" value={password} onChange={(event) => {
+              <TextField id="inpPassword" label="Password" variant="filled" error={Boolean(passwordError)} helperText={passwordError || ' '} required type="password" value={password} onChange={(event) => {
                 setPassword(event.target.value);
               }}/>
             </Grid>
             <Grid item>
-              <TextField id="inpPasswordConf" label="Confirm Password" variant="filled" error={passwordConfError} helperText={passwordConfError} required type="password" value={passwordConf} onChange={(event) => {
+              <TextField id="inpPasswordConf" label="Confirm Password" variant="filled" error={Boolean(passwordConfError)} helperText={passwordConfError || ' '} required type="password" value={passwordConf} onChange={(event) => {
                 setPasswordConf(event.target.value);
               }}/>
             </Grid>
@@ -139,6 +164,11 @@ function CreateAccountPage () {
             </MenuItem>
           </TextField>
         </Grid>
+        {/* added here */}
+        <Grid item xs={12}>
+          {generalError && <Typography color="error">{generalError}</Typography>}
+        </Grid>
+        {/* ends here */}
         <Grid item xs={12}>
           <Button id="createAccountBtn" variant="contained" onClick={() => {
             createAccount();
