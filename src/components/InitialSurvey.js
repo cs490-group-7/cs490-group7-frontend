@@ -4,6 +4,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate, useLocation } from 'react-router-dom';
+import axios from 'axios';
 
 export default function InitialSurvey () {
 
@@ -72,17 +73,36 @@ export default function InitialSurvey () {
       setFitnessGoalError(null);
     }
 
-        // trigger call to the backend
+  // trigger call to the backend added here
         
-    if (valid) {
-      if (isCoach) {
-        navigate('/coach-survey');
-      } else {
-        navigate('/');
-      }
-    }
-
-  }
+        if (valid) {
+          const surveyData = {
+            dateOfBirth,
+            gender,
+            height,
+            weight,
+            fitnessGoal
+          };
+    
+          // Determine the endpoint based on whether the user is a coach or not
+          const endpoint = isCoach ? '/api/surveys/coach/initial-survey' : '/api/surveys/client/initial-survey';
+    
+          axios.post(`http://localhost:4000${endpoint}`, surveyData)
+            .then(response => {
+              console.log('Survey submitted:', response.data);
+              if (isCoach) {
+                navigate('/coach-survey');
+              } else {
+                navigate('/');
+              }
+            })
+            .catch(error => {
+              console.error('Survey submission error:', error.response ? error.response.data : error.message);
+            });
+        }
+      } //ends here
+    
+    
 
 
   return (
@@ -107,8 +127,8 @@ export default function InitialSurvey () {
             select
             sx={{width: "150px"}}
             label="Select One"
-            helperText={genderError}
-            error={genderError}
+            helperText={genderError || ' '}
+            error={Boolean(genderError)}
           >
             <MenuItem value={"male"}>
               Male
@@ -131,19 +151,19 @@ export default function InitialSurvey () {
         <h4>
           Height (ft'in'')
         </h4>
-      <TextField id="inpHeight" variant="filled" error={heightError} helperText={heightError} required value={height} onChange={(event) => {
+      <TextField id="inpHeight" variant="filled" error={Boolean(heightError)} helperText={heightError || ' '} required value={height} onChange={(event) => {
         setHeight(event.target.value);
       }}/>
           <h4>
             Weight (lbs)
           </h4>
-          <TextField id="inpWeight" variant="filled" error={weightError} helperText={weightError} required value={weight} onChange={(event) => {
+          <TextField id="inpWeight" variant="filled" error={Boolean(weightError)} helperText={weightError || ' '} required value={weight} onChange={(event) => {
             setWeight(event.target.value);
           }}/>
             <h4>
               Fitness Goal
             </h4>
-          <TextField id="inpFitnessGoal" variant="filled" error={fitnessGoalError} helperText={fitnessGoalError} required value={fitnessGoal} onChange={(event) => {
+          <TextField id="inpFitnessGoal" variant="filled" error={Boolean(fitnessGoalError)} helperText={fitnessGoalError || ' '} required value={fitnessGoal} onChange={(event) => {
             setFitnessGoal(event.target.value);
           }}/>
         <br/>
