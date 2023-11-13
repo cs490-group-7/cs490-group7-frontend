@@ -8,6 +8,10 @@ export default function SideNav() {
   return (
     <div className="side-nav">
       <h2 className="title">Fitness App</h2>
+      <a
+        className={location.pathname === '/login' ? 'active' : ''} href="/login">
+        Log In
+      </a> 
       <a className={location.pathname === '/' ? 'active' : ''} href="/">
         Home
       </a>

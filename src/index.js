@@ -10,7 +10,10 @@ import CoachLookup from './pages/CoachLookup';
 import AccountSettings from './pages/AccountSettings';
 import Home from './pages/Home';
 import Workouts from './pages/Workouts';
-
+import CreateAccountPage from './pages/CreateAccountPage';
+import LoginPage from './pages/LoginPage';
+import InitialSurvey from './pages/InitialSurvey';
+import CoachSurvey from './pages/CoachSurvey';
 const router = createBrowserRouter([
   {
     element: <App/>,
@@ -38,7 +41,24 @@ const router = createBrowserRouter([
       {
         path: "/account-settings",
         element: <AccountSettings/>
+      },
+      {
+        path: "/login",
+        element: <LoginPage/>
+      },
+      {
+        path: "/register",
+        element: <CreateAccountPage/>
+      },
+      {
+        path: "/initial-survey", 
+        element: <InitialSurvey/>
+      },
+      {
+        path: "/coach-survey",
+        element: <CoachSurvey/>
       }
+      
     ]
   },
 ]);

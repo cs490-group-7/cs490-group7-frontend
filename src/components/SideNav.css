@@ -46,3 +46,13 @@
     margin-left: 5%;
     font-size: xx-large;
   }
+  .side-nav a.login-button {
+    background-color: #007bff; 
+    color: white; 
+    margin-top: 2%; 
+    border-radius: 4px; 
+  }
+  .side-nav a.login-button:hover {
+    background-color: #0056b3; 
+  
+  }
