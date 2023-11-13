@@ -24,6 +24,7 @@ export default function InitialSurvey () {
   const location = useLocation();
   const { isCoach } = location.state || { isCoach: false };
 
+
   function submit () {
     let valid = true;
     if (dateOfBirth.length === 0) {
@@ -77,6 +78,7 @@ export default function InitialSurvey () {
         
         if (valid) {
           const surveyData = {
+            user_id: location.state.user_id,
             dateOfBirth,
             gender,
             height,

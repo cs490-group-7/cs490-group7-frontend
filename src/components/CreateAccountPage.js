@@ -100,8 +100,9 @@ function CreateAccountPage () {
         .then(response => {
           // Handle success
           console.log(response.data.message);
+          let user_id = response.data.ident;
           // Navigate to the initial survey or other user-specific page
-          navigate('/initial-survey', { state: { isCoach } });
+          navigate('/initial-survey', { state: { isCoach, user_id }});
         })
         .catch(error => {
           // Handle errors
