@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography, TextField, Button, Card, Link } from '@mui/material'
 import LinearProgress from '@mui/joy/LinearProgress';
+import axios from 'axios';
 
 function Home () {
 
@@ -28,29 +29,29 @@ function Home () {
         // TODO: backend call to retrieve goal overview
         // TODO: backend call to retrieve today's workout
         // TODO: backend call to retrieve progress status
-        fetch('/api/client/mock-data')
-            .then((response) => response.json())
-            .then((data) => {
-                setDailyFilled(data.dailyFilled);
-                setCalories(data.calories);
-                setWaterIntake(data.waterIntake);
-                setWeight(data.weight);
-                setCaloriesError(data.caloriesError);
-                setWaterIntakeError(data.waterIntakeError);
-                setWeightError(data.weightError);
-                setGoalMessage(data.goalMessage);
-                setGoalBaseline(data.goalBaseline);
-                setGoalTarget(data.goalTarget);
-                setGoalCurrent(data.goalCurrent);
-                setProgress(data.progress);
-                setWorkoutName(data.workoutName);
-                setWorkoutCompletion(data.workoutCompletion);
-            })
-            .catch((error) => {
-                console.error('Error fetching mock data:', error);
-            });
-        setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
 
+        axios.get('http://localhost:4000/api/data/home-mock-data')
+          .then(response => {
+            const mockData = response.data;
+            setDailyFilled(mockData.dailyFilled);
+            setCalories(mockData.calories);
+            setWaterIntake(mockData.waterIntake);
+            setWeight(mockData.weight);
+            setCaloriesError(mockData.caloriesError);
+            setWaterIntakeError(mockData.waterIntakeError);
+            setWeightError(mockData.weightError);
+            setGoalMessage(mockData.goalMessage);
+            setGoalBaseline(mockData.goalBaseline);
+            setGoalTarget(mockData.goalTarget);
+            setGoalCurrent(mockData.goalCurrent);
+            setProgress(mockData.progress);
+            setWorkoutName(mockData.workoutName);
+            setWorkoutCompletion(mockData.workoutCompletion);
+          })
+          .catch(error => {
+            console.error('Error fetching mock data:', error);
+          });
+        setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
     }, []);
 
     function submitDaily () {
