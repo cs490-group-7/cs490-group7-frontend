@@ -87,7 +87,7 @@ export default function InitialSurvey () {
           };
     
           // Determine the endpoint based on whether the user is a coach or not
-          const endpoint = isCoach ? '/api/surveys/coach/initial-survey' : '/api/surveys/client/initial-survey';
+          const endpoint = isCoach ? '/api/surveys/coach-survey' : '/api/surveys/initial-survey';
     
           axios.post(`http://localhost:4000${endpoint}`, surveyData)
             .then(response => {
