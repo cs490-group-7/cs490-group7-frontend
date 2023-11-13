@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Typography, TextField, MenuItem, Button } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -12,7 +12,7 @@ export default function InitialSurvey () {
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
-  const [fitnessGoal, setFitnessGoal] = useState("");
+  const [fitness_goal, setFitnessGoal] = useState("");
 
   const [dateOfBirthError, setDateOfBirthError] = useState("");
   const [genderError, setGenderError] = useState("");
@@ -22,6 +22,7 @@ export default function InitialSurvey () {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const user_id = location.state.user_id
   const { isCoach } = location.state || { isCoach: false };
 
 
@@ -64,10 +65,10 @@ export default function InitialSurvey () {
       setWeightError(null);
     }
 
-    if (fitnessGoal.length === 0) {
+    if (fitness_goal.length === 0) {
       setFitnessGoalError("Missing goal.");
       valid = false
-    } else if (fitnessGoal.length > 1000) {
+    } else if (fitness_goal.length > 1000) {
       setFitnessGoalError("Maximum 1000 characters");
       valid = false
     }  else {
@@ -77,23 +78,25 @@ export default function InitialSurvey () {
   // trigger call to the backend added here
         
         if (valid) {
+          const isoDate = dateOfBirth.toISOString();
+          const date_of_birth = isoDate.split('T')[0];
           const surveyData = {
-            user_id: location.state.user_id,
-            dateOfBirth,
+            user_id,
+            date_of_birth,
             gender,
             height,
             weight,
-            fitnessGoal
+            fitness_goal
           };
     
           // Determine the endpoint based on whether the user is a coach or not
-          const endpoint = isCoach ? '/api/surveys/coach-survey' : '/api/surveys/initial-survey';
+          const endpoint = '/api/surveys/initial-survey';
     
           axios.post(`http://localhost:4000${endpoint}`, surveyData)
             .then(response => {
               console.log('Survey submitted:', response.data);
               if (isCoach) {
-                navigate('/coach-survey');
+                navigate('/coach-survey', { state: { isCoach, user_id }});
               } else {
                 navigate('/');
               }
@@ -165,7 +168,7 @@ export default function InitialSurvey () {
             <h4>
               Fitness Goal
             </h4>
-          <TextField id="inpFitnessGoal" variant="filled" error={Boolean(fitnessGoalError)} helperText={fitnessGoalError || ' '} required value={fitnessGoal} onChange={(event) => {
+          <TextField id="inpFitnessGoal" variant="filled" error={Boolean(fitnessGoalError)} helperText={fitnessGoalError || ' '} required value={fitness_goal} onChange={(event) => {
             setFitnessGoal(event.target.value);
           }}/>
         <br/>
