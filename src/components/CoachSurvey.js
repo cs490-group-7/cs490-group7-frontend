@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react'
-import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
+import React, { useState } from 'react'
+import { Box, Typography, TextField, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 export default function CoachSurvey () {
 
@@ -9,12 +10,13 @@ export default function CoachSurvey () {
   const [experience, setExperience] = useState("");
   const [specializations, setSpecializations] = useState("");
 
-
   const [certificationsError, setCertificationsError] = useState("");
   const [experienceError, setExperienceError] = useState("");
   const [specializationsError, setSpecializationsError] = useState("");
 
   const navigate = useNavigate();
+  const location = useLocation();
+  const user_id = location.state.user_id;
 
   function submit () {
     let valid = true;
@@ -54,12 +56,13 @@ export default function CoachSurvey () {
     
     if (valid) {
         const surveyData = {
+          user_id,
           certifications,
           experience,
           specializations
         };
   
-        axios.post('http://localhost:4000/api/surveys/coach/initial-survey', surveyData)
+        axios.post('http://localhost:4000/api/surveys/coach-survey', surveyData)
           .then(response => {
             console.log('Coach survey submitted:', response.data);
             navigate('/');
