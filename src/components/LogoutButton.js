@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { Dialog, DialogActions, DialogTitle, Button } from '@mui/material';
+import { AuthContext } from './AuthContext';
 
 const LogoutButton = () => {
   const [open, setOpen] = useState(false);
   const navigate = useNavigate();
+  const { logout, error } = useContext(AuthContext);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -14,9 +16,17 @@ const LogoutButton = () => {
     setOpen(false);
   };
 
-  const handleLogout = () => {
-    navigate('/login');
+  const handleLogout = async() => {
+    try {
+      handleClose();
+      logout();
+      console.log('Logout initiated');
+      navigate('/login');
+    } catch (err) {
+      console.error('Logout Error:', err.message);
+    }
   };
+  {error && <div className="error">{error}</div>}
 
   return (
     <>
