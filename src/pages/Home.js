@@ -1,19 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Typography, TextField, Button, Card, Link } from '@mui/material'
 import LinearProgress from '@mui/joy/LinearProgress';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function Home () {
 
     const [signedIn, setSignedIn] = useState(false);
 
-    const [dailyFilled, setDailyFilled] = useState(false);
-    const [calories, setCalories] = useState(null);
-    const [waterIntake, setWaterIntake] = useState(null);
-    const [weight, setWeight] = useState(null);
-    const [caloriesError, setCaloriesError] = useState(null);
-    const [waterIntakeError, setWaterIntakeError] = useState(null);
-    const [weightError, setWeightError] = useState(null);
+    const [dailyFilled, setDailyFilled] = useState("");
+    const [calories, setCalories] = useState("");
+    const [waterIntake, setWaterIntake] = useState("");
+    const [weight, setWeight] = useState("");
+    const [mood, setMood] = useState("");
+    const [caloriesError, setCaloriesError] = useState("");
+    const [waterIntakeError, setWaterIntakeError] = useState("");
+    const [weightError, setWeightError] = useState("");
+    const [moodError, setMoodError] = useState("");
 
     const [goalMessage, setGoalMessage] = useState(null);
     const [goalBaseline, setGoalBaseline] = useState(0);
@@ -23,6 +26,9 @@ function Home () {
 
     const [workoutName, setWorkoutName] = useState(null);
     const [workoutCompletion, setWorkoutCompletion] = useState(false);
+
+    const navigate = useNavigate();
+    const location = useLocation();
 
     useEffect(() => {
         // TODO: backend call to retrieve whether or not daily check-in has been filled today
@@ -55,10 +61,72 @@ function Home () {
     }, []);
 
     function submitDaily () {
+        if(dailyFilled){
 
+        }else{
+        let valid = true;
         // TODO: submit the daily check-in
+        if(calories.length === 0){
+            setCaloriesError("Missing Calorie Intake");
+            valid = false;
+        }else{
+            setCaloriesError(null);
+        }
 
+        if(waterIntake.length === 0){
+            setWaterIntakeError("Missing Water Intake");
+            valid = false;
+        }else{
+            setWaterIntakeError(null);
+        }
+
+        if (weight.length === 0) {
+            setWeightError("Missing weight.");
+            valid = false
+          } else if (weight.length > 3) {
+            setWeightError("Weight too long.");
+            valid = false
+          }  else if (weight.length < 2) {
+            setWeightError("Weight too short.");
+            valid = false
+          } else if (!/^[1-9][0-9]*$/.test(weight)) {
+            setWeightError("Incorrect weight format.");
+            valid = false
+          } else {
+            setWeightError(null);
+          }
+        
+          if(mood.length === 0){
+            setMoodError("Missing mood.");
+            valid = false;
+          }else{
+            setMoodError(null);
+          }
+        // Trigger call to backend
+        if(valid){
+          const surveyData = {
+           // user_id,
+            calories,
+            waterIntake,
+            weight,
+            mood
+          };
+    
+          // Determine the endpoint based on whether the user is a coach or not
+          const endpoint = '/api/surveys/daily-survey';
+    
+          axios.post(`http://localhost:4000${endpoint}`, surveyData)
+            .then(response => {
+              console.log('Survey submitted:', response.data);
+             
+            })
+            .catch(error => {
+              console.error('Survey submission error:', error.response ? error.response.data : error.message);
+            });
+        }
+          
     }
+}
 
     function getProgress () {
         return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
@@ -100,6 +168,9 @@ function Home () {
                                 }}/>
                                 <TextField id="inpWeight" label="Weight" variant="filled" sx={{ margin: 1 }} error={weightError} helperText={weightError} required type="number" value={weight} onChange={(event) => {
                                     setWeight(event.target.value);
+                                }}/>
+                                <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError}  value={mood} onChange={(event) => {
+                                    setMood(event.target.value);
                                 }}/>
                                 <Button id="submitDailyBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                     submitDaily();
