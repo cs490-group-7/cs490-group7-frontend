@@ -58,7 +58,8 @@ function LoginPage () {
             if (response.data.message === "Logged in successfully") {
               console.log('Login successful', response.data);
               // Redirect to the homepage
-            navigate('/');
+              let user_id = response.data.ident;
+            navigate('/', { state: { user_id } });
 
             } else {
               console.error('Login failed:', response.data.message);

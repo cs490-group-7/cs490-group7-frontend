@@ -5,18 +5,23 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function Home () {
+    
+    const navigate = useNavigate();
+    const location = useLocation();
 
-    const [signedIn, setSignedIn] = useState(false);
+    const { user_id } = location.state || { user_id: false };
 
-    const [dailyFilled, setDailyFilled] = useState("");
-    const [calories, setCalories] = useState("");
-    const [waterIntake, setWaterIntake] = useState("");
-    const [weight, setWeight] = useState("");
+    const [signedIn, setSignedIn] = useState(user_id);
+
+    const [dailyFilled, setDailyFilled] = useState(false);
+    const [calories, setCalories] = useState(0);
+    const [waterIntake, setWaterIntake] = useState(0);
+    const [weight, setWeight] = useState(0);
     const [mood, setMood] = useState("");
-    const [caloriesError, setCaloriesError] = useState("");
-    const [waterIntakeError, setWaterIntakeError] = useState("");
-    const [weightError, setWeightError] = useState("");
-    const [moodError, setMoodError] = useState("");
+    const [caloriesError, setCaloriesError] = useState(null);
+    const [waterIntakeError, setWaterIntakeError] = useState(null);
+    const [weightError, setWeightError] = useState(null);
+    const [moodError, setMoodError] = useState(null);
 
     const [goalMessage, setGoalMessage] = useState(null);
     const [goalBaseline, setGoalBaseline] = useState(0);
@@ -27,13 +32,9 @@ function Home () {
     const [workoutName, setWorkoutName] = useState(null);
     const [workoutCompletion, setWorkoutCompletion] = useState(false);
 
-    const navigate = useNavigate();
-    const location = useLocation();
-
     const [errorMessage, setErrorMessage] = useState(null);
     const [successMessage, SetSuccessMessage] = useState(null);
 
-    const { user_id } = location.state || { user_id: false };
     const { isCoach } = location.state || { isCoach: false };
     useEffect(() => {
         // TODO: backend call to retrieve whether or not daily check-in has been filled today
@@ -76,28 +77,28 @@ function Home () {
         }else{
         let valid = true;
         // TODO: submit the daily check-in
-        if(calories.length === 0){
+        if(calories < 1){
             setCaloriesError("Missing Calorie Intake");
             valid = false;
         }else{
             setCaloriesError(null);
         }
 
-        if(waterIntake.length === 0){
+        if(waterIntake < 1){
             setWaterIntakeError("Missing Water Intake");
             valid = false;
         }else{
             setWaterIntakeError(null);
         }
 
-        if (weight.length === 0) {
+        if (weight < 1) {
             setWeightError("Missing weight.");
             valid = false
-          } else if (weight.length > 3) {
-            setWeightError("Weight too long.");
-            valid = false
-          }  else if (weight.length < 2) {
+          } else if (weight < 10) {
             setWeightError("Weight too short.");
+            valid = false
+          }  else if (weight > 999) {
+            setWeightError("Weight too large.");
             valid = false
           } else if (!/^[1-9][0-9]*$/.test(weight)) {
             setWeightError("Incorrect weight format.");
@@ -119,7 +120,6 @@ function Home () {
     
           // Determine the endpoint based on whether the user is a coach or not
           const endpoint = '/api/surveys/daily-survey';
-    alert("trying");
           axios.post(`http://localhost:4000${endpoint}`, surveyData)
             .then(response => {
               console.log('Survey submitted:', response.data);
