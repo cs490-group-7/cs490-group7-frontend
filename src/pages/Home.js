@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Typography, TextField, Button, Card, Link } from '@mui/material'
+import { Box, Grid, Typography, TextField, Button, Card, Link, Alert } from '@mui/material'
 import LinearProgress from '@mui/joy/LinearProgress';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -30,6 +30,11 @@ function Home () {
     const navigate = useNavigate();
     const location = useLocation();
 
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, SetSuccessMessage] = useState(null);
+
+    const { user_id } = location.state || { user_id: false };
+    const { isCoach } = location.state || { isCoach: false };
     useEffect(() => {
         // TODO: backend call to retrieve whether or not daily check-in has been filled today
         // TODO: backend call to retrieve goal overview
@@ -61,8 +66,13 @@ function Home () {
     }, []);
 
     function submitDaily () {
+        if(!signedIn){
+            setErrorMessage("You must log in before submitting a daily survey");
+            return;
+        }
         if(dailyFilled){
-
+            setErrorMessage("You already submitted a survey for today");
+            return;
         }else{
         let valid = true;
         // TODO: submit the daily check-in
@@ -95,17 +105,12 @@ function Home () {
           } else {
             setWeightError(null);
           }
-        
-          if(mood.length === 0){
-            setMoodError("Missing mood.");
-            valid = false;
-          }else{
             setMoodError(null);
-          }
+          
         // Trigger call to backend
         if(valid){
           const surveyData = {
-           // user_id,
+            user_id,
             calories,
             waterIntake,
             weight,
@@ -114,14 +119,16 @@ function Home () {
     
           // Determine the endpoint based on whether the user is a coach or not
           const endpoint = '/api/surveys/daily-survey';
-    
+    alert("trying");
           axios.post(`http://localhost:4000${endpoint}`, surveyData)
             .then(response => {
               console.log('Survey submitted:', response.data);
-             
+              SetSuccessMessage('Daily Survey Submitted!');
+              setDailyFilled(true);
             })
             .catch(error => {
               console.error('Survey submission error:', error.response ? error.response.data : error.message);
+              setErrorMessage('Survey submission error:', error.response ? error.response.data : error.message);
             });
         }
           
@@ -180,8 +187,9 @@ function Home () {
                             </div>
                         }
                     </Card>
+                    {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                    {successMessage && <Alert severity="success">{successMessage}</Alert>}
                 </Grid>
-
                 {/* goal overview */}
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Typography, TextField, MenuItem, Button } from '@mui/material'
+import { Box, Typography, TextField, MenuItem, Button, Alert } from '@mui/material'
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -25,6 +25,7 @@ export default function InitialSurvey () {
   const user_id = location.state.user_id
   const { isCoach } = location.state || { isCoach: false };
 
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function submit () {
     let valid = true;
@@ -103,6 +104,7 @@ export default function InitialSurvey () {
             })
             .catch(error => {
               console.error('Survey submission error:', error.response ? error.response.data : error.message);
+              setErrorMessage('Survey submission error:', error.response ? error.response.data : error.message);
             });
         }
       } //ends here
@@ -178,7 +180,7 @@ export default function InitialSurvey () {
       }}>
         Submit
       </Button>
-
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </Box>
   )
 

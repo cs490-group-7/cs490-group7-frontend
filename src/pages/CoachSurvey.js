@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Box, Typography, TextField, Button } from '@mui/material'
+import { Box, Typography, TextField, Button, Alert } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
@@ -17,6 +17,8 @@ export default function CoachSurvey () {
   const navigate = useNavigate();
   const location = useLocation();
   const user_id = location.state.user_id;
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   function submit () {
     let valid = true;
@@ -69,6 +71,7 @@ export default function CoachSurvey () {
           })
           .catch(error => {
             console.error('Coach survey submission error:', error.response ? error.response.data : error.message);
+            setErrorMessage('Coach survey submission error:', error.response ? error.response.data : error.message);
           });
       }
     } //ends here
@@ -101,6 +104,7 @@ export default function CoachSurvey () {
         }}>
         Submit
         </Button>
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </Box>
   )
 
