@@ -127,8 +127,14 @@ function Home () {
               setDailyFilled(true);
             })
             .catch(error => {
-              console.error('Survey submission error:', error.response ? error.response.data : error.message);
-              setErrorMessage('Survey submission error:', error.response ? error.response.data : error.message);
+                console.error('Survey submission error:', error.response ? error.response.data : error.message);
+                if (error.response && error.response.data && error.response.data.message === "You've already submitted a survey for today") {
+                  // Handle duplicate entry error
+                  setErrorMessage("You've already submitted a survey for today");
+                } else {
+                  // Handle other errors
+                  setErrorMessage('Survey submission error:', error.response ? error.response.data : error.message);
+                }
             });
         }
           
