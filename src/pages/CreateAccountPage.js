@@ -23,6 +23,7 @@ function CreateAccountPage () {
   const navigate = useNavigate();
   const [generalError, setGeneralError] = useState("");
 
+
   function createAccount () {
     let valid = true;
 

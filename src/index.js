@@ -1,3 +1,4 @@
+
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
@@ -14,6 +15,7 @@ import CreateAccountPage from './pages/CreateAccountPage';
 import LoginPage from './pages/LoginPage';
 import InitialSurvey from './pages/InitialSurvey';
 import CoachSurvey from './pages/CoachSurvey';
+import { AuthProvider } from './components/AuthContext';
 const router = createBrowserRouter([
   {
     element: <App/>,
@@ -66,7 +68,9 @@ const router = createBrowserRouter([
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-   <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </React.StrictMode>
 );
 
