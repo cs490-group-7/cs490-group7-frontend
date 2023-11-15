@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
-
-//added here
 import axios from 'axios';
+
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 function CreateAccountPage () {
 
@@ -97,7 +97,7 @@ function CreateAccountPage () {
       };
 
       // Make a POST request to the backend registration endpoint
-      axios.post('http://localhost:4000/api/users/register', accountData)
+      axios.post(`${baseUrl}/api/users/register`, accountData)
         .then(response => {
           // Handle success
           console.log(response.data.message);
