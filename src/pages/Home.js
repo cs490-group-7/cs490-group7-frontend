@@ -4,7 +4,6 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
-console.log(baseUrl)
 
 function Home () {
 
