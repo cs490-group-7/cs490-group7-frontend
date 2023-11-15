@@ -67,7 +67,7 @@ export default function CoachSurvey () {
         axios.post('http://localhost:4000/api/surveys/coach-survey', surveyData)
           .then(response => {
             console.log('Coach survey submitted:', response.data);
-            navigate('/');
+            navigate('/login');
           })
           .catch(error => {
             console.error('Coach survey submission error:', error.response ? error.response.data : error.message);

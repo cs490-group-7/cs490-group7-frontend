@@ -99,7 +99,7 @@ export default function InitialSurvey () {
               if (isCoach) {
                 navigate('/coach-survey', { state: { isCoach, user_id }});
               } else {
-                navigate('/');
+                navigate('/login');
               }
             })
             .catch(error => {

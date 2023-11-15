@@ -1,9 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Grid, Typography, TextField, Button, Alert} from '@mui/material'
 // added here
 import axios from 'axios';
+
+
+import { AuthContext } from '../components/AuthContext';
 function LoginPage () {
+
+  const { login: contextLogin } = useContext(AuthContext);
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -57,6 +62,7 @@ function LoginPage () {
           .then(response => {
             if (response.data.message === "Logged in successfully") {
               console.log('Login successful', response.data);
+              contextLogin(response.data.token);
               // Redirect to the homepage
               let user_id = response.data.ident;
             navigate('/', { state: { user_id } });
@@ -82,7 +88,6 @@ function LoginPage () {
       }
 
   
-    //ends here
   }
 
   return (
