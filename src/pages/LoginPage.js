@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
 import { Box, Grid, Typography, TextField, Button} from '@mui/material'
-// added here
 import axios from 'axios';
+
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 function LoginPage () {
 
   const [email, setEmail] = useState("");
@@ -51,7 +53,7 @@ function LoginPage () {
           password: password
         };
   
-        axios.post('http://localhost:4000/api/users/login', loginData)
+        axios.post(`${baseUrl}/api/users/login`, loginData)
           .then(response => {
             if (response.data.message === "Logged in successfully") {
               console.log('Login successful', response.data);

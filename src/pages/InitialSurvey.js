@@ -6,6 +6,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function InitialSurvey () {
 
   const [dateOfBirth, setDateOfBirth] = useState(new Date());
@@ -24,7 +26,6 @@ export default function InitialSurvey () {
   const location = useLocation();
   const user_id = location.state.user_id
   const { isCoach } = location.state || { isCoach: false };
-
 
   function submit () {
     let valid = true;
@@ -90,9 +91,7 @@ export default function InitialSurvey () {
           };
     
           // Determine the endpoint based on whether the user is a coach or not
-          const endpoint = '/api/surveys/initial-survey';
-    
-          axios.post(`http://localhost:4000${endpoint}`, surveyData)
+          axios.post(`${baseUrl}/api/surveys/initial-survey`, surveyData)
             .then(response => {
               console.log('Survey submitted:', response.data);
               if (isCoach) {
@@ -107,9 +106,6 @@ export default function InitialSurvey () {
         }
       } //ends here
     
-    
-
-
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
       <Typography variant="h5" sx={{ fontWeight: 'bold' }}>InitialSurvey</Typography>

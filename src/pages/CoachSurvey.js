@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function CoachSurvey () {
 
   const [certifications, setCertifications] = useState("");
@@ -62,7 +64,7 @@ export default function CoachSurvey () {
           specializations
         };
   
-        axios.post('http://localhost:4000/api/surveys/coach-survey', surveyData)
+        axios.post(`${baseUrl}/api/surveys/coach-survey`, surveyData)
           .then(response => {
             console.log('Coach survey submitted:', response.data);
             navigate('/');

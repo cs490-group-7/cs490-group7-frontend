@@ -3,6 +3,9 @@ import { Box, Grid, Typography, TextField, Button, Card, Link } from '@mui/mater
 import LinearProgress from '@mui/joy/LinearProgress';
 import axios from 'axios';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+console.log(baseUrl)
+
 function Home () {
 
     const [signedIn, setSignedIn] = useState(false);
@@ -30,7 +33,7 @@ function Home () {
         // TODO: backend call to retrieve today's workout
         // TODO: backend call to retrieve progress status
 
-        axios.get('http://localhost:4000/api/data/home-mock-data')
+        axios.get(`${baseUrl}/api/data/home-mock-data`)
           .then(response => {
             const mockData = response.data;
             setDailyFilled(mockData.dailyFilled);
