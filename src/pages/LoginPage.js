@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom';
-import { Box, Grid, Typography, TextField, Button} from '@mui/material'
+import { Box, Grid, Typography, TextField, Button, Alert} from '@mui/material'
 // added here
 import axios from 'axios';
 function LoginPage () {
@@ -10,6 +10,8 @@ function LoginPage () {
 
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const navigate = useNavigate();
 
@@ -56,7 +58,8 @@ function LoginPage () {
             if (response.data.message === "Logged in successfully") {
               console.log('Login successful', response.data);
               // Redirect to the homepage
-            navigate('/');
+              let user_id = response.data.ident;
+            navigate('/', { state: { user_id } });
 
             } else {
               console.error('Login failed:', response.data.message);
@@ -64,6 +67,7 @@ function LoginPage () {
             }
           })
           .catch(error => {
+            setErrorMessage('Login error');
             if (error.response) {
               console.error('Login error:', error.response.data);
               // Show user feedback here
@@ -108,6 +112,7 @@ function LoginPage () {
           Don't have an account? <Link to="/register">Sign up</Link>
         </Grid>
       </Grid>
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </Box>
   )
 

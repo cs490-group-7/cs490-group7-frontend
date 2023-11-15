@@ -1,19 +1,27 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Typography, TextField, Button, Card, Link } from '@mui/material'
+import { Box, Grid, Typography, TextField, Button, Card, Link, Alert } from '@mui/material'
 import LinearProgress from '@mui/joy/LinearProgress';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 function Home () {
 
-    const [signedIn, setSignedIn] = useState(false);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const { user_id } = location.state || { user_id: false };
+
+    const [signedIn, setSignedIn] = useState(user_id);
 
     const [dailyFilled, setDailyFilled] = useState(false);
     const [calories, setCalories] = useState(null);
     const [waterIntake, setWaterIntake] = useState(null);
     const [weight, setWeight] = useState(null);
+    const [mood, setMood] = useState("");
     const [caloriesError, setCaloriesError] = useState(null);
     const [waterIntakeError, setWaterIntakeError] = useState(null);
     const [weightError, setWeightError] = useState(null);
+    const [moodError, setMoodError] = useState(null);
 
     const [goalMessage, setGoalMessage] = useState(null);
     const [goalBaseline, setGoalBaseline] = useState(0);
@@ -24,6 +32,10 @@ function Home () {
     const [workoutName, setWorkoutName] = useState(null);
     const [workoutCompletion, setWorkoutCompletion] = useState(false);
 
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [successMessage, SetSuccessMessage] = useState(null);
+
+    const { isCoach } = location.state || { isCoach: false };
     useEffect(() => {
         // TODO: backend call to retrieve whether or not daily check-in has been filled today
         // TODO: backend call to retrieve goal overview
@@ -55,10 +67,79 @@ function Home () {
     }, []);
 
     function submitDaily () {
-
+        if(!signedIn){
+            setErrorMessage("You must log in before submitting a daily survey");
+            return;
+        }
+        if(dailyFilled){
+            setErrorMessage("You already submitted a survey for today");
+            return;
+        }else{
+        let valid = true;
         // TODO: submit the daily check-in
+        if(calories < 1){
+            setCaloriesError("Missing Calorie Intake");
+            valid = false;
+        }else{
+            setCaloriesError(null);
+        }
 
+        if(waterIntake < 1){
+            setWaterIntakeError("Missing Water Intake");
+            valid = false;
+        }else{
+            setWaterIntakeError(null);
+        }
+
+        if (weight < 1) {
+            setWeightError("Missing weight.");
+            valid = false
+          } else if (weight < 10) {
+            setWeightError("Weight too short.");
+            valid = false
+          }  else if (weight > 999) {
+            setWeightError("Weight too large.");
+            valid = false
+          } else if (!/^[1-9][0-9]*$/.test(weight)) {
+            setWeightError("Incorrect weight format.");
+            valid = false
+          } else {
+            setWeightError(null);
+          }
+            setMoodError(null);
+          
+        // Trigger call to backend
+        if(valid){
+          const surveyData = {
+            user_id,
+            calories,
+            waterIntake,
+            weight,
+            mood
+          };
+    
+          // Determine the endpoint based on whether the user is a coach or not
+          const endpoint = '/api/surveys/daily-survey';
+          axios.post(`http://localhost:4000${endpoint}`, surveyData)
+            .then(response => {
+              console.log('Survey submitted:', response.data);
+              SetSuccessMessage('Daily Survey Submitted!');
+              setDailyFilled(true);
+            })
+            .catch(error => {
+                console.error('Survey submission error:', error.response ? error.response.data : error.message);
+                if (error.response && error.response.data && error.response.data.message === "You've already submitted a survey for today") {
+                  // Handle duplicate entry error
+                  setErrorMessage("You've already submitted a survey for today");
+                } else {
+                  // Handle other errors
+                  setErrorMessage('Survey submission error:', error.response ? error.response.data : error.message);
+                }
+            });
+        }
+          
     }
+}
 
     function getProgress () {
         return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
@@ -101,6 +182,9 @@ function Home () {
                                 <TextField id="inpWeight" label="Weight" variant="filled" sx={{ margin: 1 }} error={weightError} helperText={weightError} required type="number" value={weight} onChange={(event) => {
                                     setWeight(event.target.value);
                                 }}/>
+                                <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError}  value={mood} onChange={(event) => {
+                                    setMood(event.target.value);
+                                }}/>
                                 <Button id="submitDailyBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                     submitDaily();
                                 }}>
@@ -109,8 +193,9 @@ function Home () {
                             </div>
                         }
                     </Card>
+                    {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                    {successMessage && <Alert severity="success">{successMessage}</Alert>}
                 </Grid>
-
                 {/* goal overview */}
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
