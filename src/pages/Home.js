@@ -14,9 +14,9 @@ function Home () {
     const [signedIn, setSignedIn] = useState(user_id);
 
     const [dailyFilled, setDailyFilled] = useState(false);
-    const [calories, setCalories] = useState(0);
-    const [waterIntake, setWaterIntake] = useState(0);
-    const [weight, setWeight] = useState(0);
+    const [calories, setCalories] = useState(null);
+    const [waterIntake, setWaterIntake] = useState(null);
+    const [weight, setWeight] = useState(null);
     const [mood, setMood] = useState("");
     const [caloriesError, setCaloriesError] = useState(null);
     const [waterIntakeError, setWaterIntakeError] = useState(null);
