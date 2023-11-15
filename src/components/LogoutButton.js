@@ -30,7 +30,7 @@ const LogoutButton = () => {
 
   return (
     <>
-      <Button variant="outlined" color="inherit" onClick={handleClickOpen}>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
         Log Out
       </Button>
       <Dialog
@@ -39,7 +39,7 @@ const LogoutButton = () => {
         aria-labelledby="alert-dialog-title"
       >
         <DialogTitle id="alert-dialog-title">
-          {"Logout? Are you sure you want to logout?"}
+          {"Are you sure you want to logout?"}
         </DialogTitle>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
