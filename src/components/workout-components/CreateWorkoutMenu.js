@@ -7,16 +7,20 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 function CreateWorkoutMenu (props) {
 
-    const [workoutName, setWorkoutName] = useState(null);
-    const [setCount, setSetCount] = useState(null);
-    const [description, setDescription] = useState(null);
+    const [workoutName, setWorkoutName] = useState("");
+    const [setCount, setSetCount] = useState(0);
+    const [description, setDescription] = useState("");
+
+    const [workoutNameError, setWorkoutNameError] = useState("");
+    const [setCountError, setSetCountError] = useState("");
+    const [descriptionError, setDescriptionError] = useState("");
 
     const [exercises, setExercises] = useState([
-      {exercise_id: 0, rep_count: 0},
-      {exercise_id: 0, rep_count: 0},
-      {exercise_id: 0, rep_count: 0},
-      {exercise_id: 0, rep_count: 0},
-      {exercise_id: 0, rep_count: 0}
+      {exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""},
+      {exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""},
+      {exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""},
+      {exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""},
+      {exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""}
     ]);
     const [exerciseBank, setExerciseBank] = useState();
 
@@ -34,20 +38,76 @@ function CreateWorkoutMenu (props) {
 
     function createWorkout () {
 
-        const workoutData = {
-          workoutName,
-          setCount,
-          description,
-          exercises
+        let valid = true;
+
+        if (workoutName.length === 0) {
+          setWorkoutNameError("Missing workout name.");
+          valid = false
+        } else if (workoutName.length > 100) {
+          setWorkoutNameError("Workout too long.");
+          valid = false
+        } else {
+          setWorkoutNameError(null);
         }
-      
-        axios.post(`${baseUrl}/api/workout/create-workout`, workoutData)
-          .then(response => {
-              console.log('Workout created: ', response.data);
-          })
-          .catch(error => {
-              console.error('Workout creation error:', error.response ? error.response.data : error.message);
-          });
+    
+        if (setCount === 0) {
+          setSetCountError("Missing set count.");
+          valid = false
+        } else if (setCount % 1 !== 0) {
+          setSetCountError("Set count must be an integer.");
+          valid = false
+        } else if (setCount < 0) {
+          setSetCountError("Set count must be positive.");
+          valid = false
+        } else {
+          setSetCountError(null);
+        }
+
+        exercises.map((exercise, i) => {
+          
+            if (exercise.exercise_id === 0) {
+                exercise.exercise_error = "Missing exercise.";
+                valid = false;
+            } else {
+                exercise.exercise_error = null;
+            }
+
+            if (exercise.rep_count === 0) {
+                exercise.rep_error = "Missing rep count.";
+                valid = false
+            } else if (exercise.rep_count % 1 !== 0) {
+                exercise.rep_error = "Rep count must be an integer.";
+                valid = false
+            } else if (exercise.rep_count < 0) {
+                exercise.rep_error = "Rep count must be positive.";
+                valid = false
+            } else {
+                exercise.rep_error = null;
+            }
+
+        })
+
+        const newList = [...exercises];
+        setExercises(newList);
+
+        if (valid) {
+            const workoutData = {
+                workoutName,
+                setCount,
+                description,
+                exercises
+            }
+          
+            axios.post(`${baseUrl}/api/workout/create-workout`, workoutData)
+                .then(response => {
+                    console.log('Workout created: ', response.data);
+                })
+                .catch(error => {
+                    console.error('Workout creation error:', error.response ? error.response.data : error.message);
+                });
+
+            props.backFunc();
+        }
     }
 
     return (
@@ -64,17 +124,17 @@ function CreateWorkoutMenu (props) {
             <Grid container spacing={2} padding={1}>
 
                 <Grid item xs={12}>
-                    <TextField id="inpWorkoutName" label="Workout Name" variant="filled" required value={workoutName} onChange={(event) => {
+                    <TextField id="inpWorkoutName" label="Workout Name" variant="filled" required error={Boolean(workoutNameError)} helperText={workoutNameError || ' '} value={workoutName} onChange={(event) => {
                         setWorkoutName(event.target.value);
                     }}/>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField id="inpSetCount" label="Set Count" variant="filled" required type="number" value={setCount} onChange={(event) => {
+                    <TextField id="inpSetCount" label="Set Count" variant="filled" required error={Boolean(setCountError)} helperText={setCountError || ' '} type="number" value={setCount} onChange={(event) => {
                         setSetCount(event.target.value);
                     }}/>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField id="inpDescription" label="Description" variant="filled"required value={description} onChange={(event) => {
+                    <TextField id="inpDescription" label="Description" variant="filled" error={Boolean(descriptionError)} helperText={descriptionError || ' '} value={description} onChange={(event) => {
                         setDescription(event.target.value);
                     }}/>
                 </Grid>
@@ -96,6 +156,8 @@ function CreateWorkoutMenu (props) {
                                     value={exercise.exercise_id}
                                     label={"Exercise " + (i+1).toString()}
                                     sx={{ width: 1 }}
+                                    error={Boolean(exercise.exercise_error)}
+                                    helperText={exercise.exercise_error || ' '}
                                     onChange={(event) => {
                                         exercise.exercise_id = event.target.value;
                                         const newList = [...exercises];
@@ -109,7 +171,7 @@ function CreateWorkoutMenu (props) {
                             </FormControl>
                         </Grid>
                         <Grid item xs={3}>
-                            <TextField id={"repCount" + (i+1).toString()} label="Rep Count" variant="outlined" required type="number" value={exercise.rep_count} onChange={(event) => {
+                            <TextField id={"repCount" + (i+1).toString()} label="Rep Count" variant="outlined" required error={Boolean(exercise.rep_error)} helperText={exercise.rep_error || ' '} type="number" value={exercise.rep_count} onChange={(event) => {
                                 exercise.rep_count = event.target.value;
                                 const newList = [...exercises];
                                 setExercises(newList);
@@ -144,7 +206,7 @@ function CreateWorkoutMenu (props) {
                 })}
             
                 <Button id="addExerciseBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
-                    exercises.push({exercise_id: 0, rep_count: 0})
+                    exercises.push({exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""})
                     const newList = [...exercises];
                     setExercises(newList);
                 }}>+</Button>
@@ -153,7 +215,6 @@ function CreateWorkoutMenu (props) {
 
             <Button id="createWorkoutBtn" variant="contained" onClick={() => {
                 createWorkout();
-                props.backFunc();
             }}>Create Workout</Button>
 
         </div>

@@ -18,7 +18,6 @@ function WorkoutDetailsMenu (props) {
         axios.post(`${baseUrl}/api/workout/workout-details`, workoutIdData)
             .then((response) => {
                 setWorkout(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error('Error fetching workout details:', error);
