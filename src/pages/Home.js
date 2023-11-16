@@ -121,8 +121,7 @@ function Home () {
           };
     
           // Determine the endpoint based on whether the user is a coach or not
-          const endpoint = '/api/surveys/daily-survey';
-          axios.post(`http://localhost:4000${endpoint}`, surveyData)
+          axios.post(`${baseUrl}/api/surveys/daily-survey`, surveyData)
             .then(response => {
               console.log('Survey submitted:', response.data);
               SetSuccessMessage('Daily Survey Submitted!');
