@@ -43,8 +43,9 @@
 
   .title{
     padding-top: 3px;
-    margin-left: 5%;
+    margin-left: 12.5%;
     font-size: xx-large;
+    text-decoration: underline;
   }
   .side-nav a.login-button {
     background-color: #007bff; 
