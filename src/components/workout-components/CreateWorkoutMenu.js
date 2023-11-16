@@ -25,7 +25,6 @@ function CreateWorkoutMenu (props) {
         axios.get(`${baseUrl}/api/workout/exercise-bank`)
             .then((response) => {
                 setExerciseBank(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error('Error fetching exercise bank:', error);
@@ -41,9 +40,7 @@ function CreateWorkoutMenu (props) {
           description,
           exercises
         }
-        console.log(workoutData);
       
-        // Determine the endpoint based on whether the user is a coach or not
         axios.post(`${baseUrl}/api/workout/create-workout`, workoutData)
           .then(response => {
               console.log('Workout created: ', response.data);
