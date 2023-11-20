@@ -1,20 +1,23 @@
-import React, { useState } from 'react'
-import { Box, Typography, TextField, Button, Alert } from '@mui/material'
+import React, { useState } from 'react';
+import { Box, Typography, TextField, Button, Alert, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
-export default function CoachSurvey () {
-
-  const [certifications, setCertifications] = useState("");
+export default function CoachSurvey() {
   const [experience, setExperience] = useState("");
   const [specializations, setSpecializations] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [availability, setAvailability] = useState("");
 
-  const [certificationsError, setCertificationsError] = useState("");
   const [experienceError, setExperienceError] = useState("");
   const [specializationsError, setSpecializationsError] = useState("");
+  const [cityError, setCityError] = useState("");
+  const [stateError, setStateError] = useState("");
+  const [availabilityError, setAvailabilityError] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,92 +25,161 @@ export default function CoachSurvey () {
 
   const [errorMessage, setErrorMessage] = useState(null);
 
-  function submit () {
+  // Replace this with your actual state choices
+  const stateOptions = [
+    'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+    'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+    'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi',
+    'Missouri', 'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico',
+    'New York', 'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania',
+    'Rhode Island', 'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont',
+    'Virginia', 'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'
+  ];
+
+  const submit = () => {
     let valid = true;
 
-    if (certifications.length === 0) {
-        setCertificationsError("Please enter certifications");
-        valid = false;
-    } else if (certifications.length > 1000) {
-        setCertificationsError("Maximum 1000 characters");
-        valid = false;
-    } else {
-        setCertificationsError(null);
-    }
-
-
     if (experience.length === 0) {
-        setExperienceError("Please enter experience");
-        valid = false;
+      setExperienceError("Please enter experience");
+      valid = false;
     } else if (experience.length > 1000) {
-        setExperienceError("Maximum 1000 characters");
-        valid = false;
+      setExperienceError("Maximum 1000 characters");
+      valid = false;
     } else {
-        setExperienceError(null);
+      setExperienceError(null);
     }
 
     if (specializations.length === 0) {
-        setSpecializationsError("Please enter specializations");
-        valid = false;
+      setSpecializationsError("Please enter specializations");
+      valid = false;
     } else if (specializations.length > 1000) {
-        setSpecializationsError("Maximum 1000 characters");
-        valid = false;
+      setSpecializationsError("Maximum 1000 characters");
+      valid = false;
     } else {
-        setSpecializationsError(null);
+      setSpecializationsError(null);
     }
 
-    // trigger call to the backend added here
-    
+    if (city.length === 0) {
+      setCityError("Please enter city");
+      valid = false;
+    } else if (city.length > 100) {
+      setCityError("Maximum 100 characters");
+      valid = false;
+    } else {
+      setCityError(null);
+    }
+
+    if (state.length === 0) {
+      setStateError("Please select a state");
+      valid = false;
+    } else {
+      setStateError(null);
+    }
+
+    if (availability.length === 0) {
+      setAvailabilityError("Please enter availability");
+      valid = false;
+    } else if (availability.length > 1000) {
+      setAvailabilityError("Maximum 1000 characters");
+      valid = false;
+    } else {
+      setAvailabilityError(null);
+    }
+
     if (valid) {
-        const surveyData = {
-          user_id,
-          certifications,
-          experience,
-          specializations
-        };
-  
-        axios.post(`${baseUrl}/api/surveys/coach-survey`, surveyData)
-          .then(response => {
-            console.log('Coach survey submitted:', response.data);
-            navigate('/login');
-          })
-          .catch(error => {
-            console.error('Coach survey submission error:', error.response ? error.response.data : error.message);
-            setErrorMessage('Coach survey submission error:', error.response ? error.response.data : error.message);
-          });
-      }
-    } //ends here
+      const surveyData = {
+        user_id,
+        experience,
+        specializations,
+        city,
+        state,
+        availability,
+      };
+
+      axios.post(`${baseUrl}/api/surveys/coach-survey`, surveyData)
+        .then(response => {
+          console.log('Coach survey submitted:', response.data);
+          navigate('/login');
+        })
+        .catch(error => {
+          console.error('Coach survey submission error:', error.response ? error.response.data : error.message);
+          setErrorMessage('Coach survey submission error:', error.response ? error.response.data : error.message);
+        });
+    }
+  };
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>CoachSurvey</Typography>
-        <h4>
-            Certifications
-        </h4>
-        <TextField id="inpCertifications" variant="filled" error={Boolean(certificationsError)} helperText={certificationsError || ' '} required value={certifications} onChange={(event) => {
-        setCertifications(event.target.value);
-        }}/>
-        <h4>
-            Experience
-        </h4>
-        <TextField id="inpExperience" variant="filled" error={Boolean(experienceError)} helperText={experienceError || ' '} required value={experience} onChange={(event) => {
-        setExperience(event.target.value);
-        }}/>
-        <h4>
-            Specializations
-        </h4>
-        <TextField id="inpSpecializations" variant="filled" error={Boolean(specializationsError)} helperText={specializationsError || ' '} required value={specializations} onChange={(event) => {
-        setSpecializations(event.target.value);
-        }}/>
-        <br/>
-        <br/>
-        <Button id="submitBtn" variant="contained" onClick={() => {
-        submit();
-        }}>
-        Submit
-        </Button>
-        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-    </Box>
-  )
+      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Coach Survey</Typography>
 
+      <TextField
+        id="inpExperience"
+        variant="filled"
+        label="Experience"
+        error={Boolean(experienceError)}
+        helperText={experienceError || ' '}
+        required
+        value={experience}
+        onChange={(event) => setExperience(event.target.value)}
+      />
+
+      <TextField
+        id="inpSpecializations"
+        variant="filled"
+        label="Specializations"
+        error={Boolean(specializationsError)}
+        helperText={specializationsError || ' '}
+        required
+        value={specializations}
+        onChange={(event) => setSpecializations(event.target.value)}
+      />
+
+      <TextField
+        id="inpCity"
+        variant="filled"
+        label="City"
+        error={Boolean(cityError)}
+        helperText={cityError || ' '}
+        required
+        value={city}
+        onChange={(event) => setCity(event.target.value)}
+      />
+
+      <FormControl fullWidth variant="filled" error={Boolean(stateError)}>
+        <InputLabel id="state-select-label">State</InputLabel>
+        <Select
+          labelId="state-select-label"
+          id="inpState"
+          value={state}
+          onChange={(event) => setState(event.target.value)}
+        >
+          {stateOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+
+      <TextField
+        id="inpAvailability"
+        variant="filled"
+        label="Availability"
+        error={Boolean(availabilityError)}
+        helperText={availabilityError || ' '}
+        required
+        value={availability}
+        onChange={(event) => setAvailability(event.target.value)}
+      />
+
+      <br />
+      <br />
+
+      <Button id="submitBtn" variant="contained" onClick={submit}>
+        Submit
+      </Button>
+
+      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+    </Box>
+  );
 }
