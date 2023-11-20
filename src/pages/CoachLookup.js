@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Card, Link, Alert } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, Card, Link, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import LinearProgress from '@mui/joy/LinearProgress';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -10,34 +10,43 @@ export default function CoachLookup() {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [resultsPerPage] = useState(5);
+  const resultsPerPage = 5;
+
+  const [selectedCoach, setSelectedCoach] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
 
   const handleSearch = () => {
-    // TODO: Implement the backend call for coach search based on searchQuery
-    // axios.get(`${baseUrl}/api/coaches?query=${searchQuery}&page=${currentPage}&perPage=${resultsPerPage}`)
-    //   .then(response => {
-    //     setSearchResults(response.data);
-    //   })
-    //   .catch(error => {
-    //     console.error('Error fetching coach search results:', error);
-    //   });
-    
-    // For now, let's use mock data
-    const mockData = [
-      { id: 1, name: 'Coach 1' },
-      { id: 2, name: 'Coach 2' },
-      { id: 3, name: 'Coach 3' },
-      { id: 4, name: 'Coach 4' },
-      { id: 5, name: 'Coach 5' },
-      // ... add more mock data as needed
-    ];
-    setSearchResults(mockData);
+    // Backend call for initial search
+    axios.post(`${baseUrl}/api/users/initial-search`)
+      .then(response => {
+        setSearchResults(response.data.coaches);
+      })
+      .catch(error => {
+        console.error('Error fetching coach search results:', error);
+      });
+  };
+
+  const handleCoachDetails = (fname, lname) => {
+    // Backend call for coach details
+    axios.post(`${baseUrl}/api/users/coach-details`, { fname, lname })
+      .then(response => {
+        setSelectedCoach(response.data.coaches[0]); // Assuming only one result is expected
+        setOpenDialog(true);
+      })
+      .catch(error => {
+        console.error('Error fetching coach details:', error);
+      });
   };
 
   useEffect(() => {
     // Fetch initial search results when the component mounts
     handleSearch();
   }, [currentPage]); // Include currentPage as a dependency to re-run the effect when the page changes
+
+  const startIdx = (currentPage - 1) * resultsPerPage;
+  const endIdx = startIdx + resultsPerPage;
+
+  const displayedResults = searchResults.slice(startIdx, endIdx);
 
   return (
     <div className="coach-lookup-page">
@@ -61,11 +70,11 @@ export default function CoachLookup() {
         </Grid>
         <Grid item xs={12}>
           {/* Search results box with pagination */}
-          {searchResults.length > 0 ? (
+          {displayedResults.length > 0 ? (
             <>
-              {searchResults.map((coach) => (
-                <Card key={coach.id} variant="outlined" sx={{ padding: 2, marginBottom: 2 }}>
-                  <Typography variant="h6">{coach.name}</Typography>
+              {displayedResults.map((coach, index) => (
+                <Card key={index} variant="outlined" sx={{ padding: 2, marginBottom: 2, cursor: 'pointer' }} onClick={() => handleCoachDetails(coach.first_name, coach.last_name)}>
+                  <Typography variant="h6">{`${coach.first_name} ${coach.last_name}`}</Typography>
                   {/* Add more coach details as needed */}
                 </Card>
               ))}
@@ -78,7 +87,7 @@ export default function CoachLookup() {
                 </Button>
                 <Typography sx={{ marginX: 2 }}>{currentPage}</Typography>
                 <Button
-                  disabled={searchResults.length < resultsPerPage}
+                  disabled={searchResults.length <= endIdx}
                   onClick={() => setCurrentPage((prevPage) => prevPage + 1)}
                 >
                   Next Page
@@ -90,6 +99,25 @@ export default function CoachLookup() {
           )}
         </Grid>
       </Grid>
+
+      {/* Coach Details Dialog */}
+      <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
+        <DialogTitle>Coach Details</DialogTitle>
+        <DialogContent>
+          {selectedCoach && (
+            <>
+              <Typography>{`Experience: ${selectedCoach.experience}`}</Typography>
+              <Typography>{`Specializations: ${selectedCoach.specializations}`}</Typography>
+              <Typography>{`City: ${selectedCoach.city}`}</Typography>
+              <Typography>{`State: ${selectedCoach.state}`}</Typography>
+              <Typography>{`Availability: ${selectedCoach.availability}`}</Typography>
+            </>
+          )}
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDialog(false)}>Close</Button>
+        </DialogActions>
+      </Dialog>
     </div>
   );
 }
