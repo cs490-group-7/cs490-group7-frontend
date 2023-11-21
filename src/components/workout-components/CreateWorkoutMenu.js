@@ -7,6 +7,10 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 function CreateWorkoutMenu (props) {
 
+    const location = useLocation();
+
+    const { user_id } = location.state || { user_id: false };
+
     const [workoutName, setWorkoutName] = useState("");
     const [setCount, setSetCount] = useState(0);
     const [description, setDescription] = useState("");
@@ -93,6 +97,7 @@ function CreateWorkoutMenu (props) {
         if (valid) {
             const workoutData = {
                 workoutName,
+                creatorId: user_id,
                 setCount,
                 description,
                 exercises

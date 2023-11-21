@@ -7,11 +7,15 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 function WorkoutListMenu (props) {
 
+    const location = useLocation();
+
+    const { user_id } = location.state || { user_id: false };
+
     const [workoutList, setWorkoutList] = useState();
 
     useEffect(() => {
 
-        axios.get(`${baseUrl}/api/workout/workout-list`)
+        axios.post(`${baseUrl}/api/workout/workout-list`, {userId: user_id})
             .then((response) => {
                 setWorkoutList(response.data);
                 console.log(response.data);
