@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Card, Link, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, Card, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
 import LinearProgress from '@mui/joy/LinearProgress';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -12,8 +12,10 @@ export default function CoachLookup() {
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 5;
 
-  const [selectedCoach, setSelectedCoach] = useState(null);
   const [openDialog, setOpenDialog] = useState(false);
+  const [selectedCoach, setSelectedCoach] = useState(null);
+
+  const navigate = useNavigate();
 
   const handleSearch = () => {
     // Backend call for initial search
@@ -26,9 +28,9 @@ export default function CoachLookup() {
       });
   };
 
-  const handleCoachDetails = (fname, lname) => {
+  const handleCoachDetails = (coach) => {
     // Backend call for coach details
-    axios.post(`${baseUrl}/api/users/coach-details`, { fname, lname })
+    axios.post(`${baseUrl}/api/users/coach-details`, { fname: coach.first_name, lname: coach.last_name, userId: coach.id })
       .then(response => {
         setSelectedCoach(response.data.coaches[0]); // Assuming only one result is expected
         setOpenDialog(true);
@@ -73,8 +75,14 @@ export default function CoachLookup() {
           {displayedResults.length > 0 ? (
             <>
               {displayedResults.map((coach, index) => (
-                <Card key={index} variant="outlined" sx={{ padding: 2, marginBottom: 2, cursor: 'pointer' }} onClick={() => handleCoachDetails(coach.first_name, coach.last_name)}>
-                  <Typography variant="h6">{`${coach.first_name} ${coach.last_name}`}</Typography>
+                <Card key={index} variant="outlined" sx={{ padding: 2, marginBottom: 2 }}>
+                  <Typography
+                    variant="h6"
+                    onClick={() => handleCoachDetails(coach)}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {`${coach.first_name} ${coach.last_name}`}
+                  </Typography>
                   {/* Add more coach details as needed */}
                 </Card>
               ))}
@@ -100,17 +108,17 @@ export default function CoachLookup() {
         </Grid>
       </Grid>
 
-      {/* Coach Details Dialog */}
+      {/* Coach details dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Coach Details</DialogTitle>
         <DialogContent>
           {selectedCoach && (
             <>
-              <Typography>{`Experience: ${selectedCoach.experience}`}</Typography>
-              <Typography>{`Specializations: ${selectedCoach.specializations}`}</Typography>
-              <Typography>{`City: ${selectedCoach.city}`}</Typography>
-              <Typography>{`State: ${selectedCoach.state}`}</Typography>
-              <Typography>{`Availability: ${selectedCoach.availability}`}</Typography>
+              <Typography>Experience: {selectedCoach.experience}</Typography>
+              <Typography>Specializations: {selectedCoach.specializations}</Typography>
+              <Typography>City: {selectedCoach.city}</Typography>
+              <Typography>State: {selectedCoach.state}</Typography>
+              <Typography>Availability: {selectedCoach.availability}</Typography>
             </>
           )}
         </DialogContent>
