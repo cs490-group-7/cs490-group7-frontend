@@ -111,7 +111,7 @@ export default function CoachSurvey() {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
       <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Coach Survey</Typography>
-
+      <br></br>
       <TextField
         id="inpExperience"
         variant="filled"
@@ -120,9 +120,10 @@ export default function CoachSurvey() {
         helperText={experienceError || ' '}
         required
         value={experience}
+        sx={{ width: '500px'}}
         onChange={(event) => setExperience(event.target.value)}
       />
-
+      <br></br>
       <TextField
         id="inpSpecializations"
         variant="filled"
@@ -131,9 +132,22 @@ export default function CoachSurvey() {
         helperText={specializationsError || ' '}
         required
         value={specializations}
+        sx={{ width: '500px'}}
         onChange={(event) => setSpecializations(event.target.value)}
       />
-
+      <br></br>
+      <TextField
+        id="inpAvailability"
+        variant="filled"
+        label="Availability"
+        error={Boolean(availabilityError)}
+        helperText={availabilityError || ' '}
+        required
+        value={availability}
+        sx={{ width: '500px'}}
+        onChange={(event) => setAvailability(event.target.value)}
+      />
+      <br></br>
       <TextField
         id="inpCity"
         variant="filled"
@@ -142,16 +156,17 @@ export default function CoachSurvey() {
         helperText={cityError || ' '}
         required
         value={city}
+        sx={{ width: '200px'}}
         onChange={(event) => setCity(event.target.value)}
       />
-
-      <FormControl fullWidth variant="filled" error={Boolean(stateError)}>
+      <FormControl fullWidth variant="filled" error={Boolean(stateError)} required>
         <InputLabel id="state-select-label">State</InputLabel>
         <Select
           labelId="state-select-label"
           id="inpState"
           value={state}
           onChange={(event) => setState(event.target.value)}
+          sx={{ width: '200px'}}
         >
           {stateOptions.map((option) => (
             <MenuItem key={option} value={option}>
@@ -161,16 +176,6 @@ export default function CoachSurvey() {
         </Select>
       </FormControl>
 
-      <TextField
-        id="inpAvailability"
-        variant="filled"
-        label="Availability"
-        error={Boolean(availabilityError)}
-        helperText={availabilityError || ' '}
-        required
-        value={availability}
-        onChange={(event) => setAvailability(event.target.value)}
-      />
 
       <br />
       <br />
