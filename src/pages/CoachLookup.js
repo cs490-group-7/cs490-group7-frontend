@@ -114,11 +114,11 @@ export default function CoachLookup() {
         <DialogContent>
           {selectedCoach && (
             <>
-              <Typography>Experience: {selectedCoach.experience}</Typography>
+              <Typography>Years of Experience: {selectedCoach.experience}</Typography>
               <Typography>Specializations: {selectedCoach.specializations}</Typography>
               <Typography>City: {selectedCoach.city}</Typography>
               <Typography>State: {selectedCoach.state}</Typography>
-              <Typography>Availability: {selectedCoach.availability}</Typography>
+              <Typography>Price Per Hour: {selectedCoach.price}</Typography>
             </>
           )}
         </DialogContent>

@@ -11,13 +11,13 @@ export default function CoachSurvey() {
   const [specializations, setSpecializations] = useState("");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
-  const [availability, setAvailability] = useState("");
+  const [price, setPrice] = useState("");
 
   const [experienceError, setExperienceError] = useState("");
   const [specializationsError, setSpecializationsError] = useState("");
   const [cityError, setCityError] = useState("");
   const [stateError, setStateError] = useState("");
-  const [availabilityError, setAvailabilityError] = useState("");
+  const [priceError, setPriceError] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -39,21 +39,17 @@ export default function CoachSurvey() {
   const submit = () => {
     let valid = true;
 
-    if (experience.length === 0) {
-      setExperienceError("Please enter experience");
-      valid = false;
-    } else if (experience.length > 1000) {
-      setExperienceError("Maximum 1000 characters");
+    // Validate experience as an integer
+    const experienceValue = parseInt(experience, 10);
+    if (isNaN(experienceValue) || experienceValue < 0 ) {
+      setExperienceError("Please enter a valid positive integer for experience");
       valid = false;
     } else {
       setExperienceError(null);
     }
 
     if (specializations.length === 0) {
-      setSpecializationsError("Please enter specializations");
-      valid = false;
-    } else if (specializations.length > 1000) {
-      setSpecializationsError("Maximum 1000 characters");
+      setSpecializationsError("Please select a specialization");
       valid = false;
     } else {
       setSpecializationsError(null);
@@ -76,24 +72,23 @@ export default function CoachSurvey() {
       setStateError(null);
     }
 
-    if (availability.length === 0) {
-      setAvailabilityError("Please enter availability");
-      valid = false;
-    } else if (availability.length > 1000) {
-      setAvailabilityError("Maximum 1000 characters");
+    // Validate price as a float
+    const priceValue = parseFloat(price);
+    if (isNaN(priceValue) || priceValue < 0) {
+      setPriceError("Please enter a valid positive float for price");
       valid = false;
     } else {
-      setAvailabilityError(null);
+      setPriceError(null);
     }
 
     if (valid) {
       const surveyData = {
         user_id,
-        experience,
+        experience: experienceValue,
         specializations,
         city,
         state,
-        availability,
+        price: priceValue,
       };
 
       axios.post(`${baseUrl}/api/surveys/coach-survey`, surveyData)
@@ -115,24 +110,29 @@ export default function CoachSurvey() {
       <TextField
         id="inpExperience"
         variant="filled"
-        label="Experience"
+        label="Experience (years)"
         error={Boolean(experienceError)}
         helperText={experienceError || ' '}
-        required
+        required type = "number"
         value={experience}
         onChange={(event) => setExperience(event.target.value)}
       />
 
-      <TextField
-        id="inpSpecializations"
-        variant="filled"
-        label="Specializations"
-        error={Boolean(specializationsError)}
-        helperText={specializationsError || ' '}
-        required
-        value={specializations}
-        onChange={(event) => setSpecializations(event.target.value)}
-      />
+      <FormControl fullWidth variant="filled" error={Boolean(specializationsError)}>
+        <InputLabel id="specializations-select-label">Specialization</InputLabel>
+        <Select
+          labelId="specializations-select-label"
+          id="inpSpecializations"
+          value={specializations}
+          onChange={(event) => setSpecializations(event.target.value)}
+        >
+          <MenuItem value="Losing Weight">Losing Weight</MenuItem>
+          <MenuItem value="Gaining Weight">Gaining Weight</MenuItem>
+          <MenuItem value="Building Muscle">Building Muscle</MenuItem>
+          <MenuItem value="Getting Stronger">Getting Stronger</MenuItem>
+          <MenuItem value="Getting Faster">Getting Faster</MenuItem>
+        </Select>
+      </FormControl>
 
       <TextField
         id="inpCity"
@@ -162,14 +162,14 @@ export default function CoachSurvey() {
       </FormControl>
 
       <TextField
-        id="inpAvailability"
+        id="inpPrice"
         variant="filled"
-        label="Availability"
-        error={Boolean(availabilityError)}
-        helperText={availabilityError || ' '}
-        required
-        value={availability}
-        onChange={(event) => setAvailability(event.target.value)}
+        label="Price per Hour"
+        error={Boolean(priceError)}
+        helperText={priceError || ' '}
+        required type = "number"
+        value={price}
+        onChange={(event) => setPrice(event.target.value)}
       />
 
       <br />
