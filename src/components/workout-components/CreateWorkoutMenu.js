@@ -44,7 +44,10 @@ function CreateWorkoutMenu (props) {
 
         let valid = true;
 
-        if (workoutName.length === 0) {
+        if (!user_id) {
+          setWorkoutNameError("Not logged in.");
+          valid = false
+        } else if (workoutName.length === 0) {
           setWorkoutNameError("Missing workout name.");
           valid = false
         } else if (workoutName.length > 100) {
