@@ -29,7 +29,7 @@ function LoginPage () {
     } else if (email.length > 32) {
       setEmailError("Email too long.");
       isValid = false;
-    } else if (!/^[a-zA-Z][a-zA-Z0-9]*\@[a-zA-Z][a-zA-Z0-9]*\.[a-zA-Z]{2,4}$/.test(email)) {
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       setEmailError("Incorrect email format.");
       isValid = false;
     } else {
