@@ -110,7 +110,7 @@ export default function CoachSurvey() {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Coach Survey</Typography>
+      <h1>Coach Survey</h1>
       <br></br>
       <TextField
         id="inpExperience"
