@@ -10,7 +10,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function InitialSurvey () {
 
-  const [dateOfBirth, setDateOfBirth] = useState(new Date());
+  const [dateOfBirth, setDateOfBirth] = useState(null);
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
@@ -31,11 +31,11 @@ export default function InitialSurvey () {
 
   function submit () {
     let valid = true;
-    if (dateOfBirth.length === 0) {
+    if (!dateOfBirth) {
       setDateOfBirthError("Missing date of birth");
       valid = false
     } else {
-      setDateOfBirthError(null);
+      setDateOfBirthError("");
     }
 
     if (gender.length === 0) {
@@ -81,7 +81,7 @@ export default function InitialSurvey () {
   // trigger call to the backend added here
         
         if (valid) {
-          const isoDate = dateOfBirth.toISOString();
+          const isoDate = dateOfBirth ? dateOfBirth.toISOString() : '';
           const date_of_birth = isoDate.split('T')[0];
           const surveyData = {
             user_id,
@@ -118,7 +118,15 @@ export default function InitialSurvey () {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
             label="Date of Birth"
-            onChange={(dateOfBirth) => setDateOfBirth(dateOfBirth)}
+            value={dateOfBirth}
+            onChange={(newDate) => setDateOfBirth(newDate)}
+            componentsProps={{
+              textField: {
+                error: dateOfBirthError !== "",
+                helperText: dateOfBirthError || ' ',
+                variant: "filled",
+              }
+            }}
           />
         </LocalizationProvider>
         
@@ -172,9 +180,7 @@ export default function InitialSurvey () {
           }}/>
         <br/>
         <br/>
-      <Button id="submitBtn" variant="contained" onClick={() => {
-        submit();
-      }}>
+      <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
