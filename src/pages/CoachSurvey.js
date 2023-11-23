@@ -105,8 +105,7 @@ export default function CoachSurvey() {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Coach Survey</Typography>
-
+      <h1>Coach Survey</h1>
       <TextField
         id="inpExperience"
         variant="filled"
@@ -116,8 +115,8 @@ export default function CoachSurvey() {
         required type = "number"
         value={experience}
         onChange={(event) => setExperience(event.target.value)}
+        sx={{ width: '300px'}}
       />
-
       <FormControl fullWidth variant="filled" error={Boolean(specializationsError)}>
         <InputLabel id="specializations-select-label">Specialization</InputLabel>
         <Select
@@ -125,6 +124,7 @@ export default function CoachSurvey() {
           id="inpSpecializations"
           value={specializations}
           onChange={(event) => setSpecializations(event.target.value)}
+          sx={{ width: '300px', marginBottom: '25px'}}
         >
           <MenuItem value="Losing Weight">Losing Weight</MenuItem>
           <MenuItem value="Gaining Weight">Gaining Weight</MenuItem>
@@ -143,6 +143,7 @@ export default function CoachSurvey() {
         required
         value={city}
         onChange={(event) => setCity(event.target.value)}
+        sx={{ width: '300px'}}
       />
 
       <FormControl fullWidth variant="filled" error={Boolean(stateError)}>
@@ -152,6 +153,7 @@ export default function CoachSurvey() {
           id="inpState"
           value={state}
           onChange={(event) => setState(event.target.value)}
+          sx={{ width: '300px', marginBottom: '25px'}}
         >
           {stateOptions.map((option) => (
             <MenuItem key={option} value={option}>
@@ -170,6 +172,7 @@ export default function CoachSurvey() {
         required type = "number"
         value={price}
         onChange={(event) => setPrice(event.target.value)}
+        sx={{ width: '300px'}}
       />
 
       <br />
