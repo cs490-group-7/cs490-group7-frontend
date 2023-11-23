@@ -19,6 +19,10 @@ const RightMenu = {
 
 function Workouts () {
 
+    const location = useLocation();
+
+    const { user_id } = location.state || { user_id: false };
+
     const [rightMenu, setRightMenu] = useState(RightMenu.List);
     const [workoutId, setWorkoutId] = useState(0);
 
