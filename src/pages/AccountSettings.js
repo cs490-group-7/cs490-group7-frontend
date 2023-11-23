@@ -21,7 +21,7 @@ const AccountSettings = () => {
         setAccountInfo(response.data);
       })
       .catch((error) => {
-        setErrorMessage(error.message);
+        setErrorMessage(error.data ? error.data.message : 'Error reaching server');
     });
   }, [user_id])
 
@@ -66,10 +66,12 @@ const AccountSettings = () => {
     const reqBody = {...accountInfo, userId: user_id}
     axios.post(`${baseUrl}/api/account/update-account-info`, reqBody)
       .then((response) => {
+        setErrorMessage(null)
         setSuccessMessage(response.data.message);
       })
       .catch((error) => {
-        setErrorMessage(error.data.message);
+        setSuccessMessage(null)
+        setErrorMessage(error.data ? error.data.message : 'Error reaching server');
     });
   }
 
