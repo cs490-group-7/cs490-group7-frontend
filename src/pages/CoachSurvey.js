@@ -114,6 +114,7 @@ export default function CoachSurvey() {
         helperText={experienceError || ' '}
         required type = "number"
         value={experience}
+        sx={{ width: '500px'}}
         onChange={(event) => setExperience(event.target.value)}
         sx={{ width: '300px'}}
       />
@@ -142,11 +143,11 @@ export default function CoachSurvey() {
         helperText={cityError || ' '}
         required
         value={city}
+        sx={{ width: '200px'}}
         onChange={(event) => setCity(event.target.value)}
         sx={{ width: '300px'}}
       />
-
-      <FormControl fullWidth variant="filled" error={Boolean(stateError)}>
+      <FormControl fullWidth variant="filled" error={Boolean(stateError)} required>
         <InputLabel id="state-select-label">State</InputLabel>
         <Select
           labelId="state-select-label"
@@ -162,7 +163,6 @@ export default function CoachSurvey() {
           ))}
         </Select>
       </FormControl>
-
       <TextField
         id="inpPrice"
         variant="filled"
@@ -174,14 +174,10 @@ export default function CoachSurvey() {
         onChange={(event) => setPrice(event.target.value)}
         sx={{ width: '300px'}}
       />
-
       <br />
-      <br />
-
       <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
-
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </Box>
   );
