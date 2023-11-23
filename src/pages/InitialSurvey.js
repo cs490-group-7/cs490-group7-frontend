@@ -111,7 +111,7 @@ export default function InitialSurvey () {
     
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>InitialSurvey</Typography>
+      <h1>Initial Survey</h1>
         <h4>
           Date of Birth
         </h4>

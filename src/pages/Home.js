@@ -185,7 +185,7 @@ function Home () {
                                 }}/>
                                 <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError}  value={mood} onChange={(event) => {
                                     setMood(event.target.value);
-                                }}/>
+                                }}/><br></br>
                                 <Button id="submitDailyBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                     submitDaily();
                                 }}>
