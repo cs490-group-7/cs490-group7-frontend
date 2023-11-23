@@ -15,43 +15,46 @@ export default function SideNav() {
   return (
     <div className="side-nav">
       <h2 className="title">Fit Fusion</h2>
-      <a className={location.pathname === '/' ? 'active' : ''} href="/">
+      <a
+        className={location.pathname === '/' ? 'active' : ''}
+        onClick={() => navigate("/", { state: location.state })}
+        >
         Home
       </a>
       <a
         className={location.pathname === '/my-progress' ? 'active' : ''}
-        href="/my-progress"
+        onClick={() => navigate("/my-progress", { state: location.state })}
         >
         My Progress
       </a>
       <a
         className={location.pathname === '/workouts' ? 'active' : ''}
-        href="/workouts"
+        onClick={() => navigate("/workouts", { state: location.state })}
         >
         Workouts
       </a>
       <a
         className={location.pathname === '/my-coach-client' ? 'active' : ''}
-        href="/my-coach-client"
+        onClick={() => navigate("/my-coach-client", { state: location.state })}
         >
         My Coach/Clients
       </a>
       <a
         className={location.pathname === '/coach-lookup' ? 'active' : ''}
-        href="/coach-lookup"
+        onClick={() => navigate("/coach-lookup", { state: location.state })}
         >
         Coach Lookup
       </a>
       <a
         className={location.pathname === '/account-settings' ? 'active' : ''}
-        href="/account-settings"
+        onClick={() => navigate("/account-settings", { state: location.state })}
         >
         Account Settings
       </a>
       {isAuthenticated ?
         <LogoutButton />
       : 
-      <Button onClick={() => navigate("/login")} variant="outlined" sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
+      <Button onClick={() => navigate("/login", { state: location.state })} variant="outlined" sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
         LOG IN  
       </Button>
       }
