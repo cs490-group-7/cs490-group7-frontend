@@ -29,7 +29,7 @@ function LoginPage () {
     } else if (email.length > 32) {
       setEmailError("Email too long.");
       isValid = false;
-    } else if (!/^[a-zA-Z][a-zA-Z0-9]*\@[a-zA-Z][a-zA-Z0-9]*\.[a-zA-Z]{2,4}$/.test(email)) {
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       setEmailError("Incorrect email format.");
       isValid = false;
     } else {
@@ -92,7 +92,7 @@ function LoginPage () {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Log In</Typography>
+      <h1>Login</h1>
       <Grid container spacing={2} sx={{ padding: 2 }}>
         <Grid item xs={12}>
           <TextField sx={{ width: '398px' }}id="inpEmail" label="Email" variant="filled" error={!!emailError} helperText={emailError || ' '} required value={email} onChange={(event) => {

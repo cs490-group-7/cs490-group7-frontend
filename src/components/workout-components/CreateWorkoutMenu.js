@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { Typography, Button, Grid, TextField, Select, MenuItem, FormControl, Autocomplete } from '@mui/material'
+import { Typography, Button, Grid, TextField, Select, MenuItem, FormControl, Autocomplete, Alert } from '@mui/material'
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 function CreateWorkoutMenu (props) {
+
+    const location = useLocation();
+
+    const { user_id } = location.state || { user_id: false };
 
     const [workoutName, setWorkoutName] = useState("");
     const [setCount, setSetCount] = useState(0);
@@ -14,6 +18,9 @@ function CreateWorkoutMenu (props) {
     const [workoutNameError, setWorkoutNameError] = useState("");
     const [setCountError, setSetCountError] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
+
+    const [successMessage, setSuccessMessage] = useState(null)
+    const [errorMessage, setErrorMessage] = useState(null);
 
     const [exercises, setExercises] = useState([
       {exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""},
@@ -31,7 +38,7 @@ function CreateWorkoutMenu (props) {
                 setExerciseBank(response.data);
             })
             .catch((error) => {
-                console.error('Error fetching exercise bank:', error);
+                setErrorMessage('Error fetching exercise bank:', error);
             });
 
     }, []);
@@ -40,7 +47,10 @@ function CreateWorkoutMenu (props) {
 
         let valid = true;
 
-        if (workoutName.length === 0) {
+        if (!user_id) {
+          setErrorMessage("Not logged in.");
+          valid = false
+        } else if (workoutName.length === 0) {
           setWorkoutNameError("Missing workout name.");
           valid = false
         } else if (workoutName.length > 100) {
@@ -93,6 +103,7 @@ function CreateWorkoutMenu (props) {
         if (valid) {
             const workoutData = {
                 workoutName,
+                creatorId: user_id,
                 setCount,
                 description,
                 exercises
@@ -103,9 +114,9 @@ function CreateWorkoutMenu (props) {
                     console.log('Workout created: ', response.data);
                 })
                 .catch(error => {
-                    console.error('Workout creation error:', error.response ? error.response.data : error.message);
+                    console.log("here")
+                    setErrorMessage('Workout creation error:', error.response ? error.response.data : error.message);
                 });
-
             props.backFunc();
         }
     }
@@ -216,6 +227,10 @@ function CreateWorkoutMenu (props) {
             <Button id="createWorkoutBtn" variant="contained" onClick={() => {
                 createWorkout();
             }}>Create Workout</Button>
+            <div style={{ width: '50%'}}>
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {successMessage && <Alert severity="success">{successMessage}</Alert>}
+            </div>
 
         </div>
     )

@@ -7,11 +7,21 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 function WorkoutListMenu (props) {
 
+    const location = useLocation();
+
+    const { user_id } = location.state || { user_id: false };
+
     const [workoutList, setWorkoutList] = useState();
 
     useEffect(() => {
 
-        axios.get(`${baseUrl}/api/workout/workout-list`)
+        getWorkouts();
+
+    }, []);
+
+    function getWorkouts () {
+
+        axios.post(`${baseUrl}/api/workout/workout-list`, {userId: user_id})
             .then((response) => {
                 setWorkoutList(response.data);
                 console.log(response.data);
@@ -20,7 +30,17 @@ function WorkoutListMenu (props) {
                 console.error('Error fetching workout list:', error);
             });
 
-    }, []);
+    }
+
+    function deleteWorkout (workoutId) {
+
+        axios.post(`${baseUrl}/api/workout/delete-workout`, {workoutId})
+            .catch((error) => {
+                console.error('Error fetching workout list:', error);
+            });
+        getWorkouts();
+
+    }
 
     return (
         <div className="workout-list-menu">
@@ -40,6 +60,9 @@ function WorkoutListMenu (props) {
                             <Button id="viewDetailsBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                 props.viewFunc(workout.workout_id);
                             }}>View Details</Button>
+                            <Button id="deleteBtn" variant="contained" color="error" sx={{ margin: 1 }} onClick={() => {
+                                deleteWorkout(workout.workout_id);
+                            }}>Delete</Button>
                         </Card>
                     </Grid>
                 })}

@@ -12,6 +12,7 @@ function CreateAccountPage () {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConf, setPasswordConf] = useState("");
+  const [phone, setPhone] = useState("")
   const [isCoach, setIsCoach] = useState(false);
 
   const [firstNameError, setFirstNameError] = useState("");
@@ -19,10 +20,10 @@ function CreateAccountPage () {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfError, setPasswordConfError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
 
   const navigate = useNavigate();
   const [generalError, setGeneralError] = useState("");
-
 
   function createAccount () {
     let valid = true;
@@ -59,7 +60,7 @@ function CreateAccountPage () {
     } else if (email.length > 32) {
       setEmailError("Email too long.");
       valid = false
-    } else if (!/^[a-zA-Z][a-zA-Z0-9]*\@[a-zA-Z][a-zA-Z0-9]*\.[a-zA-Z]{2,4}$/.test(email)) {
+    } else if (!/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email)) {
       setEmailError("Incorrect email format.");
       valid = false
     } else {
@@ -85,6 +86,17 @@ function CreateAccountPage () {
     } else {
       setPasswordConfError(null);
     } 
+
+    if (phone.length === 0) {
+      setPhoneError("Missing phone number");
+      valid = false
+    } else if (!/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(phone)) {
+      setPhoneError("Incorrect phone format");
+      valid = false
+    } else {
+      setPhoneError(null);
+    }
+
     //added here 
     if (valid) {
       // Prepare the data to send to the backend
@@ -93,6 +105,7 @@ function CreateAccountPage () {
         lastName,
         email,
         password,
+        phone,
         isCoach
       };
 
@@ -115,7 +128,7 @@ function CreateAccountPage () {
 
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
-      <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Create Account</Typography>
+      <h1>Create Account</h1>
       <Grid container spacing={2} sx={{ padding: 2 }}>
         <Grid item xs={12}>
           <Grid container spacing={2}>
@@ -149,6 +162,11 @@ function CreateAccountPage () {
               }}/>
             </Grid>
           </Grid>
+        </Grid>
+        <Grid item xs={12}>
+          <TextField sx={{ width: '220px' }}id="inpPhone" label="Phone Number" variant="filled" error={Boolean(phoneError)} helperText={phoneError || ' '} required value={phone} onChange={(event) => {
+            setPhone(event.target.value);
+          }}/>
         </Grid>
         <Grid item xs={12}>
           <TextField
