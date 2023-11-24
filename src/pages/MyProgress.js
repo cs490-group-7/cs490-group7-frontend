@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CanvasJSReact from '@canvasjs/react-charts';
 import { Typography, Button, Grid, TextField, Select, MenuItem, FormControl, Autocomplete } from '@mui/material'
 import axios from 'axios';
+import { useLocation } from 'react-router-dom';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -9,12 +10,15 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export default function MyProgress () {
+    const location = useLocation();
+    const { user_id } = location.state || { user_id: false };
+
     var dataPoints1 = [], dataPoints2 = [], dataPoints3 = [];
     const [progressData, setProgressData] = useState([]);
     
     useEffect(() => {
 
-        axios.get(`${baseUrl}/api/progress/progress-data`)
+        axios.post(`${baseUrl}/api/progress/progress-data`, {userId: user_id})
             .then((response) => {
                 setProgressData(response.data);
             })
