@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import CanvasJSReact from '@canvasjs/react-charts';
 import { Typography, Button, Grid, TextField, Select, MenuItem, FormControl, Autocomplete } from '@mui/material'
-//var CanvasJSReact = require('@canvasjs/react-charts');
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
-
-// module.exports = App;                              
 
 export default function MyProgress () {
     var dataPoints1 = [], dataPoints2 = [], dataPoints3 = [];
@@ -41,6 +38,9 @@ export default function MyProgress () {
             title: {
                 text: "text"
             },
+            subtitles: [{
+                text: "",
+            }],
             data: [
             {
                 type: "area",
@@ -60,6 +60,13 @@ export default function MyProgress () {
             chart.options.data[0].dataPoints = dataPoints3;
         }
 
+        var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
+        if(isEmpty)
+            chart.options.subtitles.push({
+            text : "No Data",
+            fontSize: 20,
+            verticalAlign : 'center',
+        });
         chart.render();
     }
     
