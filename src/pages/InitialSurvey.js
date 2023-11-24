@@ -31,7 +31,8 @@ export default function InitialSurvey () {
 
   function submit () {
     let valid = true;
-    if (!dateOfBirth) {
+    console.log(dateOfBirth)
+    if (!dateOfBirth || !dateOfBirth.isValid()) {
       setDateOfBirthError("Missing date of birth");
       valid = false
     } else {
