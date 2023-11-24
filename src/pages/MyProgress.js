@@ -64,37 +64,45 @@ export default function MyProgress () {
     }
     
     let graphType = 0;
+
+    setTimeout(function(){
+        generateGraph(graphType);
+       }, 1000);
+    
     return (
         <div className="my-progress-page">
             <h1>My Progress</h1>
             <br/>
             <br/>
             <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
-                <Grid item xs={1}>
-                    <Button id="weight" variant="outlined" sx={{ width: 100 }} onClick={() => {
-                        graphType = 0;
-                        generateGraph(graphType);
-                    }}>Weight</Button>
+                <Grid item xs={2}>
+                    <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
+                        <Grid item xs={12}>
+                            <Button id="weight" variant="outlined" sx={{ width: 1 }} onClick={() => {
+                                graphType = 0;
+                                generateGraph(graphType);
+                            }}>Weight</Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button id="calorieIntake" variant="outlined" sx={{ width: 1 }} onClick={() => {
+                                graphType = 1;
+                                generateGraph(graphType);
+                            }}>Calorie Intake</Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button id="waterIntake" variant="outlined" sx={{ width: 1 }} onClick={() => {
+                                graphType = 2;
+                                generateGraph(graphType);
+                            }}>Water Intake</Button>
+                        </Grid>
+                    </Grid>
                 </Grid>
-                <Grid item xs={1}>
-                    <Button id="calorieIntake" variant="outlined" sx={{ width: 100 }} onClick={() => {
-                        graphType = 1;
-                        generateGraph(graphType);
-                    }}>Calorie Intake</Button>
-                </Grid>
-                <Grid item xs={1}>
-                    <Button id="waterIntake" variant="outlined" sx={{ width: 100 }} onClick={() => {
-                        graphType = 2;
-                        generateGraph(graphType);
-                    }}>Water Intake</Button>
+                <Grid item xs={10} height="400px">
+                    <div id="chartContainer"></div> 
                 </Grid>
             </Grid>
-            <br/>
             
-            <div id="chartContainer"></div> 
-            <script>
-                generateGraph(0);
-            </script>
+            <br/>
             <br/>
         </div>
 
