@@ -111,7 +111,9 @@ export default function InitialSurvey () {
             gender,
             height,
             weight,
-            fitness_goal
+            fitness_goal,
+            weightGoal,
+            weightGoalValue
           };
     
           // Determine the endpoint based on whether the user is a coach or not
