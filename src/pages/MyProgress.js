@@ -15,6 +15,7 @@ export default function MyProgress () {
 
     var dataPoints1 = [], dataPoints2 = [], dataPoints3 = [];
     const [progressData, setProgressData] = useState([]);
+    const [selectedButton, setSelectedButton] = useState("Weight");
     
     useEffect(() => {
 
@@ -84,25 +85,27 @@ export default function MyProgress () {
         <div className="my-progress-page">
             <h1>My Progress</h1>
             <br/>
-            <br/>
             <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
                 <Grid item xs={2}>
                     <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
                         <Grid item xs={12}>
-                            <Button id="weight" variant="outlined" sx={{ width: 1 }} onClick={() => {
+                            <Button id="weight" variant={selectedButton === "Weight" ? "contained" : "outlined"} sx={{ width: 1 }} onClick={() => {
                                 graphType = 0;
+                                setSelectedButton("Weight");
                                 generateGraph(graphType);
                             }}>Weight</Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button id="calorieIntake" variant="outlined" sx={{ width: 1 }} onClick={() => {
+                            <Button id="calorieIntake" variant={selectedButton === "Calorie" ? "contained" : "outlined"} sx={{ width: 1 }} onClick={() => {
                                 graphType = 1;
+                                setSelectedButton("Calorie");
                                 generateGraph(graphType);
                             }}>Calorie Intake</Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button id="waterIntake" variant="outlined" sx={{ width: 1 }} onClick={() => {
+                            <Button id="waterIntake" variant={selectedButton === "Water" ? "contained" : "outlined"}sx={{ width: 1 }} onClick={() => {
                                 graphType = 2;
+                                setSelectedButton("Water");
                                 generateGraph(graphType);
                             }}>Water Intake</Button>
                         </Grid>
