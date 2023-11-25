@@ -14,13 +14,15 @@ export default function InitialSurvey () {
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
-  const [fitness_goal, setFitnessGoal] = useState("");
+  const [weightGoal, setWeightGoal] = useState("");
+  const [weightGoalValue, setWeightGoalValue] = useState("");
 
   const [dateOfBirthError, setDateOfBirthError] = useState("");
   const [genderError, setGenderError] = useState("");
   const [heightError, setHeightError] = useState("");
   const [weightError, setWeightError] = useState("");
-  const [fitnessGoalError, setFitnessGoalError] = useState("");
+  const [weightGoalError, setWeightGoalError] = useState("");
+  const [weightGoalValueError, setWeightGoalValueError] = useState("");
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -69,14 +71,21 @@ export default function InitialSurvey () {
       setWeightError(null);
     }
 
-    if (fitness_goal.length === 0) {
-      setFitnessGoalError("Missing goal.");
+    if (weightGoal.length === 0) {
+      setWeightGoalError("Missing weight goal.");
       valid = false
-    } else if (fitness_goal.length > 1000) {
-      setFitnessGoalError("Maximum 1000 characters");
+    } else {
+      setWeightGoalError(null);
+    }
+
+    if ((weightGoal === "Gain" || weightGoal === "Lose") && weightGoalValue.length === 0) {
+      setWeightGoalValueError("Missing weight goal value.");
       valid = false
-    }  else {
-      setFitnessGoalError(null);
+    } else if (weightGoal === "Maintain") {
+      setWeightGoalValue(weight);
+      setWeightGoalValueError(null);
+    } else {
+      setWeightGoalValueError(null);
     }
 
   // trigger call to the backend added here
@@ -90,7 +99,8 @@ export default function InitialSurvey () {
             gender,
             height,
             weight,
-            fitness_goal
+            weightGoal,
+            weightGoalValue
           };
     
           // Determine the endpoint based on whether the user is a coach or not
@@ -113,7 +123,7 @@ export default function InitialSurvey () {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
       <h1>Initial Survey</h1>
-        <h4>
+        <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
           Date of Birth
         </h4>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -131,7 +141,7 @@ export default function InitialSurvey () {
           />
         </LocalizationProvider>
         
-        <h4>
+        <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
           Gender
         </h4>
           <TextField
@@ -161,26 +171,53 @@ export default function InitialSurvey () {
           </TextField>
           
           
-        <h4>
+        <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
           Height (ft'in'')
         </h4>
       <TextField id="inpHeight" variant="filled" error={Boolean(heightError)} helperText={heightError || ' '} required value={height} onChange={(event) => {
         setHeight(event.target.value);
       }}/>
-          <h4>
+          <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
             Weight (lbs)
           </h4>
           <TextField id="inpWeight" variant="filled" error={Boolean(weightError)} helperText={weightError || ' '} required value={weight} onChange={(event) => {
             setWeight(event.target.value);
           }}/>
-            <h4>
-              Fitness Goal
-            </h4>
-          <TextField id="inpFitnessGoal" variant="filled" error={Boolean(fitnessGoalError)} helperText={fitnessGoalError || ' '} required value={fitness_goal} onChange={(event) => {
-            setFitnessGoal(event.target.value);
+
+      <h4 style={{ marginBottom: '20px', marginTop: '0px'}}>
+        Weight Goal
+      </h4>
+      <TextField
+        required value={weightGoal}
+        onChange={(event) => setWeightGoal(event.target.value)}
+        select
+        sx={{width: "150px"}}
+        label="Select One"
+        helperText={weightGoalError || ' '}
+        error={Boolean(weightGoalError)}
+      >
+        <MenuItem value={"Gain"}>
+          Gain
+        </MenuItem>
+        <MenuItem value={"Lose"}>
+          Lose
+        </MenuItem>
+        <MenuItem value={"Maintain"}>
+          Maintain
+        </MenuItem>
+      </TextField>
+
+      { (weightGoal === "Gain" || weightGoal === "Lose") && 
+        <div>
+          <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
+            Weight Goal Value (lbs)
+          </h4>
+          <TextField id="inpWeightGoalValue" variant="filled" error={Boolean(weightGoalValueError)} helperText={weightGoalValueError || ' '} required value={weightGoalValue} onChange={(event) => {
+            setWeightGoalValue(event.target.value);
           }}/>
-        <br/>
-        <br/>
+        </div>
+      }
+      <br></br>
       <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
