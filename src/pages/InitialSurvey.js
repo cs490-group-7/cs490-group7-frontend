@@ -14,7 +14,6 @@ export default function InitialSurvey () {
   const [gender, setGender] = useState("");
   const [height, setHeight] = useState("");
   const [weight, setWeight] = useState("");
-  const [fitness_goal, setFitnessGoal] = useState("");
   const [weightGoal, setWeightGoal] = useState("");
   const [weightGoalValue, setWeightGoalValue] = useState("");
 
@@ -22,7 +21,6 @@ export default function InitialSurvey () {
   const [genderError, setGenderError] = useState("");
   const [heightError, setHeightError] = useState("");
   const [weightError, setWeightError] = useState("");
-  const [fitnessGoalError, setFitnessGoalError] = useState("");
   const [weightGoalError, setWeightGoalError] = useState("");
   const [weightGoalValueError, setWeightGoalValueError] = useState("");
 
@@ -73,16 +71,6 @@ export default function InitialSurvey () {
       setWeightError(null);
     }
 
-    if (fitness_goal.length === 0) {
-      setFitnessGoalError("Missing goal.");
-      valid = false
-    } else if (fitness_goal.length > 1000) {
-      setFitnessGoalError("Maximum 1000 characters");
-      valid = false
-    }  else {
-      setFitnessGoalError(null);
-    }
-
     if (weightGoal.length === 0) {
       setWeightGoalError("Missing weight goal.");
       valid = false
@@ -111,7 +99,6 @@ export default function InitialSurvey () {
             gender,
             height,
             weight,
-            fitness_goal,
             weightGoal,
             weightGoalValue
           };
@@ -136,7 +123,7 @@ export default function InitialSurvey () {
   return (
     <Box sx={{ flexGrow: 1, padding: 2 }} align="left">
       <h1>Initial Survey</h1>
-        <h4>
+        <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
           Date of Birth
         </h4>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -154,7 +141,7 @@ export default function InitialSurvey () {
           />
         </LocalizationProvider>
         
-        <h4>
+        <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
           Gender
         </h4>
           <TextField
@@ -184,26 +171,20 @@ export default function InitialSurvey () {
           </TextField>
           
           
-        <h4>
+        <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
           Height (ft'in'')
         </h4>
       <TextField id="inpHeight" variant="filled" error={Boolean(heightError)} helperText={heightError || ' '} required value={height} onChange={(event) => {
         setHeight(event.target.value);
       }}/>
-          <h4>
+          <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
             Weight (lbs)
           </h4>
           <TextField id="inpWeight" variant="filled" error={Boolean(weightError)} helperText={weightError || ' '} required value={weight} onChange={(event) => {
             setWeight(event.target.value);
           }}/>
-            <h4>
-              Fitness Goal
-            </h4>
-          <TextField id="inpFitnessGoal" variant="filled" error={Boolean(fitnessGoalError)} helperText={fitnessGoalError || ' '} required value={fitness_goal} onChange={(event) => {
-            setFitnessGoal(event.target.value);
-          }}/>
 
-      <h4>
+      <h4 style={{ marginBottom: '20px', marginTop: '0px'}}>
         Weight Goal
       </h4>
       <TextField
@@ -228,7 +209,7 @@ export default function InitialSurvey () {
 
       { (weightGoal === "Gain" || weightGoal === "Lose") && 
         <div>
-          <h4>
+          <h4 style={{ marginBottom: '10px', marginTop: '0px'}}>
             Weight Goal Value (lbs)
           </h4>
           <TextField id="inpWeightGoalValue" variant="filled" error={Boolean(weightGoalValueError)} helperText={weightGoalValueError || ' '} required value={weightGoalValue} onChange={(event) => {
@@ -236,9 +217,7 @@ export default function InitialSurvey () {
           }}/>
         </div>
       }
-
-        <br/>
-        <br/>
+      <br></br>
       <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
