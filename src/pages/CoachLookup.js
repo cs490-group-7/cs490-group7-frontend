@@ -83,14 +83,6 @@ export default function CoachLookup() {
         {/* Filters */}
         <Grid item xs={12}>
           <Box display="flex" justifyContent="space-between" alignItems="center">
-            <TextField
-              id="searchQuery"
-              label="Search for coaches"
-              variant="outlined"
-              sx={{ width: '70%' }}
-              value={searchQuery}
-              onChange={(event) => setSearchQuery(event.target.value)}
-            />
             <Button variant="contained" onClick={handleManualSearch}>
               Search
             </Button>
