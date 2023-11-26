@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Card, Alert, Dialog, DialogTitle, DialogContent, DialogActions } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, Card, Alert, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl, } from '@mui/material';
 import LinearProgress from '@mui/joy/LinearProgress';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,6 +11,13 @@ export default function CoachLookup() {
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 5;
+
+  // State for filters
+  const [experienceFilter, setExperienceFilter] = useState('');
+  const [specializationsFilter, setSpecializationsFilter] = useState('');
+  const [cityFilter, setCityFilter] = useState('');
+  const [stateFilter, setStateFilter] = useState('');
+  const [priceFilter, setPriceFilter] = useState('');
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCoach, setSelectedCoach] = useState(null);
@@ -25,6 +32,25 @@ export default function CoachLookup() {
       })
       .catch(error => {
         console.error('Error fetching coach search results:', error);
+      });
+  };
+
+  const handleManualSearch = () => {
+    // Backend call for manual search with filters
+    const filters = {
+      experience: experienceFilter,
+      specializations: specializationsFilter,
+      city: cityFilter,
+      state: stateFilter,
+      price: priceFilter,
+    };
+
+    axios.post(`${baseUrl}/api/users/manual-search`, { filters })
+      .then(response => {
+        setSearchResults(response.data.coaches);
+      })
+      .catch(error => {
+        console.error('Error fetching manual search results:', error);
       });
   };
 
@@ -54,8 +80,8 @@ export default function CoachLookup() {
     <div className="coach-lookup-page">
       <h1>Coach Lookup</h1>
       <Grid container spacing={2}>
+        {/* Filters */}
         <Grid item xs={12}>
-          {/* Search input and button */}
           <Box display="flex" justifyContent="space-between" alignItems="center">
             <TextField
               id="searchQuery"
@@ -65,13 +91,56 @@ export default function CoachLookup() {
               value={searchQuery}
               onChange={(event) => setSearchQuery(event.target.value)}
             />
-            <Button variant="contained" onClick={handleSearch}>
+            <Button variant="contained" onClick={handleManualSearch}>
               Search
             </Button>
           </Box>
+          {/* Additional filters */}
+          <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
+            <TextField
+              id="experienceFilter"
+              label="Experience"
+              variant="outlined"
+              sx={{ width: '20%' }}
+              value={experienceFilter}
+              onChange={(event) => setExperienceFilter(event.target.value)}
+            />
+            <TextField
+              id="specializationsFilter"
+              label="Specializations"
+              variant="outlined"
+              sx={{ width: '20%' }}
+              value={specializationsFilter}
+              onChange={(event) => setSpecializationsFilter(event.target.value)}
+            />
+            <TextField
+              id="cityFilter"
+              label="City"
+              variant="outlined"
+              sx={{ width: '20%' }}
+              value={cityFilter}
+              onChange={(event) => setCityFilter(event.target.value)}
+            />
+            <TextField
+              id="stateFilter"
+              label="State"
+              variant="outlined"
+              sx={{ width: '20%' }}
+              value={stateFilter}
+              onChange={(event) => setStateFilter(event.target.value)}
+            />
+            <TextField
+              id="priceFilter"
+              label="Price"
+              variant="outlined"
+              sx={{ width: '20%' }}
+              value={priceFilter}
+              onChange={(event) => setPriceFilter(event.target.value)}
+            />
+          </Box>
         </Grid>
+        {/* Search results box with pagination */}
         <Grid item xs={12}>
-          {/* Search results box with pagination */}
           {displayedResults.length > 0 ? (
             <>
               {displayedResults.map((coach, index) => (
