@@ -1,10 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Card, Alert, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl, } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import LinearProgress from '@mui/joy/LinearProgress';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
+const getAllStates = () => [
+  'Alabama', 'Alaska', 'Arizona', 'Arkansas', 'California', 'Colorado', 'Connecticut', 'Delaware',
+  'Florida', 'Georgia', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky',
+  'Louisiana', 'Maine', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri',
+  'Montana', 'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York',
+  'North Carolina', 'North Dakota', 'Ohio', 'Oklahoma', 'Oregon', 'Pennsylvania', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virginia', 'Washington',
+  'West Virginia', 'Wisconsin', 'Wyoming',
+];
 
 export default function CoachLookup() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -12,47 +22,35 @@ export default function CoachLookup() {
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 5;
 
-  // State for filters
-  const [experienceFilter, setExperienceFilter] = useState('');
-  const [specializationsFilter, setSpecializationsFilter] = useState('');
-  const [cityFilter, setCityFilter] = useState('');
-  const [stateFilter, setStateFilter] = useState('');
-  const [priceFilter, setPriceFilter] = useState('');
-
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCoach, setSelectedCoach] = useState(null);
 
+  // New filter states
+  const [experience, setExperience] = useState('');
+  const [specializations, setSpecializations] = useState('');
+  const [city, setCity] = useState('');
+  const [state, setState] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
+
   const navigate = useNavigate();
 
-  const handleSearch = () => {
-    // Backend call for initial search
-    axios.post(`${baseUrl}/api/users/initial-search`)
-      .then(response => {
-        setSearchResults(response.data.coaches);
-      })
-      .catch(error => {
-        console.error('Error fetching coach search results:', error);
-      });
-  };
-
-  const handleManualSearch = () => {
-    // Backend call for manual search with filters
-    const filters = {
-      experience: experienceFilter,
-      specializations: specializationsFilter,
-      city: cityFilter,
-      state: stateFilter,
-      price: priceFilter,
-    };
-
-    axios.post(`${baseUrl}/api/users/manual-search`, { filters })
-      .then(response => {
-        setSearchResults(response.data.coaches);
-      })
-      .catch(error => {
-        console.error('Error fetching manual search results:', error);
-      });
-  };
+// Inside your handleSearch function
+const handleSearch = () => {
+  // Backend call for filtered search
+  axios.post(`${baseUrl}/api/users/filtered-search`, {
+    experience,
+    specializations,
+    city,
+    state,
+    maxPrice,
+  })
+    .then(response => {
+      setSearchResults(response.data.coaches);
+    })
+    .catch(error => {
+      console.error('Error fetching filtered coach search results:', error);
+    });
+};
 
   const handleCoachDetails = (coach) => {
     // Backend call for coach details
@@ -69,7 +67,7 @@ export default function CoachLookup() {
   useEffect(() => {
     // Fetch initial search results when the component mounts
     handleSearch();
-  }, [currentPage]); // Include currentPage as a dependency to re-run the effect when the page changes
+  }, [currentPage, experience, specializations, city, state, maxPrice]);
 
   const startIdx = (currentPage - 1) * resultsPerPage;
   const endIdx = startIdx + resultsPerPage;
@@ -80,59 +78,71 @@ export default function CoachLookup() {
     <div className="coach-lookup-page">
       <h1>Coach Lookup</h1>
       <Grid container spacing={2}>
-        {/* Filters */}
         <Grid item xs={12}>
-          <Box display="flex" justifyContent="space-between" alignItems="center">
-            <Button variant="contained" onClick={handleManualSearch}>
+            <Button variant="contained" onClick={handleSearch}>
               Search
             </Button>
-          </Box>
-          {/* Additional filters */}
-          <Box mt={2} display="flex" justifyContent="space-between" alignItems="center">
+        </Grid>
+        <Grid item xs={12}>
+           {/* Filter options */}
+          <Box display="flex" justifyContent="space-between">
             <TextField
-              id="experienceFilter"
-              label="Experience"
+              id="experience"
+              label="Min Experience (years)"
               variant="outlined"
-              sx={{ width: '20%' }}
-              value={experienceFilter}
-              onChange={(event) => setExperienceFilter(event.target.value)}
+              value={experience}
+              onChange={(event) => setExperience(event.target.value)}
             />
+            <FormControl variant="outlined">
+              <InputLabel id="specializations-label">Specializations</InputLabel>
+              <Select
+                label="Specializations"
+                id="specializations"
+                value={specializations}
+                onChange={(event) => setSpecializations(event.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                <MenuItem value="Losing Weight">Losing Weight</MenuItem>
+                <MenuItem value="Gaining Weight">Gaining Weight</MenuItem>
+                <MenuItem value="Building Muscle">Building Muscle</MenuItem>
+                <MenuItem value="Getting Stronger">Getting Stronger</MenuItem>
+                <MenuItem value="Getting Faster">Getting Faster</MenuItem>
+              </Select>
+            </FormControl>
             <TextField
-              id="specializationsFilter"
-              label="Specializations"
-              variant="outlined"
-              sx={{ width: '20%' }}
-              value={specializationsFilter}
-              onChange={(event) => setSpecializationsFilter(event.target.value)}
-            />
-            <TextField
-              id="cityFilter"
+              id="city"
               label="City"
               variant="outlined"
-              sx={{ width: '20%' }}
-              value={cityFilter}
-              onChange={(event) => setCityFilter(event.target.value)}
+              value={city}
+              onChange={(event) => setCity(event.target.value)}
             />
+                 <FormControl variant="outlined">
+              <InputLabel id="state-label">State</InputLabel>
+              <Select
+                label="State"
+                id="state"
+                value={state}
+                onChange={(event) => setState(event.target.value)}
+              >
+                <MenuItem value="">All</MenuItem>
+                {getAllStates().map((stateName) => (
+                  <MenuItem key={stateName} value={stateName}>
+                    {stateName}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
             <TextField
-              id="stateFilter"
-              label="State"
+              id="maxPrice"
+              label="Max Price"
               variant="outlined"
-              sx={{ width: '20%' }}
-              value={stateFilter}
-              onChange={(event) => setStateFilter(event.target.value)}
-            />
-            <TextField
-              id="priceFilter"
-              label="Price"
-              variant="outlined"
-              sx={{ width: '20%' }}
-              value={priceFilter}
-              onChange={(event) => setPriceFilter(event.target.value)}
+              value={maxPrice}
+              onChange={(event) => setMaxPrice(event.target.value)}
             />
           </Box>
-        </Grid>
-        {/* Search results box with pagination */}
+          </Grid>
         <Grid item xs={12}>
+          {/* Search results box with pagination */}
           {displayedResults.length > 0 ? (
             <>
               {displayedResults.map((coach, index) => (
