@@ -52,7 +52,7 @@ const handleSearch = () => {
     // Backend call for coach details
     axios.post(`${baseUrl}/api/users/coach-details`, { fname: coach.first_name, lname: coach.last_name, userId: coach.id })
       .then(response => {
-        setSelectedCoach(response.data.coaches[0]); // Assuming only one result is expected
+        setSelectedCoach(response.data.coaches[0]); 
         setOpenDialog(true);
       })
       .catch(error => {
@@ -143,7 +143,6 @@ const handleSearch = () => {
                   >
                     {`${coach.first_name} ${coach.last_name}`}
                   </Typography>
-                  {/* Add more coach details as needed */}
                 </Card>
               ))}
               <Box mt={2} display="flex" justifyContent="center">
