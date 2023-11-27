@@ -25,16 +25,12 @@ export default function CoachLookup() {
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCoach, setSelectedCoach] = useState(null);
 
-  // New filter states
   const [experience, setExperience] = useState('');
   const [specializations, setSpecializations] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
-  const navigate = useNavigate();
-
-// Inside your handleSearch function
 const handleSearch = () => {
   // Backend call for filtered search
   axios.post(`${baseUrl}/api/users/filtered-search`, {
@@ -79,11 +75,6 @@ const handleSearch = () => {
       <h1>Coach Lookup</h1>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-            <Button variant="contained" onClick={handleSearch}>
-              Search
-            </Button>
-        </Grid>
-        <Grid item xs={12}>
            {/* Filter options */}
           <Box display="flex" justifyContent="space-between">
             <TextField
@@ -93,7 +84,6 @@ const handleSearch = () => {
               value={experience}
               onChange={(event) => setExperience(event.target.value)}
             />
-            <FormControl variant="outlined">
               <InputLabel id="specializations-label">Specializations</InputLabel>
               <Select
                 label="Specializations"
@@ -108,7 +98,6 @@ const handleSearch = () => {
                 <MenuItem value="Getting Stronger">Getting Stronger</MenuItem>
                 <MenuItem value="Getting Faster">Getting Faster</MenuItem>
               </Select>
-            </FormControl>
             <TextField
               id="city"
               label="City"
@@ -116,7 +105,6 @@ const handleSearch = () => {
               value={city}
               onChange={(event) => setCity(event.target.value)}
             />
-                 <FormControl variant="outlined">
               <InputLabel id="state-label">State</InputLabel>
               <Select
                 label="State"
@@ -131,7 +119,6 @@ const handleSearch = () => {
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl>
             <TextField
               id="maxPrice"
               label="Max Price"
