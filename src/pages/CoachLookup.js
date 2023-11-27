@@ -82,6 +82,7 @@ const handleSearch = () => {
               label="Min Experience (years)"
               variant="outlined"
               value={experience}
+              required type = "number"
               onChange={(event) => setExperience(event.target.value)}
             />
               <InputLabel id="specializations-label">Specializations</InputLabel>
@@ -124,6 +125,7 @@ const handleSearch = () => {
               label="Max Price"
               variant="outlined"
               value={maxPrice}
+              required type = "number"
               onChange={(event) => setMaxPrice(event.target.value)}
             />
           </Box>
