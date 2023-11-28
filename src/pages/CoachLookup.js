@@ -85,20 +85,20 @@ const handleSearch = () => {
               required type = "number"
               onChange={(event) => setExperience(event.target.value)}
             />
-              <InputLabel id="specializations-label">Specializations</InputLabel>
-              <Select
-                label="Specializations"
-                id="specializations"
-                value={specializations}
-                onChange={(event) => setSpecializations(event.target.value)}
-              >
-                <MenuItem value="">All</MenuItem>
-                <MenuItem value="Losing Weight">Losing Weight</MenuItem>
-                <MenuItem value="Gaining Weight">Gaining Weight</MenuItem>
-                <MenuItem value="Building Muscle">Building Muscle</MenuItem>
-                <MenuItem value="Getting Stronger">Getting Stronger</MenuItem>
-                <MenuItem value="Getting Faster">Getting Faster</MenuItem>
-              </Select>
+             <Select
+              label="Specializations"
+              id="specializations"
+              value={specializations}
+              onChange={(event) => setSpecializations(event.target.value)}
+              displayEmpty 
+             >
+            <MenuItem value="">Specializations</MenuItem>
+              <MenuItem value="Losing Weight">Losing Weight</MenuItem>
+              <MenuItem value="Gaining Weight">Gaining Weight</MenuItem>
+              <MenuItem value="Building Muscle">Building Muscle</MenuItem>
+              <MenuItem value="Getting Stronger">Getting Stronger</MenuItem>
+              <MenuItem value="Getting Faster">Getting Faster</MenuItem>
+            </Select>
             <TextField
               id="city"
               label="City"
@@ -106,14 +106,14 @@ const handleSearch = () => {
               value={city}
               onChange={(event) => setCity(event.target.value)}
             />
-              <InputLabel id="state-label">State</InputLabel>
               <Select
                 label="State"
                 id="state"
                 value={state}
                 onChange={(event) => setState(event.target.value)}
+                displayEmpty 
               >
-                <MenuItem value="">All</MenuItem>
+                <MenuItem value="">State</MenuItem>
                 {getAllStates().map((stateName) => (
                   <MenuItem key={stateName} value={stateName}>
                     {stateName}
