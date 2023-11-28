@@ -16,12 +16,17 @@ import LoginPage from './pages/LoginPage';
 import InitialSurvey from './pages/InitialSurvey';
 import CoachSurvey from './pages/CoachSurvey';
 import { AuthProvider } from './components/AuthContext';
+import Home from './pages/Home';
 const router = createBrowserRouter([
   {
     element: <App/>,
     children: [
       {
         path: "/",
+        element: <Home/>,
+      },
+      {
+        path: "/dashboard",
         element: <Dashboard/>,
       },
       {

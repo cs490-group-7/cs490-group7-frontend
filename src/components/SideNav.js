@@ -16,8 +16,8 @@ export default function SideNav() {
     <div className="side-nav">
       <h2 className="title">Fit Fusion</h2>
       <a
-        className={location.pathname === '/' ? 'active' : ''}
-        onClick={() => navigate("/", { state: location.state })}
+        className={location.pathname === '/dashboard' ? 'active' : ''}
+        onClick={() => navigate("/dashboard", { state: location.state })}
         >
         Dashboard
       </a>
