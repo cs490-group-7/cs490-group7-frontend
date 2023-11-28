@@ -1,5 +1,7 @@
 
-import React from 'react';
+import React, {useContext } from 'react';
+import { AuthContext } from './components/AuthContext';
+import { Navigate } from 'react-router-dom';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
@@ -17,7 +19,11 @@ import InitialSurvey from './pages/InitialSurvey';
 import CoachSurvey from './pages/CoachSurvey';
 import { AuthProvider } from './components/AuthContext';
 import Home from './pages/Home';
-const router = createBrowserRouter([
+
+const AppRouter = () => {
+  const { isAuthenticated } = useContext(AuthContext); 
+
+  const router = createBrowserRouter([
   {
     element: <App/>,
     children: [
@@ -27,27 +33,27 @@ const router = createBrowserRouter([
       },
       {
         path: "/dashboard",
-        element: <Dashboard/>,
+        element: isAuthenticated ? <Dashboard/> : <Navigate to="/login" />
       },
       {
         path: "/my-progress",
-        element: <MyProgress/>,
+        element:  isAuthenticated ? <MyProgress/> : <Navigate to="/login" />
       },
       {
         path: "/workouts",
-        element: <Workouts/>,
+        element:  isAuthenticated ? <Workouts/> : <Navigate to="/login" /> 
       },
       {
         path: "/my-coach-client",
-        element: <MyCoachClient/>,
+        element:  isAuthenticated ? <MyCoachClient/> : <Navigate to="/login" />
       },
       {
         path: "/coach-lookup",
-        element: <CoachLookup/>,
+        element: isAuthenticated ? <CoachLookup/> : <Navigate to="/login" /> 
       },
       {
         path: "/account-settings",
-        element: <AccountSettings/>
+        element:  isAuthenticated ? <AccountSettings/> : <Navigate to="/login" />
       },
       {
         path: "/login",
@@ -70,11 +76,14 @@ const router = createBrowserRouter([
   },
 ]);
 
+return <RouterProvider router={router} />;
+};
+
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
     <AuthProvider>
-      <RouterProvider router={router} />
+      <AppRouter />
     </AuthProvider>
   </React.StrictMode>
 );
