@@ -44,7 +44,7 @@ function Dashboard () {
         // TODO: backend call to retrieve today's workout
         // TODO: backend call to retrieve progress status
 
-        axios.get(`${baseUrl}/api/data/home-mock-data`)
+        axios.get(`${baseUrl}/api/data/dashboard-mock-data`)
           .then(response => {
             const mockData = response.data;
             setDailyFilled(mockData.dailyFilled);

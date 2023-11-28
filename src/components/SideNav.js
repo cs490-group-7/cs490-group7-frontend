@@ -15,6 +15,11 @@ export default function SideNav() {
   return (
     <div className="side-nav">
       <h2 className="title">Fit Fusion</h2>
+      {!isAuthenticated && (
+        <a className={location.pathname === '/' ? 'active' : ''} onClick={() => navigate("/")}>Home</a>
+      )}
+      {isAuthenticated && (
+        <>
       <a
         className={location.pathname === '/dashboard' ? 'active' : ''}
         onClick={() => navigate("/dashboard", { state: location.state })}
@@ -51,13 +56,14 @@ export default function SideNav() {
         >
         Account Settings
       </a>
-      {isAuthenticated ?
         <LogoutButton />
-      : 
-      <Button onClick={() => navigate("/login", { state: location.state })} variant="outlined" sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
-        LOG IN  
-      </Button>
-      }
-    </div>
-  );
-}
+        </>
+        )}
+        {!isAuthenticated && (
+          <Button onClick={() => navigate("/login")} variant="outlined" sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
+            LOG IN  
+          </Button>
+        )}
+      </div>
+    );
+  }
