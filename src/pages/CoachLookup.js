@@ -76,6 +76,7 @@ const handleSearch = () => {
       <Grid container spacing={2}>
         <Grid item xs={12}>
            {/* Filter options */}
+          <h3 style={{ marginTop: 0}}>Filter:</h3>
           <Box display="flex" justifyContent="space-between">
             <TextField
               id="experience"
