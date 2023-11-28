@@ -40,6 +40,12 @@ export default function SideNav() {
         My Coach/Clients
       </a>
       <a
+        className={location.pathname === '/my-clients' ? 'active' : ''}
+        onClick={() => navigate("/my-clients", { state: location.state })}
+        >
+        My Clients
+      </a>
+      <a
         className={location.pathname === '/coach-lookup' ? 'active' : ''}
         onClick={() => navigate("/coach-lookup", { state: location.state })}
         >

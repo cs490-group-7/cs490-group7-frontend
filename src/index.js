@@ -7,6 +7,7 @@ import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import MyProgress from './pages/MyProgress';
 import MyCoachClient from './pages/MyCoachClient';
+import MyClients from './pages/MyClients';
 import CoachLookup from './pages/CoachLookup';
 import AccountSettings from './pages/AccountSettings';
 import Home from './pages/Home';
@@ -35,6 +36,10 @@ const router = createBrowserRouter([
       {
         path: "/my-coach-client",
         element: <MyCoachClient/>,
+      },
+      {
+        path: "/my-clients",
+        element: <MyClients/>,
       },
       {
         path: "/coach-lookup",
