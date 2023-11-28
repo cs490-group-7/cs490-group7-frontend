@@ -9,7 +9,7 @@ import MyProgress from './pages/MyProgress';
 import MyCoachClient from './pages/MyCoachClient';
 import CoachLookup from './pages/CoachLookup';
 import AccountSettings from './pages/AccountSettings';
-import Home from './pages/Home';
+import Dashboard from './pages/Dashboard';
 import Workouts from './pages/Workouts';
 import CreateAccountPage from './pages/CreateAccountPage';
 import LoginPage from './pages/LoginPage';
@@ -22,7 +22,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <Home/>,
+        element: <Dashboard/>,
       },
       {
         path: "/my-progress",

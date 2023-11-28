@@ -19,7 +19,7 @@ export default function SideNav() {
         className={location.pathname === '/' ? 'active' : ''}
         onClick={() => navigate("/", { state: location.state })}
         >
-        Home
+        Dashboard
       </a>
       <a
         className={location.pathname === '/my-progress' ? 'active' : ''}

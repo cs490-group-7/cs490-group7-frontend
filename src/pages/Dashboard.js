@@ -6,7 +6,7 @@ import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
-function Home () {
+function Dashboard () {
 
     const navigate = useNavigate();
     const location = useLocation();
@@ -159,9 +159,9 @@ function Home () {
     }
 
     return (
-        <div className="home-page">
+        <div className="dashboard-page">
 
-            <h1>Home</h1>
+            <h1>Dashboard</h1>
             <Grid container spacing={2}>
 
                 {/* daily check-in */}
@@ -259,4 +259,4 @@ function Home () {
     )
 }
 
-export default Home;
+export default Dashboard;
