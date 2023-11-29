@@ -38,8 +38,8 @@ function WorkoutListMenu (props) {
             .catch((error) => {
                 console.error('Error fetching workout list:', error);
             });
+        window.location.reload()
         getWorkouts();
-
     }
 
     return (
