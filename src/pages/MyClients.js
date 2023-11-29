@@ -21,12 +21,10 @@ export default function MyClient() {
 
     return (
         <div className="my-clients-page">
+            <h1>My Clients</h1>
             <AppBar position="static">
                 <Toolbar>
-                    <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-                        My Clients
-                    </Typography>
-                    <Button color="inherit" href="#current-clients">Current Clients</Button>
+                    <Button color="inherit" href="#current-clients" sx={{ marginRight: '10px'}} >Current Clients</Button>
                     <Button color="inherit" href="#client-requests">Client Requests</Button>
                 </Toolbar>
             </AppBar>
