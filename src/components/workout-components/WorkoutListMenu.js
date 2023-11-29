@@ -38,8 +38,8 @@ function WorkoutListMenu (props) {
             .catch((error) => {
                 console.error('Error fetching workout list:', error);
             });
+        window.location.reload()
         getWorkouts();
-
     }
 
     return (
@@ -60,6 +60,9 @@ function WorkoutListMenu (props) {
                             <Button id="viewDetailsBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                 props.viewFunc(workout.workout_id);
                             }}>View Details</Button>
+                            <Button id="editBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                                props.editFunc(workout.workout_id);
+                            }}>Edit</Button>
                             <Button id="deleteBtn" variant="contained" color="error" sx={{ margin: 1 }} onClick={() => {
                                 deleteWorkout(workout.workout_id);
                             }}>Delete</Button>

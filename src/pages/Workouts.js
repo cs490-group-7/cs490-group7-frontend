@@ -5,6 +5,7 @@ import CreateWorkoutMenu from '../components/workout-components/CreateWorkoutMen
 import EditWorkoutMenu from '../components/workout-components/EditWorkoutMenu.js';
 import WorkoutDetailsMenu from '../components/workout-components/WorkoutDetailsMenu.js';
 import WorkoutListMenu from '../components/workout-components/WorkoutListMenu.js';
+import WorkoutCalendar from '../components/workout-components/WorkoutCalendar.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -39,6 +40,11 @@ function Workouts () {
         setRightMenu(RightMenu.Details);
     }
 
+    function editWorkoutDetails (wid) {
+        setWorkoutId(wid);
+        setRightMenu(RightMenu.Edit);
+    }
+
     return (
         <div className="workouts-page">
 
@@ -47,14 +53,14 @@ function Workouts () {
 
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
-                        Calendar (to be added)
+                        <WorkoutCalendar/>
                     </Card>
                 </Grid>
 
                 <Grid item xs={8}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
 
-                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails}>
+                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails}>
                         </WorkoutListMenu>}
 
                         {rightMenu === RightMenu.Details && <WorkoutDetailsMenu backFunc={returnToList} workoutId={workoutId}>
@@ -63,7 +69,7 @@ function Workouts () {
                         {rightMenu === RightMenu.Create && <CreateWorkoutMenu backFunc={returnToList}>
                         </CreateWorkoutMenu>}
 
-                        {rightMenu === RightMenu.Edit && <EditWorkoutMenu>
+                        {rightMenu === RightMenu.Edit && <EditWorkoutMenu backFunc={returnToList} workoutId={workoutId}>
                         </EditWorkoutMenu>}
                     
                     </Card>
