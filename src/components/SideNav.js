@@ -15,11 +15,16 @@ export default function SideNav() {
   return (
     <div className="side-nav">
       <h2 className="title">Fit Fusion</h2>
+      {!isAuthenticated && (
+        <a className={location.pathname === '/' ? 'active' : ''} onClick={() => navigate("/")}>Home</a>
+      )}
+      {isAuthenticated && (
+        <>
       <a
-        className={location.pathname === '/' ? 'active' : ''}
-        onClick={() => navigate("/", { state: location.state })}
+        className={location.pathname === '/dashboard' ? 'active' : ''}
+        onClick={() => navigate("/dashboard", { state: location.state })}
         >
-        Home
+        Dashboard
       </a>
       <a
         className={location.pathname === '/my-progress' ? 'active' : ''}
@@ -34,10 +39,16 @@ export default function SideNav() {
         Workouts
       </a>
       <a
-        className={location.pathname === '/my-coach-client' ? 'active' : ''}
-        onClick={() => navigate("/my-coach-client", { state: location.state })}
+        className={location.pathname === '/my-clients' ? 'active' : ''}
+        onClick={() => navigate("/my-clients", { state: location.state })}
         >
-        My Coach/Clients
+        My Clients
+      </a>
+      <a
+        className={location.pathname === '/my-coach' ? 'active' : ''}
+        onClick={() => navigate("/my-coach", { state: location.state })}
+        >
+        My Coach
       </a>
       <a
         className={location.pathname === '/coach-lookup' ? 'active' : ''}
@@ -51,13 +62,14 @@ export default function SideNav() {
         >
         Account Settings
       </a>
-      {isAuthenticated ?
         <LogoutButton />
-      : 
-      <Button onClick={() => navigate("/login", { state: location.state })} variant="outlined" sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
-        LOG IN  
-      </Button>
-      }
-    </div>
-  );
-}
+        </>
+        )}
+        {!isAuthenticated && (
+          <Button onClick={() => navigate("/login")} variant="outlined" sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
+            LOG IN  
+          </Button>
+        )}
+      </div>
+    );
+  }
