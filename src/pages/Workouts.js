@@ -5,6 +5,7 @@ import CreateWorkoutMenu from '../components/workout-components/CreateWorkoutMen
 import EditWorkoutMenu from '../components/workout-components/EditWorkoutMenu.js';
 import WorkoutDetailsMenu from '../components/workout-components/WorkoutDetailsMenu.js';
 import WorkoutListMenu from '../components/workout-components/WorkoutListMenu.js';
+import WorkoutCalendar from '../components/workout-components/WorkoutCalendar.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
@@ -52,7 +53,7 @@ function Workouts () {
 
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
-                        Calendar (to be added)
+                        <WorkoutCalendar/>
                     </Card>
                 </Grid>
 
