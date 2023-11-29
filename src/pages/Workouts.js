@@ -39,6 +39,11 @@ function Workouts () {
         setRightMenu(RightMenu.Details);
     }
 
+    function editWorkoutDetails (wid) {
+        setWorkoutId(wid);
+        setRightMenu(RightMenu.Edit);
+    }
+
     return (
         <div className="workouts-page">
 
@@ -54,7 +59,7 @@ function Workouts () {
                 <Grid item xs={8}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
 
-                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails}>
+                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails}>
                         </WorkoutListMenu>}
 
                         {rightMenu === RightMenu.Details && <WorkoutDetailsMenu backFunc={returnToList} workoutId={workoutId}>
@@ -63,7 +68,7 @@ function Workouts () {
                         {rightMenu === RightMenu.Create && <CreateWorkoutMenu backFunc={returnToList}>
                         </CreateWorkoutMenu>}
 
-                        {rightMenu === RightMenu.Edit && <EditWorkoutMenu>
+                        {rightMenu === RightMenu.Edit && <EditWorkoutMenu backFunc={returnToList} workoutId={workoutId}>
                         </EditWorkoutMenu>}
                     
                     </Card>
