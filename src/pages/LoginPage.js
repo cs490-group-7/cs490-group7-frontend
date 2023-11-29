@@ -65,7 +65,7 @@ function LoginPage () {
               contextLogin(response.data.token);
               // Redirect to the homepage
               let user_id = response.data.ident;
-            navigate('/', { state: { user_id } });
+            navigate('/dashboard', { state: { user_id } });
 
             } else {
               console.error('Login failed:', response.data.message);
