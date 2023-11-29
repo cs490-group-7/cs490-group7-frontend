@@ -39,10 +39,16 @@ export default function SideNav() {
         Workouts
       </a>
       <a
-        className={location.pathname === '/my-coach-client' ? 'active' : ''}
-        onClick={() => navigate("/my-coach-client", { state: location.state })}
+        className={location.pathname === '/my-clients' ? 'active' : ''}
+        onClick={() => navigate("/my-clients", { state: location.state })}
         >
-        My Coach/Clients
+        My Clients
+      </a>
+      <a
+        className={location.pathname === '/my-coach' ? 'active' : ''}
+        onClick={() => navigate("/my-coach", { state: location.state })}
+        >
+        My Coach
       </a>
       <a
         className={location.pathname === '/coach-lookup' ? 'active' : ''}

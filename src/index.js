@@ -8,7 +8,8 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
 import MyProgress from './pages/MyProgress';
-import MyCoachClient from './pages/MyCoachClient';
+import MyCoach from './pages/MyCoach';
+import MyClients from './pages/MyClients';
 import CoachLookup from './pages/CoachLookup';
 import AccountSettings from './pages/AccountSettings';
 import Dashboard from './pages/Dashboard';
@@ -44,8 +45,12 @@ const AppRouter = () => {
         element:  isAuthenticated ? <Workouts/> : <Navigate to="/login" /> 
       },
       {
-        path: "/my-coach-client",
-        element:  isAuthenticated ? <MyCoachClient/> : <Navigate to="/login" />
+        path: "/my-coach",
+        element: isAuthenticated ? <MyCoach/> : <Navigate to="/login" /> 
+      },
+      {
+        path: "/my-clients",
+        element: isAuthenticated ? <MyClients/> : <Navigate to="/login" /> 
       },
       {
         path: "/coach-lookup",
