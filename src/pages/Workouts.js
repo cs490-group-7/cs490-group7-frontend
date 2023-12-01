@@ -45,6 +45,14 @@ function Workouts () {
         setRightMenu(RightMenu.Edit);
     }
 
+    function selectWorkout (wid) {
+        setWorkoutId(wid);
+    }
+
+    function assignWorkoutToCalendar (wid) {
+        setWorkoutId(wid);
+    }
+
     return (
         <div className="workouts-page">
 
@@ -53,14 +61,14 @@ function Workouts () {
 
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
-                        <WorkoutCalendar/>
+                        <WorkoutCalendar selectedWorkout={workoutId}/>
                     </Card>
                 </Grid>
 
                 <Grid item xs={8}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
 
-                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails}>
+                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails} selectFunc={selectWorkout} assignFunc={assignWorkoutToCalendar}>
                         </WorkoutListMenu>}
 
                         {rightMenu === RightMenu.Details && <WorkoutDetailsMenu backFunc={returnToList} workoutId={workoutId}>
