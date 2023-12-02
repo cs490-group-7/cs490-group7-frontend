@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CanvasJSReact from '@canvasjs/react-charts';
-import { Typography, Button, Grid, TextField, Select, MenuItem, FormControl, Autocomplete } from '@mui/material'
+import { Button, Grid, TextField, Alert} from '@mui/material'
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
@@ -17,6 +17,13 @@ export default function MyProgress () {
     const [progressData, setProgressData] = useState([]);
     const [selectedButton, setSelectedButton] = useState("Weight");
     
+    const [goalInfo, setGoalInfo] = useState([]);
+    const [inputErrors, setInputErrors] = useState({weightGoal: '', weightGoalValue: ''});
+    const [hasError, setHasError] = useState({weightGoal: false, weightGoalValue: false});
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [formDisabled, setFormDisabled] = useState(true);
+
     useEffect(() => {
 
         axios.post(`${baseUrl}/api/progress/progress-data`, {userId: user_id})
@@ -79,8 +86,56 @@ export default function MyProgress () {
 
     setTimeout(function(){
         generateGraph(graphType);
-       }, 1000);
+    }, 1000);
     
+    //---------
+    useEffect(() => {
+        axios.post(`${baseUrl}/api/progress/goal-info`, {userId: user_id})
+          .then((response) => {
+            setGoalInfo(response.data);
+          })
+          .catch((error) => {
+            setErrorMessage(error.data ? error.data.message : 'Error reaching server');
+        });
+      }, [user_id])
+
+    const handleChange = (e, field) => {
+        setGoalInfo({...goalInfo, [field]: e.target.value})
+        setInputErrors({...inputErrors, [field]: ''})
+        setHasError({...hasError, [field]: false})
+        setFormDisabled(false)
+    }
+    const handleSubmit = () => {
+        console.log(goalInfo)
+        if(goalInfo.weightGoalValue === ""){
+            setInputErrors({...inputErrors, weightGoalValue: 'This value cannot be empty'});
+            setHasError({...hasError, weightGoalValue: true})
+            return;
+        }
+        else if(!/^[1-9][0-9]*$/.test(goalInfo.weightGoalValue)){
+            setInputErrors({...inputErrors, weightGoalValue: 'Incorrect format for weight'});
+            setHasError({...hasError, weightGoalValue: true})
+            return;
+        }
+    }
+    function goalText(weightGoal){
+        if (weightGoal === 'Gain'){
+            return(
+                <p>Gain weight to</p>
+            )
+        }
+        else if (weightGoal === 'Maintain'){
+            return(
+                <p>Maintain weight at</p>
+            )
+        }
+        else if (weightGoal === 'Lose'){
+            return(
+                <p>Lose weight to</p>
+            )
+        }
+    }
+
     return (
         <div className="my-progress-page">
             <h1>My Progress</h1>
@@ -118,6 +173,27 @@ export default function MyProgress () {
             
             <br/>
             <br/>
+            <h3>Current Goal</h3>
+            {goalText(goalInfo.weightGoal)}
+            <TextField
+            InputLabelProps={{ shrink: true}}
+            label="Target Weight"
+            value={goalInfo.weightGoalValue}
+            onChange={(e) => handleChange(e, 'weightGoalValue')}
+            error={hasError.weightGoalValue}
+            helperText={inputErrors.weightGoalValue}
+            sx={{width: '300px'}}
+            variant='filled'
+            />
+            <br/>
+            <br/>
+            <Button variant='contained' onClick={handleSubmit} disabled={formDisabled}>
+                Save Changes
+            </Button>
+            <div style={{ width: '40%'}}>
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {successMessage && <Alert severity="success">{successMessage}</Alert>}
+            </div>
         </div>
 
     )
