@@ -17,6 +17,10 @@ export const AuthProvider = ({ children }) => {
         } else {
             console.log('No authentication token found');
         }
+        const userType = localStorage.getItem('userType');
+        if (userType){
+          setUserType(userType);
+        }
     } catch (err) {
         setError(err.message);
         console.error('Error reading token from localStorage:', err);
@@ -24,7 +28,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = (token) => {
+  const login = (token, userType) => {
     try {
         localStorage.setItem('userToken', token);
         localStorage.setItem('userType', userType);
