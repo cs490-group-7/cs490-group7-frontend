@@ -62,6 +62,7 @@ function LoginPage () {
           .then(response => {
             if (response.data.message === "Logged in successfully") {
               console.log('Login successful', response.data);
+              localStorage.setItem('userType', response.data.userType);
               contextLogin(response.data.token, response.data.userType);
               // Redirect to the homepage
               let user_id = response.data.ident;
