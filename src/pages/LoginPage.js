@@ -62,10 +62,11 @@ function LoginPage () {
           .then(response => {
             if (response.data.message === "Logged in successfully") {
               console.log('Login successful', response.data);
-              contextLogin(response.data.token);
+              contextLogin(response.data.token, response.data.userType);
               // Redirect to the homepage
               let user_id = response.data.ident;
-            navigate('/dashboard', { state: { user_id } });
+              let userType = response.data.userType
+            navigate('/dashboard', { state: { user_id, userType } });
 
             } else {
               console.error('Login failed:', response.data.message);
