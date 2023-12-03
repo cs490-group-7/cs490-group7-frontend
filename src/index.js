@@ -1,4 +1,3 @@
-
 import React, {useContext } from 'react';
 import { AuthContext } from './components/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -20,9 +19,10 @@ import InitialSurvey from './pages/InitialSurvey';
 import CoachSurvey from './pages/CoachSurvey';
 import { AuthProvider } from './components/AuthContext';
 import Home from './pages/Home';
+import AdminPage from './pages/AdminPage';
 
 const AppRouter = () => {
-  const { isAuthenticated } = useContext(AuthContext); 
+  const { isAuthenticated, userType} = useContext(AuthContext); 
 
   const router = createBrowserRouter([
   {
@@ -46,11 +46,11 @@ const AppRouter = () => {
       },
       {
         path: "/my-coach",
-        element: isAuthenticated ? <MyCoach/> : <Navigate to="/login" /> 
+        element: isAuthenticated ? (userType !== 'Coach' ? <MyCoach /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       {
         path: "/my-clients",
-        element: isAuthenticated ? <MyClients/> : <Navigate to="/login" /> 
+        element: isAuthenticated ? (userType !== 'Client' ? <MyClients /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       {
         path: "/coach-lookup",
@@ -75,7 +75,11 @@ const AppRouter = () => {
       {
         path: "/coach-survey",
         element: <CoachSurvey/>
-      }
+      },
+      {
+      path: "/admin",
+          element: isAuthenticated ? (userType === 'Admin' ? <AdminPage /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
+      },
       
     ]
   },
