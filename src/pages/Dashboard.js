@@ -89,7 +89,7 @@ function Dashboard () {
             .catch((error) => {
                 console.error('Error fetching dashboard data:', error);
             });
-        //setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
+        setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
         setTimeout(function(){
             setProgress(getProgress());
            }, 1000);
@@ -171,8 +171,8 @@ function Dashboard () {
 
     function getProgress () {
         if (goalTarget - goalBaseline === 0 || weightGoal === "Maintain"){
-            console.log("yes "+goalTarget);
-            console.log("yes2 "+goalCurrent);
+            console.log("target: "+goalTarget);
+            console.log("current: "+goalCurrent);
             return 1-(Math.abs(goalTarget - goalCurrent) / goalTarget);
         }
         return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
