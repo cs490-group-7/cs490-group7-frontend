@@ -8,7 +8,6 @@ import { Button } from '@mui/material';
 
 export default function SideNav() {
   const { isAuthenticated, userType } = useContext(AuthContext);
-  console.log('SideNav, isAuthenticated:', isAuthenticated, userType);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -40,7 +39,7 @@ export default function SideNav() {
       </a>
       {userType !== 'Client' && (
       <a
-        className={location.pathname === '/my-clients' ? 'active' : ''}
+        className={location.pathname.substring(0,11) === '/my-clients' ? 'active' : ''}
         onClick={() => navigate("/my-clients", { state: location.state })}
         >
         My Clients

@@ -20,6 +20,8 @@ import CoachSurvey from './pages/CoachSurvey';
 import { AuthProvider } from './components/AuthContext';
 import Home from './pages/Home';
 import AdminPage from './pages/AdminPage';
+import ClientRequests from './components/ClientRequests';
+import ClientDetails from './components/ClientDetails';
 
 const AppRouter = () => {
   const { isAuthenticated, userType} = useContext(AuthContext); 
@@ -53,6 +55,14 @@ const AppRouter = () => {
         element: isAuthenticated ? (userType !== 'Client' ? <MyClients /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       {
+        path: "/my-clients/:clientId",
+        element: isAuthenticated ? (userType !== 'Client' ? <ClientDetails/> : <Navigate to="/dashboard" />) : <Navigate to="/login" />,
+      },
+      {
+        path:'/my-clients/requests',
+        element: isAuthenticated ? (userType !== 'Client' ? <ClientRequests/> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
+      },
+      {
         path: "/coach-lookup",
         element: isAuthenticated ? <CoachLookup/> : <Navigate to="/login" /> 
       },
@@ -62,19 +72,19 @@ const AppRouter = () => {
       },
       {
         path: "/login",
-        element: <LoginPage/>
+        element: isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage/>
       },
       {
         path: "/register",
-        element: <CreateAccountPage/>
+        element:  isAuthenticated ? <Navigate to="/dashboard" /> : <CreateAccountPage/>
       },
       {
         path: "/initial-survey", 
-        element: <InitialSurvey/>
+        element:  isAuthenticated ? <Navigate to="/dashboard" /> : <InitialSurvey/>
       },
       {
         path: "/coach-survey",
-        element: <CoachSurvey/>
+        element:  isAuthenticated ? <Navigate to="/dashboard" /> : <CoachSurvey/>
       },
       {
       path: "/admin",

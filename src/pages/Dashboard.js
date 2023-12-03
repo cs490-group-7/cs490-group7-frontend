@@ -26,6 +26,7 @@ function Dashboard () {
     const [moodError, setMoodError] = useState(null);
 
     const [goalMessage, setGoalMessage] = useState(null);
+    const [weightGoal, setWeightGoal] = useState(null);
     const [goalBaseline, setGoalBaseline] = useState(0);
     const [goalTarget, setGoalTarget] = useState(0);
     const [goalCurrent, setGoalCurrent] = useState(0);
@@ -39,35 +40,40 @@ function Dashboard () {
 
     const { isCoach } = location.state || { isCoach: false };
     useEffect(() => {
-        // TODO: backend call to retrieve whether or not daily check-in has been filled today
-        // TODO: backend call to retrieve goal overview
-        // TODO: backend call to retrieve today's workout
-        // TODO: backend call to retrieve progress status
+        axios.post(`${baseUrl}/api/data/dashboard-data`, {userId: user_id})
+            .then((response) => {
+                setGoalBaseline(response.data.goalBaseline);
+                setGoalTarget(response.data.weightGoalValue);
+                setGoalCurrent(response.data.currentWeight);
+                if (response.data.weightGoal === "Maintain"){
+                    setGoalMessage(response.data.weightGoal + " " + response.data.weightGoalValue + " pounds");
+                }
+                else if (response.data.weightGoal === "Gain"){
+                    if (response.data.weightGoalValue-response.data.currentWeight > 0){
+                        setGoalMessage(response.data.weightGoal + " " + (response.data.weightGoalValue-response.data.currentWeight) + " pounds");
+                    }
+                    else{
+                        setGoalMessage("Goal reached!")
+                    }
+                }
+                else{
+                    if (response.data.currentWeight-response.data.weightGoalValue > 0){
+                        setGoalMessage(response.data.weightGoal + " " + (response.data.currentWeight-response.data.weightGoalValue) + " pounds");
+                    }
+                    else{
+                        setGoalMessage("Goal reached!")
+                    }
+                }
+                setWeightGoal(response.data.weightGoal);
 
-        axios.get(`${baseUrl}/api/data/dashboard-mock-data`)
-          .then(response => {
-            const mockData = response.data;
-            setDailyFilled(mockData.dailyFilled);
-            setCalories(mockData.calories);
-            setWaterIntake(mockData.waterIntake);
-            setWeight(mockData.weight);
-            setCaloriesError(mockData.caloriesError);
-            setWaterIntakeError(mockData.waterIntakeError);
-            setWeightError(mockData.weightError);
-            setGoalMessage(mockData.goalMessage);
-            setGoalBaseline(mockData.goalBaseline);
-            setGoalTarget(mockData.goalTarget);
-            setGoalCurrent(mockData.goalCurrent);
-            setProgress(mockData.progress);
-            setWorkoutName(mockData.workoutName);
-            setWorkoutCompletion(mockData.workoutCompletion);
-          })
-          .catch(error => {
-            console.error('Error fetching mock data:', error);
-          });
-        setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
+                setWorkoutName(response.data.workout_name);
+                setWorkoutCompletion(response.data.workoutCompletion);
+            })
+            .catch((error) => {
+                console.error('Error fetching dashboard data:', error);
+            });
+        //setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
     }, []);
-
     function submitDaily () {
         if(!signedIn){
             setErrorMessage("You must log in before submitting a daily survey");
@@ -123,7 +129,6 @@ function Dashboard () {
           // Determine the endpoint based on whether the user is a coach or not
           axios.post(`${baseUrl}/api/surveys/daily-survey`, surveyData)
             .then(response => {
-              console.log('Survey submitted:', response.data);
               SetSuccessMessage('Daily Survey Submitted!');
               setDailyFilled(true);
             })
@@ -143,8 +148,15 @@ function Dashboard () {
 }
 
     function getProgress () {
+        if (goalTarget - goalBaseline === 0 || weightGoal === "Maintain"){
+            return 1-(Math.abs(goalTarget - goalCurrent) / goalTarget);
+        }
         return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
     }
+
+    setTimeout(function(){
+        setProgress(getProgress());
+    }, 0);
 
     function login () {
 
@@ -174,16 +186,16 @@ function Dashboard () {
                             </div> 
                             :
                             <div>
-                                <TextField id="inpCalories" label="Calories Consumed" variant="filled" sx={{ margin: 1 }} error={caloriesError} helperText={caloriesError} required type="number" value={calories} onChange={(event) => {
+                                <TextField id="inpCalories" label="Calories Consumed" variant="filled" sx={{ margin: 1 }} error={caloriesError} helperText={caloriesError} required type="number" onChange={(event) => {
                                     setCalories(event.target.value);
                                 }}/>
-                                <TextField id="inpWaterIntake" label="Water Intake (in mL)" variant="filled" sx={{ margin: 1 }} error={waterIntakeError} helperText={waterIntakeError} required type="number" value={waterIntake} onChange={(event) => {
+                                <TextField id="inpWaterIntake" label="Water Intake (in mL)" variant="filled" sx={{ margin: 1 }} error={waterIntakeError} helperText={waterIntakeError} required type="number" onChange={(event) => {
                                     setWaterIntake(event.target.value);
                                 }}/>
-                                <TextField id="inpWeight" label="Weight" variant="filled" sx={{ margin: 1 }} error={weightError} helperText={weightError} required type="number" value={weight} onChange={(event) => {
+                                <TextField id="inpWeight" label="Weight" variant="filled" sx={{ margin: 1 }} error={weightError} helperText={weightError} required type="number" onChange={(event) => {
                                     setWeight(event.target.value);
                                 }}/>
-                                <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError}  value={mood} onChange={(event) => {
+                                <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError} onChange={(event) => {
                                     setMood(event.target.value);
                                 }}/><br></br>
                                 <Button id="submitDailyBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
