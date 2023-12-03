@@ -1,4 +1,3 @@
-
 import React, {useContext } from 'react';
 import { AuthContext } from './components/AuthContext';
 import { Navigate } from 'react-router-dom';
@@ -20,11 +19,12 @@ import InitialSurvey from './pages/InitialSurvey';
 import CoachSurvey from './pages/CoachSurvey';
 import { AuthProvider } from './components/AuthContext';
 import Home from './pages/Home';
+import AdminPage from './pages/AdminPage';
 import ClientRequests from './components/ClientRequests';
 import ClientDetails from './components/ClientDetails';
 
 const AppRouter = () => {
-  const { isAuthenticated } = useContext(AuthContext); 
+  const { isAuthenticated, userType} = useContext(AuthContext); 
 
   const router = createBrowserRouter([
   {
@@ -48,19 +48,19 @@ const AppRouter = () => {
       },
       {
         path: "/my-coach",
-        element: isAuthenticated ? <MyCoach/> : <Navigate to="/login" /> 
+        element: isAuthenticated ? (userType !== 'Coach' ? <MyCoach /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       {
         path: "/my-clients",
-        element: isAuthenticated ? <MyClients/> : <Navigate to="/login" />,
+        element: isAuthenticated ? (userType !== 'Client' ? <MyClients /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       {
         path: "/my-clients/:clientId",
-        element: isAuthenticated ? <ClientDetails/> : <Navigate to="/login" />,
+        element: isAuthenticated ? (userType !== 'Client' ? <ClientDetails/> : <Navigate to="/dashboard" />) : <Navigate to="/login" />,
       },
       {
         path:'/my-clients/requests',
-        element: isAuthenticated ? <ClientRequests/> : <Navigate to="/login" />
+        element: isAuthenticated ? (userType !== 'Client' ? <ClientRequests/> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       {
         path: "/coach-lookup",
@@ -72,20 +72,24 @@ const AppRouter = () => {
       },
       {
         path: "/login",
-        element: <LoginPage/>
+        element: isAuthenticated ? <Navigate to="/dashboard" /> : <LoginPage/>
       },
       {
         path: "/register",
-        element: <CreateAccountPage/>
+        element:  isAuthenticated ? <Navigate to="/dashboard" /> : <CreateAccountPage/>
       },
       {
         path: "/initial-survey", 
-        element: <InitialSurvey/>
+        element:  isAuthenticated ? <Navigate to="/dashboard" /> : <InitialSurvey/>
       },
       {
         path: "/coach-survey",
-        element: <CoachSurvey/>
-      }
+        element:  isAuthenticated ? <Navigate to="/dashboard" /> : <CoachSurvey/>
+      },
+      {
+      path: "/admin",
+          element: isAuthenticated ? (userType === 'Admin' ? <AdminPage /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
+      },
       
     ]
   },
