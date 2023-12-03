@@ -7,8 +7,8 @@ import { useContext } from 'react';
 import { Button } from '@mui/material';
 
 export default function SideNav() {
-  const { isAuthenticated } = useContext(AuthContext);
-  console.log('SideNav, isAuthenticated:', isAuthenticated);
+  const { isAuthenticated, userType } = useContext(AuthContext);
+  console.log('SideNav, isAuthenticated:', isAuthenticated, userType);
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -38,18 +38,22 @@ export default function SideNav() {
         >
         Workouts
       </a>
+      {userType !== 'Client' && (
       <a
         className={location.pathname === '/my-clients' ? 'active' : ''}
         onClick={() => navigate("/my-clients", { state: location.state })}
         >
         My Clients
       </a>
+      )}
+      {userType !== 'Coach' && (
       <a
         className={location.pathname === '/my-coach' ? 'active' : ''}
         onClick={() => navigate("/my-coach", { state: location.state })}
         >
         My Coach
       </a>
+      )}
       <a
         className={location.pathname === '/coach-lookup' ? 'active' : ''}
         onClick={() => navigate("/coach-lookup", { state: location.state })}
@@ -62,6 +66,11 @@ export default function SideNav() {
         >
         Account Settings
       </a>
+      {userType === 'Admin' && (
+            <a className={location.pathname === '/admin' ? 'active' : ''} onClick={() => navigate("/admin", { state: location.state })}>
+            Admin Page
+          </a>
+      )}
         <LogoutButton />
         </>
         )}
