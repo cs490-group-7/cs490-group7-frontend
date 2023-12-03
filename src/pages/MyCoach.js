@@ -48,7 +48,7 @@ export default function MyCoachClient() {
 
 // Render coach details box
 const renderCoachDetailsBox = () => (
-    <Box style={{ height: '500px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
+    <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
       {/* Dark blue box */}
       <Box
         style={{
@@ -95,7 +95,7 @@ const renderCoachDetailsBox = () => (
 
   // Render message box
 const renderMessageBox = () => (
-    <Box style={{ height: '500px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+    <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
       {/* Header */}
       <Box
         style={{
@@ -154,9 +154,9 @@ const renderMessageBox = () => (
       {/* Remove Coach Dialog */}
       <Dialog open={isRemoveDialogOpen} onClose={handleRemoveDialogClose}>
         <DialogTitle>Remove Coach</DialogTitle>
-        <DialogContent>
+        <DialogContent sx={{ width: '400px'}}>
           <TextField
-            label="Reason for Removal"
+            label="Reason for removal"
             multiline
             rows={4}
             variant="outlined"
