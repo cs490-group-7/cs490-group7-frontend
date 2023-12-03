@@ -57,7 +57,7 @@ function Workouts () {
 
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
-                        <WorkoutCalendar selectedWorkout={workoutId}/>
+                        <WorkoutCalendar selectedWorkout={workoutId} viewFunc={viewWorkoutDetails} />
                     </Card>
                 </Grid>
 

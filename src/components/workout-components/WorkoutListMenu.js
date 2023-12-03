@@ -25,7 +25,6 @@ function WorkoutListMenu (props) {
         axios.post(`${baseUrl}/api/workout/workout-list`, {userId: user_id})
             .then((response) => {
                 setWorkoutList(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error('Error fetching workout list:', error);
@@ -44,12 +43,6 @@ function WorkoutListMenu (props) {
 
     }
 
-    function assignWorkoutToDay (dayOfWeek) {
-
-
-
-    }
-
     return (
         <div className="workout-list-menu">
 
@@ -61,7 +54,7 @@ function WorkoutListMenu (props) {
             <Grid container spacing={0.5} padding={0.5}>
 
                 {(typeof workoutList !== 'undefined') && workoutList.map((workout) => {
-                    return <Grid item xs={12} spacing={0.5} sx={{ width: 1 }}>
+                    return <Grid item xs={12} sx={{ width: 1 }}>
                         <Card variant="outlined" sx={{ padding: 1, borderColor: selectedWorkout === workout.workout_id ? '#00008b' : '#d9d9d9' }}>
                             <div><b>{workout.workout_name}</b></div>
                             <div><i>{workout.description}</i></div>
