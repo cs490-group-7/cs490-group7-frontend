@@ -26,6 +26,7 @@ function Dashboard () {
     const [moodError, setMoodError] = useState(null);
 
     const [goalMessage, setGoalMessage] = useState(null);
+    const [weightGoal, setWeightGoal] = useState(null);
     const [goalBaseline, setGoalBaseline] = useState(0);
     const [goalTarget, setGoalTarget] = useState(0);
     const [goalCurrent, setGoalCurrent] = useState(0);
@@ -44,28 +45,54 @@ function Dashboard () {
         // TODO: backend call to retrieve today's workout
         // TODO: backend call to retrieve progress status
 
-        axios.get(`${baseUrl}/api/data/dashboard-mock-data`)
-          .then(response => {
-            const mockData = response.data;
-            setDailyFilled(mockData.dailyFilled);
-            setCalories(mockData.calories);
-            setWaterIntake(mockData.waterIntake);
-            setWeight(mockData.weight);
-            setCaloriesError(mockData.caloriesError);
-            setWaterIntakeError(mockData.waterIntakeError);
-            setWeightError(mockData.weightError);
-            setGoalMessage(mockData.goalMessage);
-            setGoalBaseline(mockData.goalBaseline);
-            setGoalTarget(mockData.goalTarget);
-            setGoalCurrent(mockData.goalCurrent);
-            setProgress(mockData.progress);
-            setWorkoutName(mockData.workoutName);
-            setWorkoutCompletion(mockData.workoutCompletion);
-          })
-          .catch(error => {
-            console.error('Error fetching mock data:', error);
-          });
-        setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
+        // axios.get(`${baseUrl}/api/data/dashboard-mock-data`)
+        //   .then(response => {
+        //     const mockData = response.data;
+        //     setDailyFilled(mockData.dailyFilled);
+        //     setCalories(mockData.calories);
+        //     setWaterIntake(mockData.waterIntake);
+        //     setWeight(mockData.weight);
+        //     setCaloriesError(mockData.caloriesError);
+        //     setWaterIntakeError(mockData.waterIntakeError);
+        //     setWeightError(mockData.weightError);
+        //     setGoalMessage(mockData.goalMessage);
+        //     setGoalBaseline(mockData.goalBaseline);
+        //     setGoalTarget(mockData.goalTarget);
+        //     setGoalCurrent(mockData.goalCurrent);
+        //     setProgress(mockData.progress);
+        //     setWorkoutName(mockData.workoutName);
+        //     setWorkoutCompletion(mockData.workoutCompletion);
+        //   })
+        //   .catch(error => {
+        //     console.error('Error fetching mock data:', error);
+        //   });
+        axios.post(`${baseUrl}/api/data/dashboard-data`, {userId: user_id})
+            .then((response) => {
+                console.log(response.data)
+                setGoalBaseline(response.data.goalBaseline);
+                setGoalTarget(response.data.weightGoalValue);
+                setGoalCurrent(response.data.currentWeight);
+                if (response.data.weightGoal === "Maintain"){
+                    setGoalMessage(response.data.weightGoal + " " + response.data.weightGoalValue + " pounds");
+                }
+                else if (response.data.weightGoal === "Gain"){
+                    setGoalMessage(response.data.weightGoal + " " + response.data.weightGoalValue-response.data.currentWeight + " pounds");
+                }
+                else{
+                    setGoalMessage(response.data.weightGoal + " " + response.data.currentWeight-response.data.weightGoalValue + " pounds");
+                }
+                setWeightGoal(response.data.weightGoal);
+
+                setWorkoutName(response.data.workout_name);
+                setWorkoutCompletion(response.data.workoutCompletion);
+            })
+            .catch((error) => {
+                console.error('Error fetching dashboard data:', error);
+            });
+        //setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
+        setTimeout(function(){
+            setProgress(getProgress());
+           }, 1000);
     }, []);
 
     function submitDaily () {
@@ -143,6 +170,11 @@ function Dashboard () {
 }
 
     function getProgress () {
+        if (goalTarget - goalBaseline === 0 || weightGoal === "Maintain"){
+            console.log("yes "+goalTarget);
+            console.log("yes2 "+goalCurrent);
+            return 1-(Math.abs(goalTarget - goalCurrent) / goalTarget);
+        }
         return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
     }
 
