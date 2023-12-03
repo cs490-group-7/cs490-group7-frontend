@@ -24,7 +24,6 @@ function WorkoutListMenu (props) {
         axios.post(`${baseUrl}/api/workout/workout-list`, {userId: user_id})
             .then((response) => {
                 setWorkoutList(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error('Error fetching workout list:', error);

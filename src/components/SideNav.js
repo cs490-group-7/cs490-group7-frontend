@@ -8,7 +8,6 @@ import { Button } from '@mui/material';
 
 export default function SideNav() {
   const { isAuthenticated } = useContext(AuthContext);
-  console.log('SideNav, isAuthenticated:', isAuthenticated);
   const location = useLocation();
   const navigate = useNavigate();
 
