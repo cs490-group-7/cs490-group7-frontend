@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import CanvasJSReact from '@canvasjs/react-charts';
-import { Typography, Button, Grid, TextField, Select, MenuItem, FormControl, Autocomplete } from '@mui/material'
+import { Button, Grid, TextField, Alert, MenuItem} from '@mui/material'
 import axios from 'axios';
 import { useLocation } from 'react-router-dom';
 
@@ -17,6 +17,20 @@ export default function MyProgress () {
     const [progressData, setProgressData] = useState([]);
     const [selectedButton, setSelectedButton] = useState("Weight");
     
+    const [goalInfo, setGoalInfo] = useState([]);
+    const [originalGoalInfo, setOriginalGoalInfo] = useState([]);
+    const [currentWeight, setCurrentWeight] = useState();
+
+    const [inputErrors, setInputErrors] = useState({weightGoal: '', weightGoalValue: ''});
+    const [hasError, setHasError] = useState({weightGoal: false, weightGoalValue: false});
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [formDisabled, setFormDisabled] = useState(true);
+
+    const [editGoal, setEditGoal] = useState(false);
+    const [createGoal, setCreateGoal] = useState(false);
+
+    const [graphGenerated, setGraphGenerated] = useState(false);
     useEffect(() => {
 
         axios.post(`${baseUrl}/api/progress/progress-data`, {userId: user_id})
@@ -51,18 +65,48 @@ export default function MyProgress () {
                 type: "area",
                 dataPoints: []
             }
-            ]
+            ],
+            axisY : {}
         });
 
         if (type === 0){
             chart.options.title.text = "Weight";
             chart.options.data[0].dataPoints = dataPoints1;
+            //Find min & max
+            let minValue = Infinity;
+            let maxValue = -Infinity;
+            for (let item of dataPoints1) {
+                if (item.y < minValue)
+                    minValue = item.y;
+                if (item.y > maxValue)
+                    maxValue = item.y;
+            }
+            chart.options.axisY = {
+                minimum : Math.min(minValue-3, Number(goalInfo.weightGoalValue) - 5),
+                maximum : Math.max(maxValue+3, Number(goalInfo.weightGoalValue) + 5),
+                stripLines:[
+                {      
+                    value : goalInfo.weightGoalValue,
+                    label : "Current Goal",
+                    thickness : 3,
+                    color:"blue",
+                    labelFontColor:"blue"
+                }
+                ]
+            }
+            
         } else if (type === 1){
             chart.options.title.text = "Calorie Intake";
             chart.options.data[0].dataPoints = dataPoints2;
+            chart.options.axisY = {
+                stripLines:[{}]
+            }
         } else if (type === 2){
             chart.options.title.text = "Water Intake";
             chart.options.data[0].dataPoints = dataPoints3;
+            chart.options.axisY = {
+                stripLines:[{}]
+            }
         }
 
         var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
@@ -76,11 +120,105 @@ export default function MyProgress () {
     }
     
     let graphType = 0;
-
-    setTimeout(function(){
-        generateGraph(graphType);
-       }, 1000);
     
+    setTimeout(function(){
+        if(!graphGenerated){
+            generateGraph(graphType);
+            setGraphGenerated(true);
+        }
+    }, 1000);
+    
+    
+    //---------
+    useEffect(() => {
+        axios.post(`${baseUrl}/api/progress/goal-info`, {userId: user_id})
+          .then((response) => {
+            setGoalInfo(response.data);
+            setOriginalGoalInfo(response.data);
+          })
+          .catch((error) => {
+            setErrorMessage(error.data ? error.data.message : 'Error reaching server');
+        });
+      }, [user_id])
+
+    useEffect(() => {
+        axios.post(`${baseUrl}/api/progress/current-weight`, {userId: user_id})
+        .then((response) => {
+            setCurrentWeight(response.data.weight);
+        })
+        .catch((error) => {
+            setErrorMessage(error.data ? error.data.message : 'Error reaching server');
+        });
+      }, [user_id])
+      
+    const handleChange = (e, field) => {
+        setGoalInfo({...goalInfo, [field]: e.target.value})
+        setInputErrors({...inputErrors, [field]: ''})
+        setHasError({...hasError, [field]: false})
+        setFormDisabled(false)
+    }
+    
+    const handleSubmit = async (createNew) => {
+        if(goalInfo.weightGoalValue === ""){
+            setInputErrors({...inputErrors, weightGoalValue: 'This value cannot be empty'});
+            setHasError({...hasError, weightGoalValue: true})
+            return;
+        }
+        else if(!/^[1-9][0-9]*$/.test(goalInfo.weightGoalValue)){
+            setInputErrors({...inputErrors, weightGoalValue: 'Incorrect format for weight'});
+            setHasError({...hasError, weightGoalValue: true})
+            return;
+        }
+        if (goalInfo.weightGoal === "Maintain" && createNew){
+            goalInfo.weightGoalValue = currentWeight;
+        }
+        const reqBody = {...goalInfo, userId: user_id}
+
+        axios.post(`${baseUrl}/api/progress/update-goal-info`, reqBody)
+        .then((response) => {
+            setErrorMessage(null)
+            setSuccessMessage(response.data.message);
+        })
+        .catch((error) => {
+            setSuccessMessage(null)
+            setErrorMessage(error.data ? error.data.message : 'Error reaching server');
+        });
+        setOriginalGoalInfo(goalInfo);
+        setTimeout(function(){
+            setErrorMessage(null);
+            setSuccessMessage(null);
+            setCreateGoal(false);
+            setEditGoal(false);
+        }, 1700);
+    }
+
+    const handleEditGoal = () => {
+        setEditGoal(true);
+    }
+    const handleCreateGoal = () => {
+        setCreateGoal(true);
+        setEditGoal(false);
+    }
+
+    function goalText(){
+        var target = `${originalGoalInfo.weightGoalValue} pounds`
+        if (originalGoalInfo.weightGoal === 'Gain'){
+            return(
+                <div><p>Current Goal: Gain weight to {target}</p></div>
+            )
+        }
+        else if (originalGoalInfo.weightGoal === 'Maintain'){
+            return(
+                <div><p>Current Goal: Maintain weight at {target}</p></div>
+            )
+        }
+        else if (originalGoalInfo.weightGoal === 'Lose'){
+            return(
+                <div><p>Current Goal: Lose weight to {target}</p></div>
+            )
+        }
+    }
+
     return (
         <div className="my-progress-page">
             <h1>My Progress</h1>
@@ -118,6 +256,89 @@ export default function MyProgress () {
             
             <br/>
             <br/>
+            <h2>Goal:</h2>
+            <div style={{ fontSize: '18px'}}>
+            {goalText()}
+            <p> Current Weight: {currentWeight} pounds</p>
+                <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
+                    <Grid item xs={2}>
+                        <Button variant='contained' onClick={handleEditGoal} disabled={editGoal || createGoal}>
+                            Edit Goal
+                        </Button>
+                        <br/>
+                        <br/>
+                        { (editGoal === true) && 
+                            <div><TextField
+                            InputLabelProps={{ shrink: true}}
+                            label="Target Weight (lbs)"
+                            value={goalInfo.weightGoalValue}
+                            onChange={(e) => handleChange(e, 'weightGoalValue')}
+                            error={hasError.weightGoalValue}
+                            helperText={inputErrors.weightGoalValue}
+                            sx={{width: '150px'}}
+                            variant='filled'
+                            />
+                            <br/>
+                            <br/>
+                            <Button variant='contained' onClick={() => handleSubmit(false)} disabled={formDisabled}>
+                                Save Changes
+                            </Button>
+                            <div style={{ width: '100%'}}>
+                                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                                {successMessage && <Alert severity="success">{successMessage}</Alert>}
+                            </div></div>}
+                    </Grid>
+                    <Grid item xs={4}>
+                        {(editGoal === true) && 
+                        <div>
+                        <Button variant='contained' onClick={handleCreateGoal} disabled={createGoal}>
+                            Create New Goal
+                        </Button>
+                        <br/>
+                        </div>
+                        }
+                        { (createGoal === true) && 
+                        <div>
+                            <TextField
+                            required value={goalInfo.weightGoal}
+                            onChange={(event) => handleChange(event, 'weightGoal')}
+                            select
+                            sx={{width: "150px"}}
+                            label="Select One"
+                            helperText={inputErrors.weightGoal || ' '}
+                            error={Boolean(hasError.weightGoalError)}
+                        >
+                            <MenuItem value={"Gain"}>
+                            Gain
+                            </MenuItem>
+                            <MenuItem value={"Lose"}>
+                            Lose
+                            </MenuItem>
+                            <MenuItem value={"Maintain"}>
+                            Maintain
+                            </MenuItem>
+                            </TextField>
+                            <br/>
+                            { (goalInfo.weightGoal === "Gain" || goalInfo.weightGoal === "Lose") && 
+                            <div>
+                            <TextField id="inpWeightGoalValue" label="Target Weight (lbs)" variant="filled" error={Boolean(hasError.weightGoalValueError)} helperText={inputErrors.weightGoalValue || ' '} required value={goalInfo.weightGoalValue} onChange={(event) => {
+                                handleChange(event, 'weightGoalValue');
+                            }}/>
+                            </div>}
+                            <Button variant='contained' onClick={() => handleSubmit(true)} disabled={formDisabled}>
+                                Save Changes
+                            </Button>
+                            <div style={{ width: '80%'}}>
+                                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                                {successMessage && <Alert severity="success">{successMessage}</Alert>}
+                            </div>
+                        </div>}
+                    </Grid>
+                </Grid>
+
+                
+            </div>
+            
         </div>
 
     )

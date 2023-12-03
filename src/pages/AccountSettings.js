@@ -53,12 +53,12 @@ const AccountSettings = () => {
       return;
     }
     else if(!/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/.test(accountInfo.email)){
-      setInputErrors({...inputErrors, email: 'Inorrect email format'});
+      setInputErrors({...inputErrors, email: 'Incorrect email format'});
       setHasError({...hasError, email: true})
       return;
     }
     else if(!/^(\+\d{1,2}\s?)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}$/.test(accountInfo.phone)){
-      setInputErrors({...inputErrors, phone: 'Inorrect phone number format'});
+      setInputErrors({...inputErrors, phone: 'Incorrect phone number format'});
       setHasError({...hasError, phone: true})
       return;
     }
