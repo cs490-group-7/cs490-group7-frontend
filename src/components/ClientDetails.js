@@ -5,7 +5,7 @@ export default function ClientDetails () {
     const clientId = params.clientId
     return (
         <div id="client-details">
-            <h1>Client {clientId} Details</h1>
+            <h1>Client ID:{clientId} Details</h1>
         </div>
     )
 }
