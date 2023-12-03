@@ -68,7 +68,6 @@ function Dashboard () {
         //   });
         axios.post(`${baseUrl}/api/data/dashboard-data`, {userId: user_id})
             .then((response) => {
-                console.log(response.data)
                 setGoalBaseline(response.data.goalBaseline);
                 setGoalTarget(response.data.weightGoalValue);
                 setGoalCurrent(response.data.currentWeight);
@@ -76,10 +75,20 @@ function Dashboard () {
                     setGoalMessage(response.data.weightGoal + " " + response.data.weightGoalValue + " pounds");
                 }
                 else if (response.data.weightGoal === "Gain"){
-                    setGoalMessage(response.data.weightGoal + " " + response.data.weightGoalValue-response.data.currentWeight + " pounds");
+                    if (response.data.weightGoalValue-response.data.currentWeight > 0){
+                        setGoalMessage(response.data.weightGoal + " " + (response.data.weightGoalValue-response.data.currentWeight) + " pounds");
+                    }
+                    else{
+                        setGoalMessage("Goal reached!")
+                    }
                 }
                 else{
-                    setGoalMessage(response.data.weightGoal + " " + response.data.currentWeight-response.data.weightGoalValue + " pounds");
+                    if (response.data.currentWeight-response.data.weightGoalValue > 0){
+                        setGoalMessage(response.data.weightGoal + " " + (response.data.currentWeight-response.data.weightGoalValue) + " pounds");
+                    }
+                    else{
+                        setGoalMessage("Goal reached!")
+                    }
                 }
                 setWeightGoal(response.data.weightGoal);
 
@@ -89,12 +98,8 @@ function Dashboard () {
             .catch((error) => {
                 console.error('Error fetching dashboard data:', error);
             });
-        setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
-        setTimeout(function(){
-            setProgress(getProgress());
-           }, 1000);
+        //setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
     }, []);
-
     function submitDaily () {
         if(!signedIn){
             setErrorMessage("You must log in before submitting a daily survey");
@@ -171,12 +176,14 @@ function Dashboard () {
 
     function getProgress () {
         if (goalTarget - goalBaseline === 0 || weightGoal === "Maintain"){
-            console.log("target: "+goalTarget);
-            console.log("current: "+goalCurrent);
             return 1-(Math.abs(goalTarget - goalCurrent) / goalTarget);
         }
         return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
     }
+
+    setTimeout(function(){
+        setProgress(getProgress());
+    }, 0);
 
     function login () {
 
