@@ -11,10 +11,9 @@ export const AuthProvider = ({ children }) => {
     try {
         const token = localStorage.getItem('userToken');
         if (token) {
-        setIsAuthenticated(true);
-        console.log('User is authenticated (token found)');
+          setIsAuthenticated(true);
         } else {
-            console.log('No authentication token found');
+          //No authentication token found
         }
     } catch (err) {
         setError(err.message);

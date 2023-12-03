@@ -40,32 +40,6 @@ function Dashboard () {
 
     const { isCoach } = location.state || { isCoach: false };
     useEffect(() => {
-        // TODO: backend call to retrieve whether or not daily check-in has been filled today
-        // TODO: backend call to retrieve goal overview
-        // TODO: backend call to retrieve today's workout
-        // TODO: backend call to retrieve progress status
-
-        // axios.get(`${baseUrl}/api/data/dashboard-mock-data`)
-        //   .then(response => {
-        //     const mockData = response.data;
-        //     setDailyFilled(mockData.dailyFilled);
-        //     setCalories(mockData.calories);
-        //     setWaterIntake(mockData.waterIntake);
-        //     setWeight(mockData.weight);
-        //     setCaloriesError(mockData.caloriesError);
-        //     setWaterIntakeError(mockData.waterIntakeError);
-        //     setWeightError(mockData.weightError);
-        //     setGoalMessage(mockData.goalMessage);
-        //     setGoalBaseline(mockData.goalBaseline);
-        //     setGoalTarget(mockData.goalTarget);
-        //     setGoalCurrent(mockData.goalCurrent);
-        //     setProgress(mockData.progress);
-        //     setWorkoutName(mockData.workoutName);
-        //     setWorkoutCompletion(mockData.workoutCompletion);
-        //   })
-        //   .catch(error => {
-        //     console.error('Error fetching mock data:', error);
-        //   });
         axios.post(`${baseUrl}/api/data/dashboard-data`, {userId: user_id})
             .then((response) => {
                 setGoalBaseline(response.data.goalBaseline);
@@ -155,7 +129,6 @@ function Dashboard () {
           // Determine the endpoint based on whether the user is a coach or not
           axios.post(`${baseUrl}/api/surveys/daily-survey`, surveyData)
             .then(response => {
-              console.log('Survey submitted:', response.data);
               SetSuccessMessage('Daily Survey Submitted!');
               setDailyFilled(true);
             })
@@ -213,16 +186,16 @@ function Dashboard () {
                             </div> 
                             :
                             <div>
-                                <TextField id="inpCalories" label="Calories Consumed" variant="filled" sx={{ margin: 1 }} error={caloriesError} helperText={caloriesError} required type="number" value={calories} onChange={(event) => {
+                                <TextField id="inpCalories" label="Calories Consumed" variant="filled" sx={{ margin: 1 }} error={caloriesError} helperText={caloriesError} required type="number" onChange={(event) => {
                                     setCalories(event.target.value);
                                 }}/>
-                                <TextField id="inpWaterIntake" label="Water Intake (in mL)" variant="filled" sx={{ margin: 1 }} error={waterIntakeError} helperText={waterIntakeError} required type="number" value={waterIntake} onChange={(event) => {
+                                <TextField id="inpWaterIntake" label="Water Intake (in mL)" variant="filled" sx={{ margin: 1 }} error={waterIntakeError} helperText={waterIntakeError} required type="number" onChange={(event) => {
                                     setWaterIntake(event.target.value);
                                 }}/>
-                                <TextField id="inpWeight" label="Weight" variant="filled" sx={{ margin: 1 }} error={weightError} helperText={weightError} required type="number" value={weight} onChange={(event) => {
+                                <TextField id="inpWeight" label="Weight" variant="filled" sx={{ margin: 1 }} error={weightError} helperText={weightError} required type="number" onChange={(event) => {
                                     setWeight(event.target.value);
                                 }}/>
-                                <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError}  value={mood} onChange={(event) => {
+                                <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError} onChange={(event) => {
                                     setMood(event.target.value);
                                 }}/><br></br>
                                 <Button id="submitDailyBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
