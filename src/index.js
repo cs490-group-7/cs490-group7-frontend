@@ -20,6 +20,8 @@ import InitialSurvey from './pages/InitialSurvey';
 import CoachSurvey from './pages/CoachSurvey';
 import { AuthProvider } from './components/AuthContext';
 import Home from './pages/Home';
+import ClientRequests from './components/ClientRequests';
+import ClientDetails from './components/ClientDetails';
 
 const AppRouter = () => {
   const { isAuthenticated } = useContext(AuthContext); 
@@ -50,7 +52,15 @@ const AppRouter = () => {
       },
       {
         path: "/my-clients",
-        element: isAuthenticated ? <MyClients/> : <Navigate to="/login" /> 
+        element: isAuthenticated ? <MyClients/> : <Navigate to="/login" />,
+      },
+      {
+        path: "/my-clients/:clientId",
+        element: isAuthenticated ? <ClientDetails/> : <Navigate to="/login" />,
+      },
+      {
+        path:'/my-clients/requests',
+        element: isAuthenticated ? <ClientRequests/> : <Navigate to="/login" />
       },
       {
         path: "/coach-lookup",
