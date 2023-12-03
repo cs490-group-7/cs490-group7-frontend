@@ -129,7 +129,6 @@ export default function MyProgress () {
     }
     
     const handleSubmit = async (createNew) => {
-        console.log(goalInfo)
         if(goalInfo.weightGoalValue === ""){
             setInputErrors({...inputErrors, weightGoalValue: 'This value cannot be empty'});
             setHasError({...hasError, weightGoalValue: true})
@@ -140,12 +139,9 @@ export default function MyProgress () {
             setHasError({...hasError, weightGoalValue: true})
             return;
         }
-        console.log("not really");
         if (goalInfo.weightGoal === "Maintain" && createNew){
-            console.log("yes");
             goalInfo.weightGoalValue = currentWeight;
         }
-        console.log(goalInfo);
         const reqBody = {...goalInfo, userId: user_id}
 
         axios.post(`${baseUrl}/api/progress/update-goal-info`, reqBody)
@@ -231,10 +227,10 @@ export default function MyProgress () {
             <br/>
             <br/>
             <h3>Current Goal</h3>
-            <div id="currentGoal">
+            <div>
+            {goalText()}
                 <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
                     <Grid item xs={2}>
-                        {goalText()}
                         <Button variant='contained' onClick={handleEditGoal} disabled={editGoal || createGoal}>
                             Edit Goal
                         </Button>
@@ -264,7 +260,6 @@ export default function MyProgress () {
                     <Grid item xs={4}>
                         {(editGoal === true) && 
                         <div>
-                        <br/><br/><br/>
                         <Button variant='contained' onClick={handleCreateGoal} disabled={createGoal}>
                             Create New Goal
                         </Button>
