@@ -41,6 +41,13 @@ function WorkoutListMenu (props) {
             });
         window.location.reload()
         getWorkouts();
+
+    }
+
+    function assignWorkoutToDay (dayOfWeek) {
+
+
+
     }
 
     return (
@@ -55,10 +62,12 @@ function WorkoutListMenu (props) {
 
                 {(typeof workoutList !== 'undefined') && workoutList.map((workout) => {
                     return <Grid item xs={12} spacing={0.5} sx={{ width: 1 }}>
-                        <Card variant="outlined" sx={{ padding: 1, borderColor: selectedWorkout == workout.workout_id ? '#00008b' : '#d9d9d9' }}>
+                        <Card variant="outlined" sx={{ padding: 1, borderColor: selectedWorkout === workout.workout_id ? '#00008b' : '#d9d9d9' }}>
                             <div><b>{workout.workout_name}</b></div>
                             <div><i>{workout.description}</i></div>
                             <Button id="viewDetailsBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                                setSelectedWorkout(null);
+                                props.selectFunc(null);
                                 props.viewFunc(workout.workout_id);
                             }}>View Details</Button>
                             <Button id="assignBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
@@ -71,9 +80,13 @@ function WorkoutListMenu (props) {
                                 }
                             }}>Select</Button>
                             <Button id="editBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                                setSelectedWorkout(null);
+                                props.selectFunc(null);
                                 props.editFunc(workout.workout_id);
                             }}>Edit</Button>
                             <Button id="deleteBtn" variant="contained" color="error" sx={{ margin: 1 }} onClick={() => {
+                                setSelectedWorkout(null);
+                                props.selectFunc(null);
                                 deleteWorkout(workout.workout_id);
                             }}>Delete</Button>
                         </Card>
