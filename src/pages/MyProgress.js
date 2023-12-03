@@ -65,18 +65,48 @@ export default function MyProgress () {
                 type: "area",
                 dataPoints: []
             }
-            ]
+            ],
+            axisY : {}
         });
 
         if (type === 0){
             chart.options.title.text = "Weight";
             chart.options.data[0].dataPoints = dataPoints1;
+            //Find min & max
+            let minValue = Infinity;
+            let maxValue = -Infinity;
+            for (let item of dataPoints1) {
+                if (item.y < minValue)
+                    minValue = item.y;
+                if (item.y > maxValue)
+                    maxValue = item.y;
+            }
+            chart.options.axisY = {
+                minimum : Math.min(minValue-3, Number(goalInfo.weightGoalValue) - 5),
+                maximum : Math.max(maxValue+3, Number(goalInfo.weightGoalValue) + 5),
+                stripLines:[
+                {      
+                    value : goalInfo.weightGoalValue,
+                    label : "Current Goal",
+                    thickness : 3,
+                    color:"blue",
+                    labelFontColor:"blue"
+                }
+                ]
+            }
+            
         } else if (type === 1){
             chart.options.title.text = "Calorie Intake";
             chart.options.data[0].dataPoints = dataPoints2;
+            chart.options.axisY = {
+                stripLines:[{}]
+            }
         } else if (type === 2){
             chart.options.title.text = "Water Intake";
             chart.options.data[0].dataPoints = dataPoints3;
+            chart.options.axisY = {
+                stripLines:[{}]
+            }
         }
 
         var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
