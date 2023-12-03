@@ -201,20 +201,20 @@ export default function MyProgress () {
     }
 
     function goalText(){
-        var target = <p>{originalGoalInfo.weightGoalValue} pounds</p>
+        var target = `${originalGoalInfo.weightGoalValue} pounds`
         if (originalGoalInfo.weightGoal === 'Gain'){
             return(
-                <div><p>Gain weight to </p>{target}</div>
+                <div><p>Current Goal: Gain weight to {target}</p></div>
             )
         }
         else if (originalGoalInfo.weightGoal === 'Maintain'){
             return(
-                <div><p>Maintain weight at </p>{target}</div>
+                <div><p>Current Goal: Maintain weight at {target}</p></div>
             )
         }
         else if (originalGoalInfo.weightGoal === 'Lose'){
             return(
-                <div><p>Lose weight to </p>{target}</div>
+                <div><p>Current Goal: Lose weight to {target}</p></div>
             )
         }
     }
@@ -256,9 +256,10 @@ export default function MyProgress () {
             
             <br/>
             <br/>
-            <h3>Current Goal</h3>
-            <div>
+            <h2>Goal:</h2>
+            <div style={{ fontSize: '18px'}}>
             {goalText()}
+            <p> Current Weight: {currentWeight} pounds</p>
                 <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
                     <Grid item xs={2}>
                         <Button variant='contained' onClick={handleEditGoal} disabled={editGoal || createGoal}>
@@ -282,7 +283,7 @@ export default function MyProgress () {
                             <Button variant='contained' onClick={() => handleSubmit(false)} disabled={formDisabled}>
                                 Save Changes
                             </Button>
-                            <div style={{ width: '40%'}}>
+                            <div style={{ width: '100%'}}>
                                 {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
                                 {successMessage && <Alert severity="success">{successMessage}</Alert>}
                             </div></div>}
@@ -327,7 +328,7 @@ export default function MyProgress () {
                             <Button variant='contained' onClick={() => handleSubmit(true)} disabled={formDisabled}>
                                 Save Changes
                             </Button>
-                            <div style={{ width: '40%'}}>
+                            <div style={{ width: '80%'}}>
                                 {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
                                 {successMessage && <Alert severity="success">{successMessage}</Alert>}
                             </div>
