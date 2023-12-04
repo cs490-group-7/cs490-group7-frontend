@@ -12,7 +12,7 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch exercise bank data when the component mounts
-    axios.get(`${baseUrl}/api/exercise-bank`)
+    axios.get(`${baseUrl}/api/users/exercise-bank`)
       .then(response => {
         setExerciseBank(response.data);
       })
