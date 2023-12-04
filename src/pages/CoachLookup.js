@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
 import LinearProgress from '@mui/joy/LinearProgress';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -17,6 +17,8 @@ const getAllStates = () => [
 ];
 
 export default function CoachLookup() {
+  const location = useLocation();
+  const { user_id } = location.state || { user_id: false };
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -24,6 +26,7 @@ export default function CoachLookup() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCoach, setSelectedCoach] = useState(null);
+  const [requestedCoaches, setRequestedCoaches] = useState([]);
 
   const [experience, setExperience] = useState('');
   const [specializations, setSpecializations] = useState('');
@@ -59,6 +62,31 @@ const handleSearch = () => {
         console.error('Error fetching coach details:', error);
       });
   };
+
+  const handleRequestCoach = (coach) => {
+  // Prevent users from requesting themselves
+  if (coach.id === user_id) {
+    alert("You can't request yourself as a coach.");
+    return;
+  }
+
+  // Check if the coach has already been requested
+  if (requestedCoaches.includes(coach.id)) {
+    alert("You have already requested this coach.");
+    return;
+  }
+
+  // Backend call to request coach
+  axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.id })
+    .then(response => {
+      // Update the list of requested coaches
+      setRequestedCoaches([...requestedCoaches, coach.id]);
+      alert("Coach requested successfully!");
+    })
+    .catch(error => {
+      console.error('Error requesting coach:', error);
+    });
+};
 
   useEffect(() => {
     // Fetch initial search results when the component mounts
@@ -144,6 +172,9 @@ const handleSearch = () => {
                   >
                     {`${coach.first_name} ${coach.last_name}`}
                   </Typography>
+                  <Button onClick={() => handleRequestCoach(coach)}>
+                    Request Coach
+                  </Button>
                 </Card>
               ))}
               <Box mt={2} display="flex" justifyContent="center">

@@ -1,22 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar } from '@mui/material';
+import axios from 'axios';
+import { useNavigate, useLocation } from 'react-router-dom';
 
-// Mock data
-const mockData = [
-    { id: 1, name: 'Client 1', request: 'Request 1' },
-    { id: 2, name: 'Client 2', request: 'Request 2' },
-    // Add more clients as needed
-];
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyClient() {
-    const [clients, setClients] = useState(mockData);
+    const [clients, setClients] = useState([]);
+    const location = useLocation();
+    const { user_id } = location.state || { user_id: false };
+
+    useEffect(() => {
+        // Fetch client requests when the component mounts
+        axios.get(`${baseUrl}/api/users/client-requests`, { params: { userId: user_id } })
+            .then(response => {
+                setClients(response.data.clients);
+            })
+            .catch(error => {
+                console.error('Error fetching client requests:', error);
+            });
+    }, [user_id]);
 
     const handleAccept = (id) => {
-        console.log(`Accepted request from client ${id}`);
+        // Backend call to accept client request
+        axios.post(`${baseUrl}/api/users/accept-request`, { clientId: id, userId: user_id })
+            .then(response => {
+                // Remove the accepted client from the list of client requests
+                setClients(clients.filter(client => client.id !== id));
+            })
+            .catch(error => {
+                console.error('Error accepting client request:', error);
+            });
     };
 
     const handleDecline = (id) => {
-        console.log(`Declined request from client ${id}`);
+        // Backend call to decline client request
+        axios.post(`${baseUrl}/api/users/decline-request`, { clientId: id, userId: user_id })
+            .then(response => {
+                // Remove the declined client from the list of client requests
+                setClients(clients.filter(client => client.id !== id));
+            })
+            .catch(error => {
+                console.error('Error declining client request:', error);
+            });
     };
 
     return (
