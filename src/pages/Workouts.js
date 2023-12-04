@@ -25,7 +25,7 @@ function Workouts () {
     const { user_id } = location.state || { user_id: false };
 
     const [rightMenu, setRightMenu] = useState(RightMenu.List);
-    const [workoutId, setWorkoutId] = useState(0);
+    const [workoutId, setWorkoutId] = useState(null);
 
     function createNewWorkout () {
         setRightMenu(RightMenu.Create);
@@ -45,6 +45,10 @@ function Workouts () {
         setRightMenu(RightMenu.Edit);
     }
 
+    function selectWorkout (wid) {
+        setWorkoutId(wid);
+    }
+
     return (
         <div className="workouts-page">
 
@@ -53,14 +57,14 @@ function Workouts () {
 
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
-                        <WorkoutCalendar/>
+                        <WorkoutCalendar selectedWorkout={workoutId} viewFunc={viewWorkoutDetails} />
                     </Card>
                 </Grid>
 
                 <Grid item xs={8}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
 
-                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails}>
+                        {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails} selectFunc={selectWorkout}>
                         </WorkoutListMenu>}
 
                         {rightMenu === RightMenu.Details && <WorkoutDetailsMenu backFunc={returnToList} workoutId={workoutId}>
