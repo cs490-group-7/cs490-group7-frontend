@@ -48,7 +48,7 @@ export default function Home() {
         {/* Left half of the screen */}
         <Grid item xs={6}>
           {/* Exercise Type Filter Box (Dropdown) */}
-          <Box border={1} p={2}>
+          <Box  p={2}>
             <Typography variant="h6">Target the Muscle Groups You Want</Typography>
             <Select
               label="Select Exercise Type"
@@ -71,7 +71,7 @@ export default function Home() {
           </Box>
 
           {/* Exercise Bank Box */}
-          <Box border={1} p={2} height="100%">
+          <Box  p={2} height="100%">
             <Typography variant="h6">Master over 200 Exercises</Typography>
             {displayedExercises.map((exercise, index) => (
               <Box key={index} borderBottom={1} p={1}>
