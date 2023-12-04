@@ -12,14 +12,18 @@ export default function Home() {
 
   useEffect(() => {
     // Fetch exercise bank data when the component mounts
-    axios.get(`${baseUrl}/api/users/exercise-bank`)
+    fetchExerciseBank();
+  }, []);
+
+  const fetchExerciseBank = () => {
+    axios.post(`${baseUrl}/api/users/exercise-bank`)
       .then(response => {
         setExerciseBank(response.data);
       })
       .catch(error => {
         console.error('Error fetching exercise bank data:', error);
       });
-  }, []);
+  };
 
   const startIdx = (currentPage - 1) * resultsPerPage;
   const endIdx = startIdx + resultsPerPage;
@@ -33,6 +37,8 @@ export default function Home() {
   const handleFilterChange = (event) => {
     setExerciseTypeFilter(event.target.value);
     setCurrentPage(1); // Reset to the first page when the filter changes
+    // Refetch the exercise bank data with the new filter
+    fetchExerciseBank();
   };
 
   return (
