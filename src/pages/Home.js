@@ -45,10 +45,11 @@ export default function Home() {
     <div className="home-page">
       <h1>Welcome to Fit Fusion!</h1>
       <Grid container spacing={2}>
-        {/* Exercise Type Filter Box (Dropdown) */}
-        <Grid item xs={12}>
+        {/* Left half of the screen */}
+        <Grid item xs={6}>
+          {/* Exercise Type Filter Box (Dropdown) */}
           <Box border={1} p={2}>
-            <Typography variant="h6">Exercise Type Filter</Typography>
+            <Typography variant="h6">Target the Muscle Groups You Want</Typography>
             <Select
               label="Select Exercise Type"
               value={exerciseTypeFilter}
@@ -68,17 +69,18 @@ export default function Home() {
               <MenuItem value="Calf">Calf</MenuItem>
             </Select>
           </Box>
-        </Grid>
 
-        {/* Exercise Bank Box */}
-        <Grid item xs={6}>
+          {/* Exercise Bank Box */}
           <Box border={1} p={2} height="100%">
-            <Typography variant="h6">Exercise Bank</Typography>
+            <Typography variant="h6">Master over 200 Exercises</Typography>
             {displayedExercises.map((exercise, index) => (
-              <div key={index}>
-                <Typography>{exercise.exercise_name} ({exercise.exercise_type})</Typography>
+              <Box key={index} borderBottom={1} p={1}>
+                <Typography variant="body1">{exercise.exercise_name}</Typography>
+                <Typography variant="caption" color="textSecondary">
+                  Type: {exercise.exercise_type}
+                </Typography>
                 {/* Add more details if needed */}
-              </div>
+              </Box>
             ))}
             {filteredExercises.length > resultsPerPage && (
               <Box mt={2} display="flex" justifyContent="center">
@@ -100,7 +102,7 @@ export default function Home() {
           </Box>
         </Grid>
 
-        {/* Feature Box (To be added later) */}
+        {/* Right half of the screen */}
         <Grid item xs={6}>
           <Box border={1} p={2} height="100%">
             <Typography variant="h6">Feature to be Added</Typography>
