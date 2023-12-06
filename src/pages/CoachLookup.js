@@ -41,7 +41,7 @@ const handleSearch = () => {
     maxPrice,
   })
     .then(response => {
-      setSearchResults(response.data.coaches || []);
+      setSearchResults(response.data);
     })
     .catch(error => {
       console.error('Error fetching coach search results:', error);

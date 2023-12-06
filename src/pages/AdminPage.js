@@ -28,7 +28,7 @@ export default function AdminPage() {
     };
 
     return (
-        <div className="admin-page">
+        <div className="admin-page" style={{ width: '50%'}}>
             <h1>Admin Page - Coach Approvals</h1>
             {pendingCoaches.length === 0 ? (
                 <p>No pending approvals.</p>
@@ -37,13 +37,13 @@ export default function AdminPage() {
                     <Card key={coach.id} variant="outlined" sx={{ marginBottom: 2 }}>
                         <CardContent>
                             <Typography variant="h5">{coach.first_name} {coach.last_name}</Typography>
-                            <Typography variant="body2">Specializations: {coach.specializations}</Typography>
-                            <Typography variant="body2">Experience (Years): {coach.experience}</Typography>
-                            <Typography variant="body2">City: {coach.city}</Typography>
-                            <Typography variant="body2">State: {coach.state}</Typography>
-                            <Typography variant="body2">Price: {coach.price}</Typography>
-                            <Button color="primary" onClick={() => handleApproval(coach.id, true)}>Approve</Button>
-                            <Button color="secondary" onClick={() => handleApproval(coach.id, false)}>Reject</Button>
+                            <Typography variant="body1">Specializations: {coach.specializations}</Typography>
+                            <Typography variant="body1">Experience (Years): {coach.experience}</Typography>
+                            <Typography variant="body1">City: {coach.city}</Typography>
+                            <Typography variant="body1">State: {coach.state}</Typography>
+                            <Typography variant="body1">Price: {coach.price}</Typography>
+                            <Button color="primary" onClick={() => handleApproval(coach.id, true)} variant='contained' sx={{ margin: '10px 0 0 5px'}}>Approve</Button>
+                            <Button color="secondary" onClick={() => handleApproval(coach.id, false)} variant='contained' sx={{ margin: '10px 0 0 5px'}}>Reject</Button>
                         </CardContent>
                     </Card>
                 ))
