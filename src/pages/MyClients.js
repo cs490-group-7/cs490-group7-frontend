@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar, Link } from '@mui/material';
+import { Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar, Link, Dialog, DialogTitle, DialogContent} from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -9,15 +9,28 @@ export default function MyClient() {
     const { user_id } = location.state || { user_id: false };
 
     const [currentClients, setCurrentClients] = useState([]);
+    const [isPendingApproval, setIsPendingApproval] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
 
     useEffect(() => {
-        axios.post(`${baseUrl}/api/coach/get-current-clients`, {userId: user_id})
-          .then((response) => {
-            setCurrentClients(response.data);
-          })
-          .catch((error) => {
-            setErrorMessage(error.data ? error.data.message : 'Error reaching server');
+        //fetch coach status
+        axios.post(`${baseUrl}/api/coach/check-approval-status`, {userId: user_id})
+        .then((response) => { 
+            if(response.data.isPendingApproval) {
+                setIsPendingApproval(true);
+            } else {
+                // Fetch current clients if the coach is approved
+                axios.post(`${baseUrl}/api/coach/get-current-clients`, {userId: user_id})
+                .then((response) => {
+                    setCurrentClients(response.data);
+                })
+                .catch((error) => {
+                    setErrorMessage(error.data ? error.data.message : 'Error reaching server');
+                });
+            }
+        })
+        .catch((error) => {
+          setErrorMessage(error.data ? error.data.message : 'Error reaching server');
         });
       }, [user_id])
 
@@ -58,6 +71,17 @@ export default function MyClient() {
                         </Card>
                     </Link>
                 ))}
+                {isPendingApproval && (
+                <Dialog
+                    open={isPendingApproval}
+                    onClose={() => setIsPendingApproval(false)}
+                >
+                    <DialogTitle>Approval Pending</DialogTitle>
+                    <DialogContent>
+                        <Typography>Your coach submission is still being reviewed.</Typography>
+                    </DialogContent>
+                </Dialog>
+                )}
             </div>
         </div>
     );
