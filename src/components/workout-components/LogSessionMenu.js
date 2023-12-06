@@ -107,15 +107,15 @@ function LogSessionMenu (props) {
                 <div>Set Count: {setCount}</div>
             </div>
 
-            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Exercises</Typography>
+            <Typography variant="h6" sx={{ fontWeight: 'bold', marginTop: '10px' }}>Exercises</Typography>
 
             <Grid container spacing={1} padding={1}>
 
                 {exercises.map((exercise, i) => {
                     console.log(exercise);
                     return <Grid container item xs={12} spacing={0.5}>
-                        <Grid item xs={6}>
-                            <div><b>{exercise.exercise_name}</b></div>
+                        <Grid item xs={4}>
+                            <div style={{ fontSize: '18px'}}><b>{exercise.exercise_name}:</b></div>
                         </Grid>
                         <Grid item xs={3} align="right" style={{ display: "flex", justifyContent: "flex-end" }}>
                             <TextField id={"repCount" + (i+1).toString()} label="Rep Total" variant="outlined" required error={Boolean(exercise.rep_error)} helperText={exercise.rep_error || ' '} type="number" value={exercise.total} onChange={(event) => {
