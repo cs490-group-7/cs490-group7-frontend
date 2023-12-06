@@ -33,7 +33,7 @@ export default function CoachLookup() {
 
 const handleSearch = () => {
   // Backend call for filtered search
-  axios.post(`${baseUrl}/api/users/filtered-search`, {
+  axios.post(`${baseUrl}/api/coach/coach-lookup`, {
     experience,
     specializations,
     city,
@@ -41,10 +41,11 @@ const handleSearch = () => {
     maxPrice,
   })
     .then(response => {
-      setSearchResults(response.data.coaches);
+      setSearchResults(response.data.coaches || []);
     })
     .catch(error => {
-      console.error('Error fetching filtered coach search results:', error);
+      console.error('Error fetching coach search results:', error);
+      setSearchResults([]);
     });
 };
 
