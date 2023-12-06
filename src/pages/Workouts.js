@@ -5,6 +5,7 @@ import CreateWorkoutMenu from '../components/workout-components/CreateWorkoutMen
 import EditWorkoutMenu from '../components/workout-components/EditWorkoutMenu.js';
 import WorkoutDetailsMenu from '../components/workout-components/WorkoutDetailsMenu.js';
 import WorkoutListMenu from '../components/workout-components/WorkoutListMenu.js';
+import LogSessionMenu from '../components/workout-components/LogSessionMenu.js';
 import WorkoutCalendar from '../components/workout-components/WorkoutCalendar.js';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -15,7 +16,8 @@ const RightMenu = {
     List: 0,
     Details: 1,
     Create: 2,
-    Edit: 3
+    Edit: 3,
+    Log: 4
 }
 
 function Workouts () {
@@ -26,12 +28,15 @@ function Workouts () {
 
     const [rightMenu, setRightMenu] = useState(RightMenu.List);
     const [workoutId, setWorkoutId] = useState(null);
+    const [selectedDate, setSelectedDate] = useState(null);
 
     function createNewWorkout () {
         setRightMenu(RightMenu.Create);
     }
     
     function returnToList () {
+        setWorkoutId(null);
+        setSelectedDate(null);
         setRightMenu(RightMenu.List);
     }
 
@@ -43,6 +48,12 @@ function Workouts () {
     function editWorkoutDetails (wid) {
         setWorkoutId(wid);
         setRightMenu(RightMenu.Edit);
+    }
+
+    function logSession (wid, sd) {
+        setWorkoutId(wid);
+        setSelectedDate(sd);
+        setRightMenu(RightMenu.Log);
     }
 
     function selectWorkout (wid) {
@@ -57,7 +68,7 @@ function Workouts () {
 
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
-                        <WorkoutCalendar selectedWorkout={workoutId} viewFunc={viewWorkoutDetails} />
+                        <WorkoutCalendar selectedWorkout={workoutId} viewFunc={viewWorkoutDetails} logFunc={logSession}/>
                     </Card>
                 </Grid>
 
@@ -75,6 +86,9 @@ function Workouts () {
 
                         {rightMenu === RightMenu.Edit && <EditWorkoutMenu backFunc={returnToList} workoutId={workoutId}>
                         </EditWorkoutMenu>}
+
+                        {rightMenu === RightMenu.Log && <LogSessionMenu backFunc={returnToList} workoutId={workoutId} selectedDate={selectedDate}>
+                        </LogSessionMenu>}
                     
                     </Card>
                 </Grid>
