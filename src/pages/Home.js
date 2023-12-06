@@ -49,13 +49,15 @@ export default function Home() {
         <Grid item xs={6}>
           {/* Exercise Type Filter Box (Dropdown) */}
           <Box  p={2}>
-            <Typography variant="h6">Target the Muscle Groups You Want</Typography>
+            <Typography variant="h5">Master over 200 Exercises: </Typography>
+            <Typography sx={{ marginTop: '10px'}}>Target a specific muscle group: </Typography>
             <Select
               label="Select Exercise Type"
               value={exerciseTypeFilter}
               onChange={handleFilterChange}
+              sx={{ width: '200px'}}
             >
-              <MenuItem value="">All</MenuItem>
+              <MenuItem value="">All Muscle Groups</MenuItem>
               <MenuItem value="Chest">Chest</MenuItem>
               <MenuItem value="Shoulder">Shoulder</MenuItem>
               <MenuItem value="Bicep">Bicep</MenuItem>
@@ -72,10 +74,9 @@ export default function Home() {
 
           {/* Exercise Bank Box */}
           <Box  p={2} height="100%">
-            <Typography variant="h6">Master over 200 Exercises</Typography>
             {displayedExercises.map((exercise, index) => (
-              <Box key={index} borderBottom={1} p={1}>
-                <Typography variant="body1">{exercise.exercise_name}</Typography>
+              <Box key={index} borderBottom={1} p={1} borderColor="lightgrey">
+                <Typography variant="body1" sx={{ color: 'darkblue'}}>{exercise.exercise_name}</Typography>
                 <Typography variant="caption" color="textSecondary">
                   Type: {exercise.exercise_type}
                 </Typography>
