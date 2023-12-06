@@ -22,7 +22,7 @@ function WorkoutCalendar (props) {
 
       getAssignments();
 
-    }, [assignmentList]);
+    }, [props]);
 
     function assignWorkout (dayOfWeek) {
       const assignmentData = {
@@ -33,11 +33,9 @@ function WorkoutCalendar (props) {
   
       axios.post(`${baseUrl}/api/workout/assign-workout`, assignmentData)
           .then(response => {
-              console.log('Workout assigned: ', response.data);
               getAssignments();
           })
           .catch(error => {
-              console.log('Workout assignment error: ', error.response.data);
               setErrorMessage('Workout assignment error:', error.response ? error.response.data : error.message);
           });
     }
@@ -45,17 +43,31 @@ function WorkoutCalendar (props) {
     
 
     function getAssignments () {
-      axios.post(`${baseUrl}/api/workout/get-assignments`, {userId: user_id})
-            .then((response) => {
-              const newList = [[], [], [], [], [], [], []];
-              response.data.map((assignment) => {
-                newList[assignment.day_of_week].push({workoutId: assignment.workout_id, workoutName: assignment.workout_name});
-              });
-              setAssignmentList(newList);
+      axios.post(`${baseUrl}/api/workout/get-todays-logs`, {userId: user_id})
+            .then(response => {
+                const todaysLogs = [];
+                response.data.map((log) => {
+                  todaysLogs.push(log.workout_id);
+                });
+                console.log(todaysLogs);
+
+                axios.post(`${baseUrl}/api/workout/get-assignments`, {userId: user_id})
+                      .then((response) => {
+                        const assignmentListTemp = [[], [], [], [], [], [], []];
+                        response.data.map((assignment) => {
+                          assignmentListTemp[assignment.day_of_week].push({workoutId: assignment.workout_id, workoutName: assignment.workout_name, loggable: assignment.day_of_week === (new Date()).getDay() && !todaysLogs.includes(assignment.workout_id)});
+                        });
+                        console.log(assignmentListTemp);
+                        setAssignmentList(assignmentListTemp);
+                        
+                      })
+                      .catch((error) => {
+                        console.error('Error fetching assignment list:', error);
+                      });
             })
-            .catch((error) => {
-              console.error('Error fetching assignment list:', error);
-            });
+            .catch(error => {
+                setErrorMessage('Retrieving today\'s logs error:', error.response ? error.response.data : error.message);
+            }); 
     }
 
     return (
@@ -64,7 +76,8 @@ function WorkoutCalendar (props) {
             <Grid container spacing={0.5} padding={0.5}>
 
                 {[0,1,2,3,4,5,6].map((i) => {
-                  currentDate.setDate(currentDate.getDate() + 1); 
+                  currentDate.setDate(currentDate.getDate() + 1);
+                  var copiedDate = new Date(currentDate.getTime()); 
                   const dayOfWeek = currentDate.getDay();
                   return <Grid item xs={12} sx={{ width: 1 }}>
                       
@@ -75,15 +88,15 @@ function WorkoutCalendar (props) {
                               <b>{currentDate.toLocaleDateString('en-us', { weekday: "long" })}, {currentDate.toLocaleDateString('en-us', { month: "long", day: "numeric" })}</b>
                             </Grid>
                             <Grid item xs={1} sx={{ width: 1 }}>
-                              {props.selectedWorkout !== null && <Button id="assignBtn" variant="text" size="small" sx={{ minWidth: 30, minHeight: 0, padding: 0 }} onClick={() => {
+                              <Button id="assignBtn" variant="text" size="small" sx={{ minWidth: 30, minHeight: 0, padding: 0 }} disabled={props.selectedWorkout === null} onClick={() => {
                                 assignWorkout(dayOfWeek);
-                              }}>+</Button>}
+                              }}>+</Button>
                             </Grid>
                           </Grid>
                         </Card>
                         <Card variant="outlined" sx={{ padding: 0.5, borderRadius: 0, border: 'none' }}>
                           {(typeof assignmentList === 'undefined') || assignmentList[dayOfWeek].length === 0 ? <Box sx={{ padding: 0.5 }}>Rest Day</Box> : assignmentList[dayOfWeek].map((assignment) => {
-                            return <WorkoutAssignment workoutName={assignment.workoutName} workoutId={assignment.workoutId} dayOfWeek={dayOfWeek} viewFunc={props.viewFunc} rerenderFunc={getAssignments}/>;
+                            return <WorkoutAssignment workoutName={assignment.workoutName} workoutId={assignment.workoutId} loggable={assignment.loggable} currentDate={copiedDate} viewFunc={props.viewFunc} logFunc={props.logFunc} rerenderFunc={getAssignments}/>;
                           })}
                         </Card>
                       </Card>
