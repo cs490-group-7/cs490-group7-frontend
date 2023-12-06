@@ -13,7 +13,9 @@ export default function MyProgress () {
     const location = useLocation();
     const { user_id } = location.state || { user_id: false };
 
-    var dataPoints1 = [], dataPoints2 = [], dataPoints3 = [];
+    const [dataPoints1, setDataPoints1] = useState([]);
+    const [dataPoints2, setDataPoints2] = useState([]);
+    const [dataPoints3, setDataPoints3] = useState([]);
     const [progressData, setProgressData] = useState([]);
     const [selectedButton, setSelectedButton] = useState("Weight");
     
@@ -30,7 +32,8 @@ export default function MyProgress () {
     const [editGoal, setEditGoal] = useState(false);
     const [createGoal, setCreateGoal] = useState(false);
 
-    const [graphGenerated, setGraphGenerated] = useState(false);
+    const [graphDataLoaded, setGraphDataLoaded] = useState(false);
+
     useEffect(() => {
 
         axios.post(`${baseUrl}/api/progress/progress-data`, {userId: user_id})
@@ -41,13 +44,9 @@ export default function MyProgress () {
                 console.error('Error fetching progress data:', error);
             });
 
-    }, []);
+    }, [user_id]);
 
-    for(var i = 0; i < progressData.length; i++){
-        dataPoints1.push({x: new Date(progressData[i].date), y: Number(progressData[i].weight)});
-        dataPoints2.push({x: new Date(progressData[i].date), y: Number(progressData[i].calorie_intake)});
-        dataPoints3.push({x: new Date(progressData[i].date), y: Number(progressData[i].water_intake)});
-    }
+    
 
     function generateGraph(type){
         var chart = new CanvasJS.Chart("chartContainer", { 
@@ -119,16 +118,24 @@ export default function MyProgress () {
         chart.render();
     }
     
-    let graphType = 0;
-    
-    setTimeout(function(){
-        if(!graphGenerated){
-            generateGraph(graphType);
-            setGraphGenerated(true);
+    var graphType = 0;
+
+
+    useEffect(() => {
+        for(var i = 0; i < progressData.length; i++){
+            dataPoints1.push({x: new Date(progressData[i].date), y: Number(progressData[i].weight)});
+            dataPoints2.push({x: new Date(progressData[i].date), y: Number(progressData[i].calorie_intake)});
+            dataPoints3.push({x: new Date(progressData[i].date), y: Number(progressData[i].water_intake)});
         }
-    }, 1000);
-    
-    
+        setGraphDataLoaded(true);
+        }, [progressData])
+
+    useEffect(() =>{
+        if(graphDataLoaded){
+            generateGraph(graphType);
+        }
+    }, [progressData])
+        
     //---------
     useEffect(() => {
         axios.post(`${baseUrl}/api/progress/goal-info`, {userId: user_id})
