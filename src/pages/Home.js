@@ -16,7 +16,7 @@ export default function Home() {
   }, []);
 
   const fetchExerciseBank = () => {
-    axios.post(`${baseUrl}/api/users/exercise-bank`)
+    axios.get(`${baseUrl}/api/users/exercise-bank`)
       .then(response => {
         setExerciseBank(response.data);
       })
