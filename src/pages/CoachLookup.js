@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl, Alert } from '@mui/material';
 import LinearProgress from '@mui/joy/LinearProgress';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
@@ -26,13 +26,15 @@ export default function CoachLookup() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [selectedCoach, setSelectedCoach] = useState(null);
-  const [requestedCoaches, setRequestedCoaches] = useState([]);
 
   const [experience, setExperience] = useState('');
   const [specializations, setSpecializations] = useState('');
   const [city, setCity] = useState('');
   const [state, setState] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
+
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null);
 
 const handleSearch = () => {
   // Backend call for filtered search
@@ -47,7 +49,7 @@ const handleSearch = () => {
       setSearchResults(response.data.coaches);
     })
     .catch(error => {
-      console.error('Error fetching filtered coach search results:', error);
+      setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
     });
 };
 
@@ -55,11 +57,12 @@ const handleSearch = () => {
     // Backend call for coach details
     axios.post(`${baseUrl}/api/users/coach-details`, { fname: coach.first_name, lname: coach.last_name, userId: coach.id })
       .then(response => {
+        console.log(response.data.coaches[0])
         setSelectedCoach(response.data.coaches[0]); 
         setOpenDialog(true);
       })
       .catch(error => {
-        console.error('Error fetching coach details:', error);
+        setErrorMessage(error.data ? error.data.message : 'Error reaching server');
       });
   };
 
@@ -70,21 +73,16 @@ const handleSearch = () => {
     return;
   }
 
-  // Check if the coach has already been requested
-  if (requestedCoaches.includes(coach.id)) {
-    alert("You have already requested this coach.");
-    return;
-  }
-
   // Backend call to request coach
-  axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.id, clientId: user_id })
+  axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.user_id, clientId: user_id })
     .then(response => {
-      // Update the list of requested coaches
-      setRequestedCoaches([...requestedCoaches, coach.id]);
-      alert("Coach requested successfully!");
+      setErrorMessage(null)
+      setSuccessMessage(response.data.message);
     })
     .catch(error => {
-      console.error('Error requesting coach:', error);
+      console.log(error)
+      setSuccessMessage(null)
+      setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
     });
 };
 
@@ -173,9 +171,6 @@ const handleSearch = () => {
                   >
                     {`${coach.first_name} ${coach.last_name}`}
                   </Typography>
-                  <Button onClick={() => handleRequestCoach(coach)} variant='contained' sx={{ marginTop: '10px'}}>
-                    Request Coach
-                  </Button>
                 </Card>
               ))}
               <Box mt={2} display="flex" justifyContent="center">
@@ -211,6 +206,13 @@ const handleSearch = () => {
               <Typography>City: {selectedCoach.city}</Typography>
               <Typography>State: {selectedCoach.state}</Typography>
               <Typography>Price Per Hour: {selectedCoach.price}</Typography>
+              <Button onClick={() => handleRequestCoach(selectedCoach)} variant='contained' sx={{ marginTop: '10px'}}>
+                Request Coach
+              </Button>
+              <div>
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {successMessage && <Alert severity="success">{successMessage}</Alert>}
+              </div>
             </>
           )}
         </DialogContent>
