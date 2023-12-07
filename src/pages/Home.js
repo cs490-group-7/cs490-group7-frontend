@@ -43,7 +43,7 @@ export default function Home() {
 
   return (
     <div className="home-page">
-      <h1>Welcome to Fit Fusion!</h1>
+      <h1>Welcome to TrackMeet!</h1>
       <Grid container spacing={2}>
         {/* Left half of the screen */}
         <Grid item xs={6}>

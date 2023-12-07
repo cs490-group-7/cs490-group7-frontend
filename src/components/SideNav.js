@@ -13,7 +13,7 @@ export default function SideNav() {
 
   return (
     <div className="side-nav">
-      <h2 className="title">Fit Fusion</h2>
+      <h2 className="title">TrackMeet</h2>
       {!isAuthenticated && (
         <a className={location.pathname === '/' ? 'active' : ''} onClick={() => navigate("/")}>Home</a>
       )}
