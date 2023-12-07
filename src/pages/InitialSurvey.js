@@ -189,7 +189,12 @@ export default function InitialSurvey () {
       </h4>
       <TextField
         required value={weightGoal}
-        onChange={(event) => setWeightGoal(event.target.value)}
+        onChange={(event) => {
+          setWeightGoal(event.target.value);
+          if (event.target.value === "Maintain") {
+            setWeightGoalValue(0);
+          }
+        }}
         select
         sx={{width: "150px"}}
         label="Select One"
@@ -222,7 +227,6 @@ export default function InitialSurvey () {
         Submit
       </Button>
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-    </Box>
-  )
-
+      </Box>
+    )
 }
