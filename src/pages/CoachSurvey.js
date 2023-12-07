@@ -114,7 +114,6 @@ export default function CoachSurvey() {
         helperText={experienceError || ' '}
         required type = "number"
         value={experience}
-        sx={{ width: '500px'}}
         onChange={(event) => setExperience(event.target.value)}
         sx={{ width: '300px'}}
       />
@@ -143,7 +142,6 @@ export default function CoachSurvey() {
         helperText={cityError || ' '}
         required
         value={city}
-        sx={{ width: '200px'}}
         onChange={(event) => setCity(event.target.value)}
         sx={{ width: '300px'}}
       />

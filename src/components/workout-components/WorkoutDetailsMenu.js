@@ -23,7 +23,7 @@ function WorkoutDetailsMenu (props) {
                 console.error('Error fetching workout details:', error);
             });
 
-    }, []);
+    }, [props]);
 
     return (
         <div className="workout-details-menu">

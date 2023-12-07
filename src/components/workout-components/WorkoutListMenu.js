@@ -12,6 +12,7 @@ function WorkoutListMenu (props) {
     const { user_id } = location.state || { user_id: false };
 
     const [workoutList, setWorkoutList] = useState();
+    const [selectedWorkout, setSelectedWorkout] = useState();
 
     useEffect(() => {
 
@@ -24,7 +25,6 @@ function WorkoutListMenu (props) {
         axios.post(`${baseUrl}/api/workout/workout-list`, {userId: user_id})
             .then((response) => {
                 setWorkoutList(response.data);
-                console.log(response.data);
             })
             .catch((error) => {
                 console.error('Error fetching workout list:', error);
@@ -40,6 +40,7 @@ function WorkoutListMenu (props) {
             });
         window.location.reload()
         getWorkouts();
+
     }
 
     return (
@@ -53,17 +54,32 @@ function WorkoutListMenu (props) {
             <Grid container spacing={0.5} padding={0.5}>
 
                 {(typeof workoutList !== 'undefined') && workoutList.map((workout) => {
-                    return <Grid item xs={12} spacing={0.5} sx={{ width: 1 }}>
-                        <Card variant="outlined" sx={{ padding: 1 }}>
-                            <div><b>{workout.workout_name}</b></div>
+                    return <Grid item xs={12} sx={{ width: 1 }}>
+                        <Card variant="outlined" sx={{ padding: 1, borderColor: selectedWorkout === workout.workout_id ? '#00008b' : '#d9d9d9' }}>
+                            <div style={{ fontSize: '18px'}}><b>{workout.workout_name}</b></div>
                             <div><i>{workout.description}</i></div>
                             <Button id="viewDetailsBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                                setSelectedWorkout(null);
+                                props.selectFunc(null);
                                 props.viewFunc(workout.workout_id);
                             }}>View Details</Button>
+                            <Button id="assignBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                                if (selectedWorkout === workout.workout_id) {
+                                    setSelectedWorkout(null);
+                                    props.selectFunc(null);
+                                } else {
+                                    setSelectedWorkout(workout.workout_id);
+                                    props.selectFunc(workout.workout_id);
+                                }
+                            }}>Select</Button>
                             <Button id="editBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                                setSelectedWorkout(null);
+                                props.selectFunc(null);
                                 props.editFunc(workout.workout_id);
                             }}>Edit</Button>
                             <Button id="deleteBtn" variant="contained" color="error" sx={{ margin: 1 }} onClick={() => {
+                                setSelectedWorkout(null);
+                                props.selectFunc(null);
                                 deleteWorkout(workout.workout_id);
                             }}>Delete</Button>
                         </Card>

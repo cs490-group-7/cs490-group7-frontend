@@ -38,7 +38,7 @@ export default function CoachLookup() {
 
 const handleSearch = () => {
   // Backend call for filtered search
-  axios.post(`${baseUrl}/api/users/filtered-search`, {
+  axios.post(`${baseUrl}/api/coach/coach-lookup`, {
     experience,
     specializations,
     city,
@@ -46,7 +46,7 @@ const handleSearch = () => {
     maxPrice,
   })
     .then(response => {
-      setSearchResults(response.data.coaches);
+      setSearchResults(response.data);
     })
     .catch(error => {
       setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
