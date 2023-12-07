@@ -68,8 +68,8 @@ const handleSearch = () => {
 
   const handleRequestCoach = (coach) => {
   // Prevent users from requesting themselves
-  if (coach.id === user_id) {
-    alert("You can't request yourself as a coach.");
+  if (coach.user_id === user_id) {
+    setErrorMessage("You can't request yourself as a coach.");
     return;
   }
 
