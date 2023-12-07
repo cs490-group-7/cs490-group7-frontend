@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar } from '@mui/material';
+import Alert from '@mui/material/Alert';
 import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 
@@ -7,6 +8,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyClient() {
     const [clients, setClients] = useState([]);
+    const [error, setError] = useState(null);
     const location = useLocation();
     const { user_id } = location.state || { user_id: false };
 
@@ -18,6 +20,7 @@ export default function MyClient() {
             })
             .catch(error => {
                 console.error('Error fetching client requests:', error);
+                setError('Error fetching client requests');
             });
     }, [user_id]);
 
@@ -30,6 +33,7 @@ export default function MyClient() {
             })
             .catch(error => {
                 console.error('Error accepting client request:', error);
+                setError('Error accepting client request');
             });
     };
 
@@ -42,6 +46,7 @@ export default function MyClient() {
             })
             .catch(error => {
                 console.error('Error declining client request:', error);
+                setError('Error declining client request');
             });
     };
 
@@ -56,6 +61,7 @@ export default function MyClient() {
             </AppBar>
             <div id="client-requests">
                 <h2>Client Requests</h2>
+                {error && <Alert severity="error">{error}</Alert>}
                 {clients.map((client) => (
                     <Card key={client.id} sx={{ maxWidth: 345, marginBottom: 2 }}>
                         <CardContent>
