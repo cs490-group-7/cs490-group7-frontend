@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl } from '@mui/material';
+import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl, Alert } from '@mui/material';
 import LinearProgress from '@mui/joy/LinearProgress';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -17,6 +17,8 @@ const getAllStates = () => [
 ];
 
 export default function CoachLookup() {
+  const location = useLocation();
+  const { user_id } = location.state || { user_id: false };
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -31,6 +33,9 @@ export default function CoachLookup() {
   const [state, setState] = useState('');
   const [maxPrice, setMaxPrice] = useState('');
 
+  const [successMessage, setSuccessMessage] = useState(null)
+  const [errorMessage, setErrorMessage] = useState(null);
+
 const handleSearch = () => {
   // Backend call for filtered search
   axios.post(`${baseUrl}/api/coach/coach-lookup`, {
@@ -44,8 +49,7 @@ const handleSearch = () => {
       setSearchResults(response.data);
     })
     .catch(error => {
-      console.error('Error fetching coach search results:', error);
-      setSearchResults([]);
+      setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
     });
 };
 
@@ -53,13 +57,34 @@ const handleSearch = () => {
     // Backend call for coach details
     axios.post(`${baseUrl}/api/users/coach-details`, { fname: coach.first_name, lname: coach.last_name, userId: coach.id })
       .then(response => {
+        console.log(response.data.coaches[0])
         setSelectedCoach(response.data.coaches[0]); 
         setOpenDialog(true);
       })
       .catch(error => {
-        console.error('Error fetching coach details:', error);
+        setErrorMessage(error.data ? error.data.message : 'Error reaching server');
       });
   };
+
+  const handleRequestCoach = (coach) => {
+  // Prevent users from requesting themselves
+  if (coach.id === user_id) {
+    alert("You can't request yourself as a coach.");
+    return;
+  }
+
+  // Backend call to request coach
+  axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.user_id, clientId: user_id })
+    .then(response => {
+      setErrorMessage(null)
+      setSuccessMessage(response.data.message);
+    })
+    .catch(error => {
+      console.log(error)
+      setSuccessMessage(null)
+      setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
+    });
+};
 
   useEffect(() => {
     // Fetch initial search results when the component mounts
@@ -133,6 +158,7 @@ const handleSearch = () => {
           </Box>
           </Grid>
         <Grid item xs={12}>
+          <h4 style={{ marginTop: 0}}>Click the coach for more details</h4>
           {/* Search results box with pagination */}
           {displayedResults.length > 0 ? (
             <>
@@ -141,7 +167,7 @@ const handleSearch = () => {
                   <Typography
                     variant="h6"
                     onClick={() => handleCoachDetails(coach)}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', fontSize:'24px' }}
                   >
                     {`${coach.first_name} ${coach.last_name}`}
                   </Typography>
@@ -171,8 +197,8 @@ const handleSearch = () => {
 
       {/* Coach details dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Coach Details</DialogTitle>
-        <DialogContent>
+        <DialogTitle>Coach Details:</DialogTitle>
+        <DialogContent sx={{ width: '400px'}}>
           {selectedCoach && (
             <>
               <Typography>Years of Experience: {selectedCoach.experience}</Typography>
@@ -180,6 +206,13 @@ const handleSearch = () => {
               <Typography>City: {selectedCoach.city}</Typography>
               <Typography>State: {selectedCoach.state}</Typography>
               <Typography>Price Per Hour: {selectedCoach.price}</Typography>
+              <Button onClick={() => handleRequestCoach(selectedCoach)} variant='contained' sx={{ marginTop: '10px'}}>
+                Request Coach
+              </Button>
+              <div>
+                {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+                {successMessage && <Alert severity="success">{successMessage}</Alert>}
+              </div>
             </>
           )}
         </DialogContent>
