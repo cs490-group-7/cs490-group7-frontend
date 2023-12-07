@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 function App() {
 
   useEffect(() => {
-    document.title = 'Fit Fusion';
+    document.title = 'TrackMeet';
   }, []);
 
   return (
