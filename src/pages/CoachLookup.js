@@ -77,7 +77,7 @@ const handleSearch = () => {
   }
 
   // Backend call to request coach
-  axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.id })
+  axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.id, clientId: user_id })
     .then(response => {
       // Update the list of requested coaches
       setRequestedCoaches([...requestedCoaches, coach.id]);
@@ -160,6 +160,7 @@ const handleSearch = () => {
           </Box>
           </Grid>
         <Grid item xs={12}>
+          <h4 style={{ marginTop: 0}}>Click the coach for more details</h4>
           {/* Search results box with pagination */}
           {displayedResults.length > 0 ? (
             <>
@@ -168,11 +169,11 @@ const handleSearch = () => {
                   <Typography
                     variant="h6"
                     onClick={() => handleCoachDetails(coach)}
-                    style={{ cursor: 'pointer' }}
+                    style={{ cursor: 'pointer', fontSize:'24px' }}
                   >
                     {`${coach.first_name} ${coach.last_name}`}
                   </Typography>
-                  <Button onClick={() => handleRequestCoach(coach)}>
+                  <Button onClick={() => handleRequestCoach(coach)} variant='contained' sx={{ marginTop: '10px'}}>
                     Request Coach
                   </Button>
                 </Card>
@@ -201,8 +202,8 @@ const handleSearch = () => {
 
       {/* Coach details dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
-        <DialogTitle>Coach Details</DialogTitle>
-        <DialogContent>
+        <DialogTitle>Coach Details:</DialogTitle>
+        <DialogContent sx={{ width: '400px'}}>
           {selectedCoach && (
             <>
               <Typography>Years of Experience: {selectedCoach.experience}</Typography>
