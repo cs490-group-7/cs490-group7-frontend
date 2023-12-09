@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, InputLabel, FormControl, Alert } from '@mui/material';
-import LinearProgress from '@mui/joy/LinearProgress';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Box, Grid, Typography, TextField, Button, Card, Dialog, DialogTitle, DialogContent, DialogActions, MenuItem, Select, Alert } from '@mui/material';
+import { useLocation } from 'react-router-dom';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -36,28 +35,57 @@ export default function CoachLookup() {
   const [successMessage, setSuccessMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null);
 
-const handleSearch = () => {
-  // Backend call for filtered search
-  axios.post(`${baseUrl}/api/coach/coach-lookup`, {
-    experience,
-    specializations,
-    city,
-    state,
-    maxPrice,
-  })
-    .then(response => {
-      setSearchResults(response.data);
+  const handleSearch = () => {
+    // Backend call for filtered search
+    axios.post(`${baseUrl}/api/coach/coach-lookup`, {
+      experience,
+      specializations,
+      city,
+      state,
+      maxPrice,
     })
-    .catch(error => {
-      setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
-    });
-};
+      .then(response => {
+        setSearchResults(response.data);
+      })
+      .catch(error => {
+        setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
+      });
+  };
+
+  const handleExperienceChange = (event) => {
+    setExperience(event.target.value);
+    // Call handleSearch whenever experience changes
+    handleSearch();
+  };
+
+  const handleSpecializationsChange = (event) => {
+    setSpecializations(event.target.value);
+    // Call handleSearch whenever specializations change
+    handleSearch();
+  };
+
+  const handleCityChange = (event) => {
+    setCity(event.target.value);
+    // Call handleSearch whenever city changes
+    handleSearch();
+  };
+
+  const handleStateChange = (event) => {
+    setState(event.target.value);
+    // Call handleSearch whenever state changes
+    handleSearch();
+  };
+
+  const handleMaxPriceChange = (event) => {
+    setMaxPrice(event.target.value);
+    // Call handleSearch whenever maxPrice changes
+    handleSearch();
+  };
 
   const handleCoachDetails = (coach) => {
     // Backend call for coach details
     axios.post(`${baseUrl}/api/users/coach-details`, { fname: coach.first_name, lname: coach.last_name, userId: coach.id })
       .then(response => {
-        console.log(response.data.coaches[0])
         setSelectedCoach(response.data.coaches[0]); 
         setOpenDialog(true);
       })
@@ -67,24 +95,23 @@ const handleSearch = () => {
   };
 
   const handleRequestCoach = (coach) => {
-  // Prevent users from requesting themselves
-  if (coach.user_id === user_id) {
-    setErrorMessage("You can't request yourself as a coach.");
-    return;
-  }
+    // Prevent users from requesting themselves
+    if (coach.user_id === user_id) {
+      setErrorMessage("You can't request yourself as a coach.");
+      return;
+    }
 
-  // Backend call to request coach
-  axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.user_id, clientId: user_id })
-    .then(response => {
-      setErrorMessage(null)
-      setSuccessMessage(response.data.message);
-    })
-    .catch(error => {
-      console.log(error)
-      setSuccessMessage(null)
-      setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
-    });
-};
+    // Backend call to request coach
+    axios.post(`${baseUrl}/api/users/request-coach`, { coachId: coach.user_id, clientId: user_id })
+      .then(response => {
+        setErrorMessage(null)
+        setSuccessMessage(response.data.message);
+      })
+      .catch(error => {
+        setSuccessMessage(null)
+        setErrorMessage(error.response.data ? error.response.data.message : 'Error reaching server');
+      });
+  };
 
   useEffect(() => {
     // Fetch initial search results when the component mounts
@@ -101,25 +128,25 @@ const handleSearch = () => {
       <h1>Coach Lookup</h1>
       <Grid container spacing={2}>
         <Grid item xs={12}>
-           {/* Filter options */}
-          <h3 style={{ marginTop: 0}}>Filter:</h3>
+          {/* Filter options */}
+          <h3 style={{ marginTop: 0 }}>Filter:</h3>
           <Box display="flex" justifyContent="space-between">
             <TextField
               id="experience"
               label="Min Experience (years)"
               variant="outlined"
               value={experience}
-              required type = "number"
-              onChange={(event) => setExperience(event.target.value)}
+              required type="number"
+              onChange={handleExperienceChange}
             />
-             <Select
+            <Select
               label="Specializations"
               id="specializations"
               value={specializations}
-              onChange={(event) => setSpecializations(event.target.value)}
-              displayEmpty 
-             >
-            <MenuItem value="">Specializations</MenuItem>
+              onChange={handleSpecializationsChange}
+              displayEmpty
+            >
+              <MenuItem value="">Specializations</MenuItem>
               <MenuItem value="Losing Weight">Losing Weight</MenuItem>
               <MenuItem value="Gaining Weight">Gaining Weight</MenuItem>
               <MenuItem value="Building Muscle">Building Muscle</MenuItem>
@@ -131,34 +158,34 @@ const handleSearch = () => {
               label="City"
               variant="outlined"
               value={city}
-              onChange={(event) => setCity(event.target.value)}
+              onChange={handleCityChange}
             />
-              <Select
-                label="State"
-                id="state"
-                value={state}
-                onChange={(event) => setState(event.target.value)}
-                displayEmpty 
-              >
-                <MenuItem value="">State</MenuItem>
-                {getAllStates().map((stateName) => (
-                  <MenuItem key={stateName} value={stateName}>
-                    {stateName}
-                  </MenuItem>
-                ))}
-              </Select>
+            <Select
+              label="State"
+              id="state"
+              value={state}
+              onChange={handleStateChange}
+              displayEmpty
+            >
+              <MenuItem value="">State</MenuItem>
+              {getAllStates().map((stateName) => (
+                <MenuItem key={stateName} value={stateName}>
+                  {stateName}
+                </MenuItem>
+              ))}
+            </Select>
             <TextField
               id="maxPrice"
               label="Max Price"
               variant="outlined"
               value={maxPrice}
-              required type = "number"
-              onChange={(event) => setMaxPrice(event.target.value)}
+              required type="number"
+              onChange={handleMaxPriceChange}
             />
           </Box>
-          </Grid>
+        </Grid>
         <Grid item xs={12}>
-          <h4 style={{ marginTop: 0}}>Click the coach for more details</h4>
+          <h4 style={{ marginTop: 0 }}>Click the coach for more details</h4>
           {/* Search results box with pagination */}
           {displayedResults.length > 0 ? (
             <>
@@ -167,7 +194,7 @@ const handleSearch = () => {
                   <Typography
                     variant="h6"
                     onClick={() => handleCoachDetails(coach)}
-                    style={{ cursor: 'pointer', fontSize:'24px' }}
+                    style={{ cursor: 'pointer', fontSize: '24px' }}
                   >
                     {`${coach.first_name} ${coach.last_name}`}
                   </Typography>
@@ -198,7 +225,7 @@ const handleSearch = () => {
       {/* Coach details dialog */}
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)}>
         <DialogTitle>Coach Details:</DialogTitle>
-        <DialogContent sx={{ width: '400px'}}>
+        <DialogContent sx={{ width: '400px' }}>
           {selectedCoach && (
             <>
               <Typography>Years of Experience: {selectedCoach.experience}</Typography>
@@ -206,7 +233,7 @@ const handleSearch = () => {
               <Typography>City: {selectedCoach.city}</Typography>
               <Typography>State: {selectedCoach.state}</Typography>
               <Typography>Price Per Hour: {selectedCoach.price}</Typography>
-              <Button onClick={() => handleRequestCoach(selectedCoach)} variant='contained' sx={{ marginTop: '10px'}}>
+              <Button onClick={() => handleRequestCoach(selectedCoach)} variant='contained' sx={{ marginTop: '10px' }}>
                 Request Coach
               </Button>
               <div>
