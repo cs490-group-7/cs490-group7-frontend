@@ -7,7 +7,8 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 export default function MyClient() {
     const location = useLocation();
     const { user_id } = location.state || { user_id: false };
-
+    console.log("Location State:", location.state); // Log location.state
+    console.log("User ID:" , user_id);
     const [currentClients, setCurrentClients] = useState([]);
     const [isPendingApproval, setIsPendingApproval] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -57,20 +58,21 @@ export default function MyClient() {
                 {currentClients.length === 0 && (
                     <p>No results</p>
                 )}
-                {currentClients.map((client) => (
-                    <Link href={`my-clients/${client.client_id}`} sx={{ textDecoration: 'none'}}>
-                        <Card key={client.id} sx={{ maxWidth: 345, marginBottom: 2, marginTop: 3, }}>
-                            <CardContent>
-                                <Typography variant="h5" component="div" sx={{ color: 'purple'}}>
-                                    {client.first_name} {client.last_name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Click for client details
-                                </Typography>
-                            </CardContent>
-                        </Card>
-                    </Link>
-                ))}
+            {currentClients.map((client) => (
+                <Card key={client.id} sx={{ maxWidth: 345, marginBottom: 2, marginTop: 3 }}>
+                    <CardContent
+                        onClick={() => navigate(`/my-clients/${client.id}`, { state: { user_id } })}
+                        style={{ cursor: 'pointer' }}
+                    >
+                        <Typography variant="h5" component="div" sx={{ color: 'purple' }}>
+                            {client.first_name} {client.last_name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Click for client details
+                        </Typography>
+                    </CardContent>
+                </Card>
+            ))}
                 {isPendingApproval && (
                 <Dialog
                     open={isPendingApproval}
