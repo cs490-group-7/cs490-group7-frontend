@@ -149,10 +149,15 @@ function Dashboard () {
 }
 
     function getProgress () {
-        if (goalTarget - goalBaseline === 0 || weightGoal === "Maintain"){
-            return 1-(Math.abs(goalTarget - goalCurrent) / goalTarget);
+        let progress;
+        if (weightGoal === "Maintain"){
+            progress = 1 - Math.abs(goalTarget - goalCurrent) / goalTarget;
+        } else if (weightGoal === "Lose") {
+            progress = (goalBaseline - goalCurrent) / (goalBaseline - goalTarget);
+        } else { // weightGoal === "Gain"
+            progress = (goalCurrent - goalBaseline) / (goalTarget - goalBaseline);
         }
-        return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
+        return Math.max(progress, 0);
     }
 
     setTimeout(function(){
