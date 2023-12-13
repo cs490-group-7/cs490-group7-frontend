@@ -61,7 +61,7 @@ export default function MyClient() {
             {currentClients.map((client) => (
                 <Card key={client.client_id} sx={{ maxWidth: 345, marginBottom: 2, marginTop: 3 }}>
                     <CardContent
-                        onClick={() => navigate(`/my-clients/${client.client_id}`, { state: { user_id } })}
+                        onClick={() => navigate(`/my-clients/${client.client_id}`, { state: { user_id, client } })}
                         style={{ cursor: 'pointer' }}
                     >
                         <Typography variant="h5" component="div" sx={{ color: 'purple' }}>

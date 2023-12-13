@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import CanvasJSReact from '@canvasjs/react-charts';
 import { Button, Grid, TextField, Alert, MenuItem} from '@mui/material'
 import axios from 'axios';
-import { useLocation, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
@@ -11,6 +11,9 @@ var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export default function MyProgress () {
     const { clientId } = useParams();
+    const location = useLocation();
+    const { client, user_id } = location.state || { client: false };
+    const navigate = useNavigate();
 
     const [dataPoints1] = useState([]);
     const [dataPoints2] = useState([]);
@@ -170,7 +173,8 @@ export default function MyProgress () {
 
     return (
         <div className="client-details-page">
-            <h1>Client Progress</h1>
+            <Button variant='contained' sx={{ marginTop: '20px'}} onClick={() => navigate('/my-clients', { state: location.state })}> {"<- Back"}</Button>
+            <h1>{client.first_name} {client.last_name}'s Progress</h1>
             <br/>
             <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
                 <Grid item xs={2}>
