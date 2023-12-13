@@ -40,6 +40,7 @@ function Dashboard () {
 
     const { isCoach } = location.state || { isCoach: false };
     useEffect(() => {
+        console.log(user_id);
         axios.post(`${baseUrl}/api/data/dashboard-data`, {userId: user_id})
             .then((response) => {
                 setGoalBaseline(response.data.goalBaseline);
@@ -73,7 +74,7 @@ function Dashboard () {
                 console.error('Error fetching dashboard data:', error);
             });
         //setProgress(getProgress()); // KEEP THIS HERE! this will automatically calculate progress given your goal parameters
-    }, []);
+    }, [user_id]);
     function submitDaily () {
         if(!signedIn){
             setErrorMessage("You must log in before submitting a daily survey");
