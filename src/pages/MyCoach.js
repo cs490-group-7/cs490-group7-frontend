@@ -4,12 +4,27 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function MyCoachClient() {
+    const location = useLocation();
+    const { user_id } = location.state || { user_id: false };
+    const [currentCoach, setCurrentCoach] = useState([]);
 
     // Coach Removal Components
     const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false);
     const [removalReason, setRemovalReason] = useState('');
-  
+
+    useEffect(() => {
+      axios.post(`${baseUrl}/api/coach/get-current-coach`, { userId: user_id })
+        .then((response) => {
+          setCurrentCoach(response.data[0]);
+        })
+        .catch((error) => {
+          console.error('Error fetching coach data:', error);
+        });
+    }, [user_id]);
+
     const handleRemoveCoach = () => {
       setRemoveDialogOpen(true);
     };
@@ -78,10 +93,13 @@ const renderCoachDetailsBox = () => (
       {/* Coach details */}
       <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
         {/* Replace City and Stae with coach details */}
-        <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>Coach First Name</Typography>
-        <Typography variant="body1" style={{ textAlign: 'center' }}>Certified Personal Trainer</Typography>
+        <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
         <br></br>
-        <Typography variant="body1" style={{ textAlign: 'center' }}> City, State</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
+        <br></br>
         <br></br>
         <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
       </Box>
