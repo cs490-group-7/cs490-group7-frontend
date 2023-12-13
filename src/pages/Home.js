@@ -3,6 +3,7 @@ import { Box, Grid, Typography, Button, MenuItem, Select } from '@mui/material';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
+console.log(baseUrl)
 const resultsPerPage = 6;
 
 export default function Home() {
