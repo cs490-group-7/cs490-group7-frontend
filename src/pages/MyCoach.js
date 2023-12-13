@@ -10,6 +10,8 @@ export default function MyCoachClient() {
     const location = useLocation();
     const { user_id } = location.state || { user_id: false };
     const [currentCoach, setCurrentCoach] = useState([]);
+    const [hasCoach, setHasCoach] = useState(false);
+    const [requestPending, setRequestPending] = useState(false);
 
     // Coach Removal Components
     const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false);
@@ -18,7 +20,13 @@ export default function MyCoachClient() {
     useEffect(() => {
       axios.post(`${baseUrl}/api/coach/get-current-coach`, { userId: user_id })
         .then((response) => {
-          setCurrentCoach(response.data[0]);
+          setCurrentCoach(response.data);
+          if (response.data.accepted === true){
+            setHasCoach(true);
+          }
+          if (response.data.pending === true){
+            setRequestPending(true);
+          }
         })
         .catch((error) => {
           console.error('Error fetching coach data:', error);
@@ -36,8 +44,23 @@ export default function MyCoachClient() {
 
     const handleRemoveSubmit = () => {
         // Temporary display reason
-        alert("Removal Reason: " + removalReason)
+        // alert("Removal Reason: " + removalReason)
+        axios.post(`${baseUrl}/api/coach/removal-reason`, { userId: user_id, coachId: currentCoach.coach_id, reason: removalReason})
+        .then((response) => {
+          
+        })
+        .catch((error) => {
+          console.error('Error saving removal reason:', error);
+        });
 
+        axios.post(`${baseUrl}/api/coach/remove-coach`, { userId: user_id })
+        .then((response) => {
+          
+        })
+        .catch((error) => {
+          console.error('Error removing coach:', error);
+        });
+        setHasCoach(false);
         handleRemoveDialogClose();
       };
 
@@ -76,6 +99,22 @@ const renderCoachDetailsBox = () => (
           zIndex: 1, 
         }}
       />
+      {(hasCoach === false) &&
+        <div>
+          <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
+            <Typography variant="h5" style={{ textAlign: 'center' }}>You do not have a coach!</Typography>
+            <br></br>
+            {(requestPending === false) && 
+            <Typography variant="h5" style={{ textAlign: 'center' }}>You can request a coach in the <br/><a className='active' href="/coach-lookup">Coach Lookup</a> page</Typography>
+            }
+            {(requestPending === true) && 
+            <Typography variant="h5" style={{ textAlign: 'center' }}>Request is still pending</Typography>
+            }
+            
+          </Box>
+        </div>}
+      {(hasCoach === true) && 
+      <div>
       {/* Circle for Coach pfp */}
       <Box
         style={{
@@ -107,8 +146,10 @@ const renderCoachDetailsBox = () => (
       <Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: '35%'}} onClick={handleRemoveCoach}>
           Remove Coach
         </Button>
+        </div>
+        }
     </Box>
-  );
+      );
   
 
   // Render message box
