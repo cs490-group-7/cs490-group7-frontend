@@ -56,6 +56,7 @@ export default function Home() {
               value={exerciseTypeFilter}
               onChange={handleFilterChange}
               sx={{ width: '200px'}}
+              title='exercise-filter'
             >
               <MenuItem value="">All Muscle Groups</MenuItem>
               <MenuItem value="Chest">Chest</MenuItem>
