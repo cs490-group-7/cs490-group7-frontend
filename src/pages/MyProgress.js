@@ -17,6 +17,7 @@ export default function MyProgress () {
     const [dataPoints2, setDataPoints2] = useState([]);
     const [dataPoints3, setDataPoints3] = useState([]);
     const [progressData, setProgressData] = useState([]);
+    const [workoutData, setWorkoutData] = useState([]);
     const [selectedButton, setSelectedButton] = useState("Weight");
     
     const [goalInfo, setGoalInfo] = useState([]);
@@ -44,9 +45,16 @@ export default function MyProgress () {
                 console.error('Error fetching progress data:', error);
             });
 
-    }, [user_id]);
+        const sinceDate = new Date(); sinceDate.setDate(sinceDate.getDate() - 7);
+        axios.post(`${baseUrl}/api/progress/workout-progress`, {userId: user_id, sinceDate: sinceDate})
+            .then((response) => {
+                setWorkoutData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching workout progress data:', error);
+            });
 
-    
+    }, [user_id]);
 
     function generateGraph(type){
         var chart = new CanvasJS.Chart("chartContainer", { 
