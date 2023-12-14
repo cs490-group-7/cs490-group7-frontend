@@ -202,16 +202,16 @@ const renderMessageBox = () => (
         {(hasCoach === false) &&
         <div>
           <Box p={4} style={{ position: 'relative', overflowY: 'auto' }}>
-            <Typography variant="h5" style={{ textAlign: 'center' }}>You do not have a coach!</Typography>
+            <Typography variant="h5" style={{ textAlign: 'center' }}>You do not have a coach</Typography>
             <br></br>
             {(requestPending === false) && 
-            <Typography variant="body1" style={{ textAlign: 'center' }}>
+            <Typography variant="body1" style={{}}>
               You can request a coach in the <br/>
               <a className={location.pathname === '/coach-lookup' ? 'active' : ''} onClick={() => navigate("/coach-lookup", { state: location.state })} style={{cursor: "pointer", color: "blue", textDecoration: "underline"}}>Coach Lookup</a> page
             </Typography>
             }
             {(requestPending === true) && 
-            <Typography variant="body1" style={{ textAlign: 'center' }}>Request is still pending</Typography>
+            <Typography variant="body1" style={{ }}>Your coach request is still pending</Typography>
             }
             
           </Box>
@@ -232,6 +232,7 @@ const renderMessageBox = () => (
             fullWidth
             value={removalReason}
             onChange={(e) => setRemovalReason(e.target.value)}
+            sx={{ marginTop: '10px'}}
           />
         </DialogContent>
         <DialogActions>
