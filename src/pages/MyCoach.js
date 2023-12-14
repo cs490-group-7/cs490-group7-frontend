@@ -9,9 +9,11 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 export default function MyCoachClient() {
     const location = useLocation();
     const { user_id } = location.state || { user_id: false };
+    const navigate = useNavigate();
+
     const [currentCoach, setCurrentCoach] = useState([]);
-    const [hasCoach, setHasCoach] = useState(false);
-    const [requestPending, setRequestPending] = useState(false);
+    const [hasCoach, setHasCoach] = useState();
+    const [requestPending, setRequestPending] = useState();
 
     // Coach Removal Components
     const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false);
@@ -21,12 +23,20 @@ export default function MyCoachClient() {
       axios.post(`${baseUrl}/api/coach/get-current-coach`, { userId: user_id })
         .then((response) => {
           setCurrentCoach(response.data);
-          if (response.data.accepted === true){
+          console.log(response.data);
+          if (response.data.accepted === 1){
             setHasCoach(true);
           }
-          if (response.data.pending === true){
+          else{
+            setHasCoach(false);
+          }
+          if (response.data.pending === 1){
             setRequestPending(true);
           }
+          else{
+            setRequestPending(false);
+          }
+          
         })
         .catch((error) => {
           console.error('Error fetching coach data:', error);
@@ -99,22 +109,6 @@ const renderCoachDetailsBox = () => (
           zIndex: 1, 
         }}
       />
-      {(hasCoach === false) &&
-        <div>
-          <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
-            <Typography variant="h5" style={{ textAlign: 'center' }}>You do not have a coach!</Typography>
-            <br></br>
-            {(requestPending === false) && 
-            <Typography variant="h5" style={{ textAlign: 'center' }}>You can request a coach in the <br/><a className='active' href="/coach-lookup">Coach Lookup</a> page</Typography>
-            }
-            {(requestPending === true) && 
-            <Typography variant="h5" style={{ textAlign: 'center' }}>Request is still pending</Typography>
-            }
-            
-          </Box>
-        </div>}
-      {(hasCoach === true) && 
-      <div>
       {/* Circle for Coach pfp */}
       <Box
         style={{
@@ -143,11 +137,9 @@ const renderCoachDetailsBox = () => (
         <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
       </Box>
       {/* Remove Coach button */}
-      <Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: '35%'}} onClick={handleRemoveCoach}>
+      <Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: "37%"}} onClick={handleRemoveCoach}>
           Remove Coach
         </Button>
-        </div>
-        }
     </Box>
       );
   
@@ -207,8 +199,26 @@ const renderMessageBox = () => (
       <h1>My Coach</h1>
       <Grid container spacing={3}>
         {/* Coach details box */}
+        {(hasCoach === false) &&
+        <div>
+          <Box p={4} style={{ position: 'relative', overflowY: 'auto' }}>
+            <Typography variant="h5" style={{ textAlign: 'center' }}>You do not have a coach!</Typography>
+            <br></br>
+            {(requestPending === false) && 
+            <Typography variant="body1" style={{ textAlign: 'center' }}>
+              You can request a coach in the <br/>
+              <a className={location.pathname === '/coach-lookup' ? 'active' : ''} onClick={() => navigate("/coach-lookup", { state: location.state })} style={{cursor: "pointer", color: "blue", textDecoration: "underline"}}>Coach Lookup</a> page
+            </Typography>
+            }
+            {(requestPending === true) && 
+            <Typography variant="body1" style={{ textAlign: 'center' }}>Request is still pending</Typography>
+            }
+            
+          </Box>
+        </div>}
         <Grid item xs={5}>
-          {renderCoachDetailsBox()}
+            {(hasCoach === true) && renderCoachDetailsBox()}
+          
 
       {/* Remove Coach Dialog */}
       <Dialog open={isRemoveDialogOpen} onClose={handleRemoveDialogClose}>
@@ -235,7 +245,7 @@ const renderMessageBox = () => (
         </Grid>
         {/* Message box */}
         <Grid item xs={7}>
-          {renderMessageBox()}
+          {(hasCoach === true) && renderMessageBox()}
         </Grid>
       </Grid>
     </div>
