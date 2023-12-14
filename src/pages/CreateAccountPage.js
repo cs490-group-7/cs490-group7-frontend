@@ -175,6 +175,7 @@ function CreateAccountPage () {
             select
             sx={{width: "150px"}}
             label="I am primarily a..."
+            title='user-type'
           >
             <MenuItem value={false}>
               Client
