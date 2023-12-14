@@ -49,13 +49,14 @@ export default function Home() {
         <Grid item xs={6}>
           {/* Exercise Type Filter Box (Dropdown) */}
           <Box  p={2}>
-            <Typography variant="h5">Master over 200 Exercises: </Typography>
-            <Typography sx={{ marginTop: '10px'}}>Target a specific muscle group: </Typography>
+            <Typography variant="h5">Master over 200 Exercises:</Typography>
+            <Typography sx={{ marginTop: '10px'}}>Target a specific muscle group:</Typography>
             <Select
               label="Select Exercise Type"
               value={exerciseTypeFilter}
               onChange={handleFilterChange}
               sx={{ width: '200px'}}
+              title='exercise-filter'
             >
               <MenuItem value="">All Muscle Groups</MenuItem>
               <MenuItem value="Chest">Chest</MenuItem>
