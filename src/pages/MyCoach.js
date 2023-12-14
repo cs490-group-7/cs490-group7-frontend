@@ -4,12 +4,45 @@ import LinearProgress from '@mui/joy/LinearProgress';
 import { useNavigate, useLocation } from 'react-router-dom';
 import axios from 'axios';
 
+const baseUrl = process.env.REACT_APP_BACKEND_URL;
+
 export default function MyCoachClient() {
+    const location = useLocation();
+    const { user_id } = location.state || { user_id: false };
+    const navigate = useNavigate();
+
+    const [currentCoach, setCurrentCoach] = useState([]);
+    const [hasCoach, setHasCoach] = useState();
+    const [requestPending, setRequestPending] = useState();
 
     // Coach Removal Components
     const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false);
     const [removalReason, setRemovalReason] = useState('');
-  
+
+    useEffect(() => {
+      axios.post(`${baseUrl}/api/coach/get-current-coach`, { userId: user_id })
+        .then((response) => {
+          setCurrentCoach(response.data);
+          console.log(response.data);
+          if (response.data.accepted === 1){
+            setHasCoach(true);
+          }
+          else{
+            setHasCoach(false);
+          }
+          if (response.data.pending === 1){
+            setRequestPending(true);
+          }
+          else{
+            setRequestPending(false);
+          }
+          
+        })
+        .catch((error) => {
+          console.error('Error fetching coach data:', error);
+        });
+    }, [user_id]);
+
     const handleRemoveCoach = () => {
       setRemoveDialogOpen(true);
     };
@@ -21,8 +54,23 @@ export default function MyCoachClient() {
 
     const handleRemoveSubmit = () => {
         // Temporary display reason
-        alert("Removal Reason: " + removalReason)
+        // alert("Removal Reason: " + removalReason)
+        axios.post(`${baseUrl}/api/coach/removal-reason`, { userId: user_id, coachId: currentCoach.coach_id, reason: removalReason})
+        .then((response) => {
+          
+        })
+        .catch((error) => {
+          console.error('Error saving removal reason:', error);
+        });
 
+        axios.post(`${baseUrl}/api/coach/remove-coach`, { userId: user_id })
+        .then((response) => {
+          
+        })
+        .catch((error) => {
+          console.error('Error removing coach:', error);
+        });
+        setHasCoach(false);
         handleRemoveDialogClose();
       };
 
@@ -78,19 +126,22 @@ const renderCoachDetailsBox = () => (
       {/* Coach details */}
       <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
         {/* Replace City and Stae with coach details */}
-        <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>Coach First Name</Typography>
-        <Typography variant="body1" style={{ textAlign: 'center' }}>Certified Personal Trainer</Typography>
+        <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
         <br></br>
-        <Typography variant="body1" style={{ textAlign: 'center' }}> City, State</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
+        <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
+        <br></br>
         <br></br>
         <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
       </Box>
       {/* Remove Coach button */}
-      <Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: '35%'}} onClick={handleRemoveCoach}>
+      <Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: "37%"}} onClick={handleRemoveCoach}>
           Remove Coach
         </Button>
     </Box>
-  );
+      );
   
 
   // Render message box
@@ -148,8 +199,26 @@ const renderMessageBox = () => (
       <h1>My Coach</h1>
       <Grid container spacing={3}>
         {/* Coach details box */}
+        {(hasCoach === false) &&
+        <div>
+          <Box p={4} style={{ position: 'relative', overflowY: 'auto' }}>
+            <Typography variant="h5" style={{ textAlign: 'center' }}>You do not have a coach</Typography>
+            <br></br>
+            {(requestPending === false) && 
+            <Typography variant="body1" style={{}}>
+              You can request a coach in the <br/>
+              <a className={location.pathname === '/coach-lookup' ? 'active' : ''} onClick={() => navigate("/coach-lookup", { state: location.state })} style={{cursor: "pointer", color: "blue", textDecoration: "underline"}}>Coach Lookup</a> page
+            </Typography>
+            }
+            {(requestPending === true) && 
+            <Typography variant="body1" style={{ }}>Your coach request is still pending</Typography>
+            }
+            
+          </Box>
+        </div>}
         <Grid item xs={5}>
-          {renderCoachDetailsBox()}
+            {(hasCoach === true) && renderCoachDetailsBox()}
+          
 
       {/* Remove Coach Dialog */}
       <Dialog open={isRemoveDialogOpen} onClose={handleRemoveDialogClose}>
@@ -163,6 +232,7 @@ const renderMessageBox = () => (
             fullWidth
             value={removalReason}
             onChange={(e) => setRemovalReason(e.target.value)}
+            sx={{ marginTop: '10px'}}
           />
         </DialogContent>
         <DialogActions>
@@ -176,7 +246,7 @@ const renderMessageBox = () => (
         </Grid>
         {/* Message box */}
         <Grid item xs={7}>
-          {renderMessageBox()}
+          {(hasCoach === true) && renderMessageBox()}
         </Grid>
       </Grid>
     </div>
