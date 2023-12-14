@@ -75,7 +75,8 @@ function LogSessionMenu (props) {
                 userId: user_id,
                 workoutId: props.workoutId,
                 sessionDate: props.selectedDate.toISOString().split('T')[0],
-                dayOfWeek: props.selectedDate.getDay()
+                dayOfWeek: props.selectedDate.getDay(),
+                exercises: exercises
             }
           
             axios.post(`${baseUrl}/api/workout/log-session`, loggingData)

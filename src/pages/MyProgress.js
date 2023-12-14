@@ -16,7 +16,9 @@ export default function MyProgress () {
     const [dataPoints1, setDataPoints1] = useState([]);
     const [dataPoints2, setDataPoints2] = useState([]);
     const [dataPoints3, setDataPoints3] = useState([]);
+    const [dataPoints4, setDataPoints4] = useState([]);
     const [progressData, setProgressData] = useState([]);
+    const [workoutData, setWorkoutData] = useState([]);
     const [selectedButton, setSelectedButton] = useState("Weight");
     
     const [goalInfo, setGoalInfo] = useState([]);
@@ -44,9 +46,16 @@ export default function MyProgress () {
                 console.error('Error fetching progress data:', error);
             });
 
-    }, [user_id]);
+        const sinceDate = new Date(); sinceDate.setDate(sinceDate.getDate() - 7);
+        axios.post(`${baseUrl}/api/progress/workout-progress`, {userId: user_id, sinceDate: sinceDate})
+            .then((response) => {
+                setWorkoutData(response.data);
+            })
+            .catch((error) => {
+                console.error('Error fetching workout progress data:', error);
+            });
 
-    
+    }, [user_id]);
 
     function generateGraph(type){
         var chart = new CanvasJS.Chart("chartContainer", { 
@@ -106,6 +115,22 @@ export default function MyProgress () {
             chart.options.axisY = {
                 stripLines:[{}]
             }
+        } else if (type === 3){
+            chart.options.title.text = "Workouts";
+            chart.options.data[0].dataPoints = dataPoints4;
+            chart.options.data[0].type = "scatter";
+            chart.options.data[0].color = "blue";
+            chart.options.axisY = {
+                stripLines:[
+                    {      
+                        value : 1,
+                        label : "100%",
+                        thickness : 3,
+                        color:"blue",
+                        labelFontColor:"blue"
+                    }
+                ]
+            }
         }
 
         var isEmpty = !(chart.options.data[0].dataPoints && chart.options.data[0].dataPoints.length > 0);
@@ -127,14 +152,17 @@ export default function MyProgress () {
             dataPoints2.push({x: new Date(progressData[i].date), y: Number(progressData[i].calorie_intake)});
             dataPoints3.push({x: new Date(progressData[i].date), y: Number(progressData[i].water_intake)});
         }
+        for(var i = 0; i < workoutData.length; i++){
+            dataPoints4.push({x: new Date(workoutData[i].session_date), y: Number(workoutData[i].completed/workoutData[i].listed)});
+        }
         setGraphDataLoaded(true);
-        }, [progressData])
+        }, [progressData, workoutData])
 
     useEffect(() =>{
         if(graphDataLoaded){
             generateGraph(graphType);
         }
-    }, [progressData])
+    }, [progressData, workoutData])
         
     //---------
     useEffect(() => {
@@ -253,6 +281,13 @@ export default function MyProgress () {
                                 setSelectedButton("Water");
                                 generateGraph(graphType);
                             }}>Water Intake</Button>
+                        </Grid>
+                        <Grid item xs={12}>
+                            <Button id="workouts" variant={selectedButton === "Workouts" ? "contained" : "outlined"}sx={{ width: 1 }} onClick={() => {
+                                graphType = 3;
+                                setSelectedButton("Workouts");
+                                generateGraph(graphType);
+                            }}>Workouts</Button>
                         </Grid>
                     </Grid>
                 </Grid>
