@@ -12,7 +12,6 @@ function LogSessionMenu (props) {
     const { user_id } = location.state || { user_id: false };
     
     const [workoutName, setWorkoutName] = useState("");
-    const [setCount, setSetCount] = useState(0);
     const [description, setDescription] = useState("");
 
     const [successMessage, setSuccessMessage] = useState(null)
@@ -29,11 +28,10 @@ function LogSessionMenu (props) {
         axios.post(`${baseUrl}/api/workout/workout-details`, workoutIdData)
             .then((response) => {
                 setWorkoutName(response.data.workout.workout_name);
-                setSetCount(response.data.workout.set_count);
                 setDescription(response.data.workout.description);
                 var tempExercises = [];
                 response.data.exercises.map((exercise, i) => {
-                    tempExercises.push({exercise_id: exercise.exercise_id, exercise_name: exercise.exercise_name, total: 0, rep_count: exercise.reps, exercise_error: "", rep_error: ""})
+                    tempExercises.push({exercise_id: exercise.exercise_id, exercise_name: exercise.exercise_name, set_total: 0, rep_total: 0, set_count: exercise.set_count, rep_count: exercise.reps, exercise_error: "", set_error: "", rep_error: ""})
                 });
                 setExercises(tempExercises);
                 console.log(response.data);
@@ -55,11 +53,21 @@ function LogSessionMenu (props) {
 
         exercises.map((exercise, i) => {
           
-            if (exercise.total % 1 !== 0) {
-                exercise.rep_error = "Total count must be an integer.";
+            if (exercise.set_total % 1 !== 0) {
+                exercise.set_error = "Set total count must be an integer.";
                 valid = false
-            } else if (exercise.total < 0) {
-                exercise.rep_error = "Total count must be positive.";
+            } else if (exercise.set_total < 0) {
+                exercise.set_error = "Set total count must be positive.";
+                valid = false
+            } else {
+                exercise.set_error = null;
+            }
+
+            if (exercise.rep_total % 1 !== 0) {
+                exercise.rep_error = "Rep total count must be an integer.";
+                valid = false
+            } else if (exercise.rep_total < 0) {
+                exercise.rep_error = "Rep total count must be positive.";
                 valid = false
             } else {
                 exercise.rep_error = null;
@@ -105,7 +113,6 @@ function LogSessionMenu (props) {
                     <b>{props.selectedDate.toLocaleDateString('en-us', { weekday: "long" })}, {props.selectedDate.toLocaleDateString('en-us', { month: "long", day: "numeric" })}</b>
                 </div>
                 <div><i>{description}</i></div>
-                <div>Set Count: {setCount}</div>
             </div>
 
             <Typography variant="h6" sx={{ fontWeight: 'bold', marginTop: '10px' }}>Exercises</Typography>
@@ -118,15 +125,25 @@ function LogSessionMenu (props) {
                         <Grid item xs={4}>
                             <div style={{ fontSize: '18px'}}><b>{exercise.exercise_name}:</b></div>
                         </Grid>
-                        <Grid item xs={3} align="right" style={{ display: "flex", justifyContent: "flex-end" }}>
-                            <TextField id={"repCount" + (i+1).toString()} label="Rep Total" variant="outlined" required error={Boolean(exercise.rep_error)} helperText={exercise.rep_error || ' '} type="number" value={exercise.total} onChange={(event) => {
-                                exercise.total = event.target.value;
+                        <Grid item xs={2} align="right" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <TextField id={"setCount" + (i+1).toString()} label="Set Total" variant="outlined" required error={Boolean(exercise.set_error)} helperText={exercise.set_error || ' '} type="number" value={exercise.set_total} onChange={(event) => {
+                                exercise.set_total = event.target.value;
                                 const newList = [...exercises];
                                 setExercises(newList);
                             }}/>
                         </Grid>
-                        <Grid item xs={3} style={{ display: "flex", alignItems: "flex-start" }}>
-                            <div><i> / {setCount * exercise.rep_count} total reps</i></div>
+                        <Grid item xs={2} style={{ display: "flex", alignItems: "flex-start" }}>
+                            <div><i> / {exercise.set_count} total sets</i></div>
+                        </Grid>
+                        <Grid item xs={2} align="right" style={{ display: "flex", justifyContent: "flex-end" }}>
+                            <TextField id={"repCount" + (i+1).toString()} label="Rep Total" variant="outlined" required error={Boolean(exercise.rep_error)} helperText={exercise.rep_error || ' '} type="number" value={exercise.rep_total} onChange={(event) => {
+                                exercise.rep_total = event.target.value;
+                                const newList = [...exercises];
+                                setExercises(newList);
+                            }}/>
+                        </Grid>
+                        <Grid item xs={2} style={{ display: "flex", alignItems: "flex-start" }}>
+                            <div><i> / {exercise.rep_count} total reps</i></div>
                         </Grid>
                     </Grid>
                 })}
