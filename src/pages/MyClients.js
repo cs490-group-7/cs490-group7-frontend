@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar, Link, Dialog, DialogTitle, DialogContent} from '@mui/material';
+import { Box, TextField, Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar, Link, Dialog, DialogTitle, DialogContent} from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -44,6 +44,80 @@ export default function MyClient() {
         }
     }
 
+      // State for the message input
+  const [messageInput, setMessageInput] = useState('');
+  const [showMessageBox, setShowMessageBox] = useState(false);
+  // State for displaying messages
+  const [messages, setMessages] = useState([]);
+
+    // Modify the renderMessageBox function to update the state
+    const handleMessageBox = () => {
+        setShowMessageBox(!showMessageBox); // Toggle the state
+    };
+    
+  // Function to handle sending a message
+  const handleSendMessage = () => {
+    // Add logic to send a message to the coach
+
+  };
+
+  // Function to handle "Enter" key press in the message input
+    const handleEnterKeyPress = (event) => {
+        if (event.key === 'Enter') {
+         alert("Message was " + messageInput);
+         handleSendMessage();
+        }
+      };
+    // Render message box
+    const renderMessageBox = () => (
+        <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+        {/* Header */}
+        <Box
+            style={{
+            background: '#f0f0f0', 
+            padding: '8px',
+            }}
+        >
+            <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
+        </Box>
+        {/* Message history */}
+        <Box
+            style={{
+            flex: 1, 
+            overflowY: 'auto', 
+            background: '#fff', 
+            padding: '8px',
+            }}
+        >
+            {/* Display messages */}
+        
+            <Box mb={1}>
+                <Typography
+                variant="body1"
+                component="div"
+                >
+                Messages go here
+                </Typography>
+            </Box>
+        
+        </Box>
+        {/* Message input */}
+        <TextField
+            id="messageInput"
+            label="Send a message..."
+            variant="outlined"
+            value={messageInput}
+            onChange={(event) => setMessageInput(event.target.value)}
+            onKeyPress={handleEnterKeyPress}
+            style={{
+            background: '#f0f0f0', 
+            margin: '10px',
+            width: '95%',
+            }}
+        />
+        </Box>
+    );
+
     return (
         <div className="my-clients-page">
             <h1>My Clients</h1>
@@ -59,18 +133,32 @@ export default function MyClient() {
                     <p>No results</p>
                 )}
             {currentClients.map((client) => (
-                <Card key={client.client_id} sx={{ maxWidth: 345, marginBottom: 2, marginTop: 3 }}>
+                <Card key={client.client_id} sx={{ maxWidth: 1100, marginBottom: 2, marginTop: 3 }}>
                     <CardContent
                         onClick={() => navigate(`/my-clients/${client.client_id}`, { state: { user_id, client } })}
                         style={{ cursor: 'pointer' }}
                     >
-                        <Typography variant="h5" component="div" sx={{ color: 'purple' }}>
-                            {client.first_name} {client.last_name}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Click for client details
-                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <Typography variant="h5" component="div" sx={{ color: 'purple' }}>
+                                    {client.first_name} {client.last_name}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary">
+                                    Click for client details
+                                </Typography>
+                            </Grid>
+                            <Grid item xs={6}>
+                                {showMessageBox && renderMessageBox()}
+                            </Grid>
+                        </Grid>
                     </CardContent>
+                    <Button 
+                        color="primary" 
+                        onClick={handleMessageBox} 
+                        style={{ margin: '10px' }}
+                    >
+                        Message
+                    </Button>
                 </Card>
             ))}
                 {isPendingApproval && (
