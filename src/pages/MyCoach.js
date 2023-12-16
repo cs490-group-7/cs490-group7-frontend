@@ -79,161 +79,166 @@ export default function MyCoachClient() {
 
   // State for displaying messages
   const [messages, setMessages] = useState([]);
+  const [showMessageBox, setShowMessageBox] = useState(false);
 
- // Function to handle sending a message
-const handleSendMessage = (client_id) => {
-  if (messageInput.trim() !== '') {
-      // Prepare the message data
-      const messageData = {
-          user_id: user_id,
-          user_type: 'Coach',
-          coach_id: user_id,
-          client_id: client_id,
-          message: messageInput,
-      };
-
-      // Make a POST request to the '/send-message' endpoint
-      axios.post(`${baseUrl}/api/chat/send-message`, messageData)
-      .then((response) => {
-          if (response.data.message === 'Message saved successfully.') {
-              // Add the message to the messages array
-              setMessages((messages) => [...messages, { from_coach: true, message: messageInput }]);
-              setMessageInput('');
-          } else {
-              console.error('Error:', response.data.error);
-          }
-      })
-      .catch((error) => {
-          console.error('Error:', error);
-      });
-  }
+  // Function to handle sending a message
+  const handleSendMessage = () => {
+    if (messageInput.trim() !== '') {
+        // Prepare the message data
+        const messageData = {
+            user_id: user_id,
+            user_type: 'Client',
+            coach_id: currentCoach.coach_id,
+            client_id: user_id,
+            message: messageInput,
+        };
+        // Make a POST request to the '/send-message' endpoint
+        axios.post(`${baseUrl}/api/chat/send-message`, messageData)
+        .then((response) => {
+            if (response.data.message === 'Message saved successfully.') {
+                // Fetch the messages for the selected client
+                axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+                .then((response) => {
+                    setMessages(response.data); // Update the messages state
+                    setMessageInput(''); // Clear the message input
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            } else {
+                console.error('Error:', response.data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
 };
 
 useEffect(() => {
   // Fetch the messages when the component mounts
-  axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
+  axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
   .then((response) => {
       setMessages(response.data);
   })
   .catch((error) => {
       console.error('Error:', error);
   });
-}, [user_id, selectedClient]);
+}, [currentCoach.coach_id, user_id]);
 
   // Function to handle "Enter" key press in the message input
-    const handleEnterKeyPress = (event) => {
-        if (event.key === 'Enter') {
-         alert("Message was " + messageInput);
-         handleSendMessage();
-        }
-      };
+  const handleEnterKeyPress = (event) => {
+    if (event.key === 'Enter') {
+    handleSendMessage();
+    }
+  };
 
-        // Render message box
+  // Render message box
 const renderMessageBox = () => (
-  <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-    {/* Header */}
-    <Box
-      style={{
-        background: '#f0f0f0', 
-        padding: '8px',
-      }}
-    >
-      <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
-    </Box>
-    {/* Message history */}
-    <Box
-      style={{
-        flex: 1, 
-        overflowY: 'auto', 
-        background: '#fff', 
-        padding: '8px',
-      }}
-    >
-    {/* Display messages */}
-    {messages.map((message, index) => (
-        <Box key={index} mb={1}>
-            <Typography variant="body1" component="div">
-                {message.from_coach ? 'You: ' : 'Coach: '}
-                {message.message}
-            </Typography>
-        </Box>
-    ))}
-     
-    </Box>
-    {/* Message input */}
-    <TextField
-      id="messageInput"
-      label="Send a message..."
-      variant="outlined"
-      value={messageInput}
-      onChange={(event) => setMessageInput(event.target.value)}
-      onKeyPress={handleEnterKeyPress}
-      style={{
-        background: '#f0f0f0', 
-        margin: '10px',
-        width: '95%',
-      }}
-    />
+<Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+{/* Header */}
+<Box
+style={{
+  background: '#f0f0f0', 
+  padding: '8px',
+}}
+>
+<Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
+</Box>
+{/* Message history */}
+<Box
+style={{
+  flex: 1, 
+  overflowY: 'auto', 
+  background: '#fff', 
+  padding: '8px',
+}}
+>
+{/* Display messages */}
+{messages.map((message, index) => (
+  <Box key={index} mb={1}>
+      <Typography variant="body1" component="div">
+          {message.from_coach ? 'Coach: ' : 'You: '}
+          {message.message}
+      </Typography>
   </Box>
+))}
+
+</Box>
+{/* Message input */}
+<TextField
+id="messageInput"
+label="Send a message..."
+variant="outlined"
+value={messageInput}
+onChange={(event) => setMessageInput(event.target.value)}
+onKeyPress={handleEnterKeyPress}
+style={{
+  background: '#f0f0f0', 
+  margin: '10px',
+  width: '95%',
+}}
+/>
+</Box>
 );
 
 // Render coach details box
 const renderCoachDetailsBox = () => (
-    <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
-      {/* Dark blue box */}
-      <Box
-        style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          width: '100%',
-          height: '20%',
-          background: 'darkblue', 
-          zIndex: 1, 
-        }}
-      />
-      {/* Circle for Coach pfp */}
-      <Box
-        style={{
-          position: 'absolute',
-          top: '10%',
-          left: '50%',  
-          transform: 'translateX(-50%)', 
-          width: '100px',
-          height: '100px',
-          borderRadius: '50%',
-          background: '#ccc',
-          zIndex: 2, 
-        }}
-      />
-      {/* Coach details */}
-      <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
-        {/* Replace City and Stae with coach details */}
-        <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
-        <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
-        <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
-        <br></br>
-        <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
-        <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
-        <br></br>
-        <br></br>
-        <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
-      </Box>
-      {/* Remove Coach button */}
-      <Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: "37%"}} onClick={handleRemoveCoach}>
-          Remove Coach
-        </Button>
-    </Box>
-      );
-  
-  return (
+<Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
+{/* Dark blue box */}
+<Box
+  style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '20%',
+    background: 'darkblue', 
+    zIndex: 1, 
+  }}
+/>
+{/* Circle for Coach pfp */}
+<Box
+  style={{
+    position: 'absolute',
+    top: '10%',
+    left: '50%',  
+    transform: 'translateX(-50%)', 
+    width: '100px',
+    height: '100px',
+    borderRadius: '50%',
+    background: '#ccc',
+    zIndex: 2, 
+  }}
+/>
+{/* Coach details */}
+<Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
+  {/* Replace City and Stae with coach details */}
+  <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
+  <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
+  <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
+  <br></br>
+  <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
+  <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
+  <br></br>
+  <br></br>
+  <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
+</Box>
+{/* Remove Coach button */}
+<Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: "37%"}} onClick={handleRemoveCoach}>
+    Remove Coach
+  </Button>
+</Box>
+);
+
+return (
     <div className="my-coach-client-page">
-      <h1>My Coach</h1>
-      <Grid container spacing={3}>
-        {/* Coach details box */}
-        {(hasCoach === false) &&
-        <div>
-          <Box p={4} style={{ position: 'relative', overflowY: 'auto' }}>
+    <h1>My Coach</h1>
+    <Grid container spacing={3}>
+      {/* Coach details box */}
+      {(hasCoach === false) &&
+      <div>
+    <Box p={4} style={{ position: 'relative', overflowY: 'auto' }}>
             <Typography variant="h5" style={{ textAlign: 'center' }}>You do not have a coach</Typography>
             <br></br>
             {(requestPending === false) && 

@@ -7,8 +7,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 export default function MyClient() {
     const location = useLocation();
     const { user_id } = location.state || { user_id: false };
-    console.log("Location State:", location.state); // Log location.state
-    console.log("User ID:" , user_id);
+    const [selectedClient, setSelectedClient] = useState(null);
     const [currentClients, setCurrentClients] = useState([]);
     const [isPendingApproval, setIsPendingApproval] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
@@ -44,64 +43,69 @@ export default function MyClient() {
         }
     }
 
-         // State for the message input
-  const [messageInput, setMessageInput] = useState('');
-  const [showMessageBox, setShowMessageBox] = useState(false);
-  // State for displaying messages
-  const [messages, setMessages] = useState([]);
+    // State for the message input
+    const [messageInput, setMessageInput] = useState('');
+    const [showMessageBox, setShowMessageBox] = useState(false);
+    // State for displaying messages
+    const [messages, setMessages] = useState([]);
 
-    // Modify the renderMessageBox function to update the state
-    const handleMessageBox = () => {
-        setShowMessageBox(!showMessageBox); // Toggle the state
-    };
+    // Modify the handleMessageBox function to fetch the messages and update the state
+    const handleMessageBox = (client_id) => {
+        setSelectedClient(client_id); // Set the selected client
+        setShowMessageBox(!showMessageBox); // Toggle the message box
 
-// Function to handle sending a message
-const handleSendMessage = (client_id) => {
-    if (messageInput.trim() !== '') {
-        // Prepare the message data
-        const messageData = {
-            user_id: user_id,
-            user_type: 'Coach',
-            coach_id: user_id,
-            client_id: client_id,
-            message: messageInput,
-        };
-
-        // Make a POST request to the '/send-message' endpoint
-        axios.post(`${baseUrl}/send-message`, messageData)
+        // Fetch the messages for the selected client
+        axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: client_id })
         .then((response) => {
-            if (response.data.message === 'Message saved successfully.') {
-                // Add the message to the messages array
-                setMessages((messages) => [...messages, { from_coach: true, message: messageInput }]);
-                setMessageInput('');
-            } else {
-                console.error('Error:', response.data.error);
-            }
+            setMessages(response.data); // Update the messages state
         })
         .catch((error) => {
             console.error('Error:', error);
         });
-    }
-};
+    };
 
-useEffect(() => {
-    // Fetch the messages when the component mounts
-    axios.post(`${baseUrl}/get-messages`, { coach_id: user_id, client_id: selectedClient })
-    .then((response) => {
-        setMessages(response.data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
-}, [user_id, selectedClient]);
+    // Function to handle sending a message
+    const handleSendMessage = () => {
+        if (messageInput.trim() !== '') {
+            // Prepare the message data
+            const messageData = {
+                user_id: user_id,
+                user_type: 'Coach',
+                coach_id: user_id,
+                client_id: selectedClient,
+                message: messageInput,
+            };
 
-  // Function to handle "Enter" key press in the message input
+            // Make a POST request to the '/send-message' endpoint
+            axios.post(`${baseUrl}/api/chat/send-message`, messageData)
+            .then((response) => {
+                if (response.data.message === 'Message saved successfully.') {
+                    // Fetch the messages for the selected client
+                    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
+                    .then((response) => {
+                        setMessages(response.data); // Update the messages state
+                        setMessageInput(''); // Clear the message input
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    console.error('Error:', response.data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    };
+
+    // Function to handle "Enter" key press in the message input
     const handleEnterKeyPress = (event) => {
         if (event.key === 'Enter') {
-         alert("Message was " + messageInput);
-         handleSendMessage();
+            handleSendMessage();
         }
-      };
+    };
+
     // Render message box
     const renderMessageBox = () => (
         <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
@@ -180,12 +184,12 @@ useEffect(() => {
                     </CardContent>
                     <Button 
                         color="primary" 
-                        onClick={handleMessageBox} 
+                        onClick={() => handleMessageBox(client.client_id)} 
                         style={{ margin: '10px' }}
                     >
                         Message
                     </Button>
-                    {showMessageBox && renderMessageBox()}
+                    {showMessageBox && selectedClient === client.client_id && renderMessageBox()}
                 </Card>
             ))}
                 {isPendingApproval && (
