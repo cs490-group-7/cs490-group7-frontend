@@ -112,7 +112,7 @@ useEffect(() => {
             padding: '8px',
             }}
         >
-            <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
+            <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Client:</Typography>
         </Box>
         {/* Message history */}
         <Box

@@ -93,7 +93,7 @@ const handleSendMessage = (client_id) => {
       };
 
       // Make a POST request to the '/send-message' endpoint
-      axios.post(`${baseUrl}/send-message`, messageData)
+      axios.post(`${baseUrl}/api/chat/send-message`, messageData)
       .then((response) => {
           if (response.data.message === 'Message saved successfully.') {
               // Add the message to the messages array
@@ -111,7 +111,7 @@ const handleSendMessage = (client_id) => {
 
 useEffect(() => {
   // Fetch the messages when the component mounts
-  axios.post(`${baseUrl}/get-messages`, { coach_id: user_id, client_id: selectedClient })
+  axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
   .then((response) => {
       setMessages(response.data);
   })
@@ -149,16 +149,15 @@ const renderMessageBox = () => (
         padding: '8px',
       }}
     >
-      {/* Display messages */}
-    
-        <Box mb={1}>
-          <Typography
-            variant="body1"
-            component="div"
-          >
-            Messages go here
-          </Typography>
+    {/* Display messages */}
+    {messages.map((message, index) => (
+        <Box key={index} mb={1}>
+            <Typography variant="body1" component="div">
+                {message.from_coach ? 'You: ' : 'Coach: '}
+                {message.message}
+            </Typography>
         </Box>
+    ))}
      
     </Box>
     {/* Message input */}
