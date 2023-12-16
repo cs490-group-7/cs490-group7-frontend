@@ -44,7 +44,7 @@ export default function MyClient() {
         }
     }
 
-      // State for the message input
+         // State for the message input
   const [messageInput, setMessageInput] = useState('');
   const [showMessageBox, setShowMessageBox] = useState(false);
   // State for displaying messages
@@ -54,12 +54,46 @@ export default function MyClient() {
     const handleMessageBox = () => {
         setShowMessageBox(!showMessageBox); // Toggle the state
     };
-    
-  // Function to handle sending a message
-  const handleSendMessage = () => {
-    // Add logic to send a message to the coach
 
-  };
+// Function to handle sending a message
+const handleSendMessage = (client_id) => {
+    if (messageInput.trim() !== '') {
+        // Prepare the message data
+        const messageData = {
+            user_id: user_id,
+            user_type: 'Coach',
+            coach_id: user_id,
+            client_id: client_id,
+            message: messageInput,
+        };
+
+        // Make a POST request to the '/send-message' endpoint
+        axios.post(`${baseUrl}/send-message`, messageData)
+        .then((response) => {
+            if (response.data.message === 'Message saved successfully.') {
+                // Add the message to the messages array
+                setMessages((messages) => [...messages, { from_coach: true, message: messageInput }]);
+                setMessageInput('');
+            } else {
+                console.error('Error:', response.data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+};
+
+useEffect(() => {
+    // Fetch the messages when the component mounts
+    axios.post(`${baseUrl}/get-messages`, { coach_id: user_id, client_id: selectedClient })
+    .then((response) => {
+        setMessages(response.data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+}, [user_id, selectedClient]);
 
   // Function to handle "Enter" key press in the message input
     const handleEnterKeyPress = (event) => {
@@ -89,17 +123,16 @@ export default function MyClient() {
             padding: '8px',
             }}
         >
-            {/* Display messages */}
-        
-            <Box mb={1}>
-                <Typography
-                variant="body1"
-                component="div"
-                >
-                Messages go here
+        {/* Display messages */}
+        {messages.map((message, index) => (
+            <Box key={index} mb={1}>
+                <Typography variant="body1" component="div">
+                    {message.from_coach ? 'You: ' : 'Client: '}
+                    {message.message}
                 </Typography>
             </Box>
-        
+        ))}
+
         </Box>
         {/* Message input */}
         <TextField
@@ -138,19 +171,12 @@ export default function MyClient() {
                         onClick={() => navigate(`/my-clients/${client.client_id}`, { state: { user_id, client } })}
                         style={{ cursor: 'pointer' }}
                     >
-                        <Grid container spacing={2}>
-                            <Grid item xs={6}>
-                                <Typography variant="h5" component="div" sx={{ color: 'purple' }}>
-                                    {client.first_name} {client.last_name}
-                                </Typography>
-                                <Typography variant="body2" color="text.secondary">
-                                    Click for client details
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={6}>
-                                {showMessageBox && renderMessageBox()}
-                            </Grid>
-                        </Grid>
+                        <Typography variant="h5" component="div" sx={{ color: 'purple' }}>
+                            {client.first_name} {client.last_name}
+                        </Typography>
+                        <Typography variant="body2" color="text.secondary">
+                            Click for client details
+                        </Typography>
                     </CardContent>
                     <Button 
                         color="primary" 
@@ -159,6 +185,7 @@ export default function MyClient() {
                     >
                         Message
                     </Button>
+                    {showMessageBox && renderMessageBox()}
                 </Card>
             ))}
                 {isPendingApproval && (

@@ -80,11 +80,45 @@ export default function MyCoachClient() {
   // State for displaying messages
   const [messages, setMessages] = useState([]);
 
-  // Function to handle sending a message
-  const handleSendMessage = () => {
-    // Add logic to send a message to the coach
+ // Function to handle sending a message
+const handleSendMessage = (client_id) => {
+  if (messageInput.trim() !== '') {
+      // Prepare the message data
+      const messageData = {
+          user_id: user_id,
+          user_type: 'Coach',
+          coach_id: user_id,
+          client_id: client_id,
+          message: messageInput,
+      };
 
-  };
+      // Make a POST request to the '/send-message' endpoint
+      axios.post(`${baseUrl}/send-message`, messageData)
+      .then((response) => {
+          if (response.data.message === 'Message saved successfully.') {
+              // Add the message to the messages array
+              setMessages((messages) => [...messages, { from_coach: true, message: messageInput }]);
+              setMessageInput('');
+          } else {
+              console.error('Error:', response.data.error);
+          }
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+      });
+  }
+};
+
+useEffect(() => {
+  // Fetch the messages when the component mounts
+  axios.post(`${baseUrl}/get-messages`, { coach_id: user_id, client_id: selectedClient })
+  .then((response) => {
+      setMessages(response.data);
+  })
+  .catch((error) => {
+      console.error('Error:', error);
+  });
+}, [user_id, selectedClient]);
 
   // Function to handle "Enter" key press in the message input
     const handleEnterKeyPress = (event) => {
@@ -93,6 +127,56 @@ export default function MyCoachClient() {
          handleSendMessage();
         }
       };
+
+        // Render message box
+const renderMessageBox = () => (
+  <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+    {/* Header */}
+    <Box
+      style={{
+        background: '#f0f0f0', 
+        padding: '8px',
+      }}
+    >
+      <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
+    </Box>
+    {/* Message history */}
+    <Box
+      style={{
+        flex: 1, 
+        overflowY: 'auto', 
+        background: '#fff', 
+        padding: '8px',
+      }}
+    >
+      {/* Display messages */}
+    
+        <Box mb={1}>
+          <Typography
+            variant="body1"
+            component="div"
+          >
+            Messages go here
+          </Typography>
+        </Box>
+     
+    </Box>
+    {/* Message input */}
+    <TextField
+      id="messageInput"
+      label="Send a message..."
+      variant="outlined"
+      value={messageInput}
+      onChange={(event) => setMessageInput(event.target.value)}
+      onKeyPress={handleEnterKeyPress}
+      style={{
+        background: '#f0f0f0', 
+        margin: '10px',
+        width: '95%',
+      }}
+    />
+  </Box>
+);
 
 // Render coach details box
 const renderCoachDetailsBox = () => (
@@ -142,57 +226,6 @@ const renderCoachDetailsBox = () => (
         </Button>
     </Box>
       );
-  
-
-  // Render message box
-const renderMessageBox = () => (
-    <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-      {/* Header */}
-      <Box
-        style={{
-          background: '#f0f0f0', 
-          padding: '8px',
-        }}
-      >
-        <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
-      </Box>
-      {/* Message history */}
-      <Box
-        style={{
-          flex: 1, 
-          overflowY: 'auto', 
-          background: '#fff', 
-          padding: '8px',
-        }}
-      >
-        {/* Display messages */}
-      
-          <Box mb={1}>
-            <Typography
-              variant="body1"
-              component="div"
-            >
-              Messages go here
-            </Typography>
-          </Box>
-       
-      </Box>
-      {/* Message input */}
-      <TextField
-        id="messageInput"
-        label="Send a message..."
-        variant="outlined"
-        value={messageInput}
-        onChange={(event) => setMessageInput(event.target.value)}
-        onKeyPress={handleEnterKeyPress}
-        style={{
-          background: '#f0f0f0', 
-          margin: '10px',
-          width: '95%',
-        }}
-      />
-    </Box>
-  );
   
   return (
     <div className="my-coach-client-page">
