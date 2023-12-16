@@ -237,16 +237,17 @@ function Dashboard () {
                             <div>
                                 {workoutName}
                                 <div>{workoutCompletion ? <i>Workout completed today.</i> : 
-                                    <a
-                                        className='active'
-                                        href="/workouts"
+                                    <a 
+                                        className={location.pathname === '/workouts' ? 'active' : ''} 
+                                        onClick={() => navigate("/workouts", { state: location.state })} 
+                                        style={{cursor: "pointer", color: "blue", textDecoration: "underline"}}
                                     >
                                         Go to Workouts
-                                    </a>
+                                        </a>
                                 }</div>
                             </div>
                         :
-                            <i>No workout for today.</i>
+                            <i>Rest Day</i>
                         }
                     </Card>
 
