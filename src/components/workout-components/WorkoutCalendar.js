@@ -11,7 +11,7 @@ function WorkoutCalendar (props) {
     const location = useLocation();
     const currentDate = new Date(); currentDate.setDate(currentDate.getDate() - 1);
 
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
 
     const [assignmentList, setAssignmentList] = useState();
 
@@ -26,7 +26,8 @@ function WorkoutCalendar (props) {
 
     function assignWorkout (dayOfWeek) {
       const assignmentData = {
-        userId: user_id,
+        assigneeId: client ? client.client_id : user_id,
+        creatorId: user_id,
         workoutId: props.selectedWorkout,
         dayOfWeek
       }
@@ -43,21 +44,19 @@ function WorkoutCalendar (props) {
     
 
     function getAssignments () {
-      axios.post(`${baseUrl}/api/workout/get-todays-logs`, {userId: user_id})
+      axios.post(`${baseUrl}/api/workout/get-todays-logs`, {userId: client ? client.client_id : user_id})
             .then(response => {
                 const todaysLogs = [];
                 response.data.map((log) => {
                   todaysLogs.push(log.workout_id);
                 });
-                console.log(todaysLogs);
 
-                axios.post(`${baseUrl}/api/workout/get-assignments`, {userId: user_id})
+                axios.post(`${baseUrl}/api/workout/get-assignments`, {userId: client ? client.client_id : user_id})
                       .then((response) => {
                         const assignmentListTemp = [[], [], [], [], [], [], []];
                         response.data.map((assignment) => {
-                          assignmentListTemp[assignment.day_of_week].push({workoutId: assignment.workout_id, workoutName: assignment.workout_name, loggable: assignment.day_of_week === (new Date()).getDay() && !todaysLogs.includes(assignment.workout_id)});
+                          assignmentListTemp[assignment.day_of_week].push({workoutId: assignment.workout_id, workoutName: assignment.workout_name, yours: assignment.yours, first_name: assignment.first_name, last_name: assignment.last_name, loggable: assignment.day_of_week === (new Date()).getDay() && !todaysLogs.includes(assignment.workout_id)});
                         });
-                        console.log(assignmentListTemp);
                         setAssignmentList(assignmentListTemp);
                         
                       })
@@ -96,7 +95,7 @@ function WorkoutCalendar (props) {
                         </Card>
                         <Card variant="outlined" sx={{ padding: 0.5, borderRadius: 0, border: 'none' }}>
                           {(typeof assignmentList === 'undefined') || assignmentList[dayOfWeek].length === 0 ? <Box sx={{ padding: 0.5 }}>Rest Day</Box> : assignmentList[dayOfWeek].map((assignment) => {
-                            return <WorkoutAssignment workoutName={assignment.workoutName} workoutId={assignment.workoutId} loggable={assignment.loggable} currentDate={copiedDate} viewFunc={props.viewFunc} logFunc={props.logFunc} rerenderFunc={getAssignments}/>;
+                            return <WorkoutAssignment workoutName={assignment.workoutName} yours={assignment.yours} first_name={assignment.first_name} last_name={assignment.last_name} workoutId={assignment.workoutId} loggable={assignment.loggable} currentDate={copiedDate} viewFunc={props.viewFunc} logFunc={props.logFunc} rerenderFunc={getAssignments}/>;
                           })}
                         </Card>
                       </Card>

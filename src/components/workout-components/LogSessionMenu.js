@@ -9,7 +9,7 @@ function LogSessionMenu (props) {
 
     const location = useLocation();
 
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
     
     const [workoutName, setWorkoutName] = useState("");
     const [description, setDescription] = useState("");
@@ -120,7 +120,6 @@ function LogSessionMenu (props) {
             <Grid container spacing={1} padding={1}>
 
                 {exercises.map((exercise, i) => {
-                    console.log(exercise);
                     return <Grid container item xs={12} spacing={0.5}>
                         <Grid item xs={4}>
                             <div style={{ fontSize: '18px'}}><b>{exercise.exercise_name}:</b></div>

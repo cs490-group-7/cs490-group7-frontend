@@ -9,7 +9,7 @@ function CreateWorkoutMenu (props) {
 
     const location = useLocation();
 
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
 
     const [workoutName, setWorkoutName] = useState("");
     const [description, setDescription] = useState("");
@@ -101,6 +101,7 @@ function CreateWorkoutMenu (props) {
         if (valid) {
             const workoutData = {
                 workoutName,
+                assigneeId: client ? client.client_id : user_id,
                 creatorId: user_id,
                 description,
                 exercises

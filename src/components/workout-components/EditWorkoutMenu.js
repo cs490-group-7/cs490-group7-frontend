@@ -9,7 +9,7 @@ function EditWorkoutMenu (props) {
 
     const location = useLocation();
 
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
     
     const [workoutName, setWorkoutName] = useState("");
     const [description, setDescription] = useState("");
@@ -115,7 +115,7 @@ function EditWorkoutMenu (props) {
             const workoutData = {
                 workoutId: props.workoutId,
                 workoutName,
-                creatorId: user_id,
+                assigneeId: client ? client.client_id : user_id,
                 description,
                 exercises
             }

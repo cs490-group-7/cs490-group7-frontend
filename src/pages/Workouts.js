@@ -7,7 +7,7 @@ import WorkoutDetailsMenu from '../components/workout-components/WorkoutDetailsM
 import WorkoutListMenu from '../components/workout-components/WorkoutListMenu.js';
 import LogSessionMenu from '../components/workout-components/LogSessionMenu.js';
 import WorkoutCalendar from '../components/workout-components/WorkoutCalendar.js';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useParams } from 'react-router-dom';
 import axios from 'axios';
 
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -22,9 +22,9 @@ const RightMenu = {
 
 function Workouts () {
 
+    const { clientId } = useParams();
     const location = useLocation();
-
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
 
     const [rightMenu, setRightMenu] = useState(RightMenu.List);
     const [workoutId, setWorkoutId] = useState(null);
@@ -60,10 +60,20 @@ function Workouts () {
         setWorkoutId(wid);
     }
 
+    const navigate = useNavigate();
+
     return (
         <div className="workouts-page">
 
-            <h1>Workouts</h1>
+            {client ? 
+                <div>
+                    <Button variant='contained' sx={{ marginTop: '20px'}} onClick={() => {location.state.client = false; navigate('/my-clients', { state: location.state })}}> {"<- Back"}</Button>
+                    <Button variant='contained' sx={{ marginTop: '20px'}} onClick={() => navigate(`/my-clients/${client.client_id}`, { state: location.state })}> {"Progress"}</Button>
+                    <h1>{client.first_name} {client.last_name}'s Workouts</h1>
+                </div>
+                :
+                <h1>Workouts</h1>
+            }
             <Grid container spacing={2}>
 
                 <Grid item xs={4}>

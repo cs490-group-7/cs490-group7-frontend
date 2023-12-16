@@ -36,6 +36,10 @@ function WorkoutDetailsMenu (props) {
 
           {(typeof workout !== 'undefined') && <div>
               <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{workout.workout.workout_name}</Typography>
+              {workout.workout.yours ? 
+                <div><i>Created by you</i></div> :
+                <div><i>Created by {workout.workout.first_name} {workout.workout.last_name}</i></div>
+              }
               <div><i>{workout.workout.description}</i></div>
               <Grid container spacing={0.5} padding={0.5}>
                   {workout.exercises.map((exercise) => {

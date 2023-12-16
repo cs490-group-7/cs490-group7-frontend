@@ -10,7 +10,7 @@ function WorkoutAssignment (props) {
     const location = useLocation();
     const currentDate = new Date(); currentDate.setDate(currentDate.getDate() - 1);
 
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
 
     const [successMessage, setSuccessMessage] = useState(null)
     const [errorMessage, setErrorMessage] = useState(null);
@@ -21,7 +21,7 @@ function WorkoutAssignment (props) {
 
     function unassignWorkout () {
       const unassignmentData = {
-        userId: user_id,
+        userId: client ? client.client_id : user_id,
         workoutId: props.workoutId,
         dayOfWeek: props.currentDate.getDay()
       }
@@ -42,8 +42,9 @@ function WorkoutAssignment (props) {
 
           <Card variant="outlined" sx={{ margin: 0.5, padding: 0.5, borderRadius: 0, borderColor: '#e8e8e8', backgroundColor: '#e8e8e8', color: "#00008b" }}>
             <div><b>{props.workoutName}</b></div>
+            {!props.yours ? <div><i>Assigned by {props.first_name} {props.last_name}</i></div> : ""}
             <div>
-              {props.loggable && <Button id="logBtn" variant="text" size="small" sx={{ borderRadius: 0, minWidth: 30, minHeight: 0, padding: 0.25, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff" }} onClick={() => {
+              {(props.loggable && !client) && <Button id="logBtn" variant="text" size="small" sx={{ borderRadius: 0, minWidth: 30, minHeight: 0, padding: 0.25, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff" }} onClick={() => {
                 props.logFunc(props.workoutId, props.currentDate);
               }}>Log</Button>}
               <Button id="detailsBtn" variant="text" size="small" sx={{ borderRadius: 0, minWidth: 30, minHeight: 0, padding: 0.25, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff" }} onClick={() => {
