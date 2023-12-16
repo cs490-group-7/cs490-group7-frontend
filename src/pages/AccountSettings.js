@@ -93,6 +93,9 @@ const AccountSettings = () => {
   }
   // Function to handle password change
   const handleChangePassword = async () => {
+    setPasswordChangeError('');
+    setPasswordChangeSuccess('');
+
     if (newPassword !== confirmNewPassword) {
       setPasswordChangeError('New passwords do not match.');
       return;
@@ -105,22 +108,33 @@ const AccountSettings = () => {
         userId: user_id
       });
       setPasswordChangeSuccess(response.data.message);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmNewPassword('');
     } catch (error) {
-      setPasswordChangeError(error.response.data.message);
+      // Handle error response from the backend
+      if (error.response && error.response.data && error.response.data.message) {
+          setPasswordChangeError(error.response.data.message);
+      } else {
+          setPasswordChangeError('An error occurred while changing the password.');
+      }
     }
   };
 
   // Function to handle account deletion
   const handleDeleteAccount = async () => {
+  
     try {
       const response = await axios.post(`${baseUrl}/api/account/delete-account`, {
         userId: user_id,
         reason: deleteReason
       });
+      console.log("Response from server:", response.data);
       setDeleteAccountSuccess(response.data.message);
       logout();
       navigate('/');
     } catch (error) {
+      console.log("Error in account deletion:", error.response ? error.response.data : error);
       setDeleteAccountError(error.response.data.message);
     }
     setOpenDeleteDialog(false);
