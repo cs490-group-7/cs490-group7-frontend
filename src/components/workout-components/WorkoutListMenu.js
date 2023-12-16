@@ -47,7 +47,7 @@ function WorkoutListMenu (props) {
         <div className="workout-list-menu">
 
             <Typography variant="h5" sx={{ fontWeight: 'bold' }}>List of Workouts</Typography>
-            <Button id="createWorkoutBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+            <Button id="createWorkoutBtn" variant="contained" title="createWorkoutBtn" sx={{ margin: 1 }} onClick={() => {
                 props.createFunc();
             }}>Create Workout</Button>
 

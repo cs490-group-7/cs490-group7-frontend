@@ -9,7 +9,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-export default function MyProgress () {
+export default function ClientDetails () {
     const { clientId } = useParams();
     const location = useLocation();
     const { client, user_id } = location.state || { client: false };
