@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Alert } from '@mui/material';
+import React, { useEffect, useState, useContext } from 'react';
+import { TextField, Button, Alert, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle } from '@mui/material';
 import axios from 'axios';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { AuthContext } from '../components/AuthContext';
+
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 const AccountSettings = () => {
   const location = useLocation();
   const { user_id } = location.state || { user_id: false };
+  const navigate = useNavigate();
+  const {logout } = useContext(AuthContext);
 
   const [accountInfo, setAccountInfo] = useState([]);
   const [inputErrors, setInputErrors] = useState({first_name: '', last_name: '', email:'', phone: ''})
@@ -14,6 +18,19 @@ const AccountSettings = () => {
   const [successMessage, setSuccessMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null);
   const [formDisabled, setFormDisabled] = useState(true);
+
+  // states for password change
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmNewPassword, setConfirmNewPassword] = useState('');
+  const [passwordChangeError, setPasswordChangeError] = useState('');
+  const [passwordChangeSuccess, setPasswordChangeSuccess] = useState('');
+
+  // States for account deletion
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [deleteReason, setDeleteReason] = useState('');
+  const [deleteAccountError, setDeleteAccountError] = useState('');
+  const [deleteAccountSuccess, setDeleteAccountSuccess] = useState('');
 
   useEffect(() => {
     axios.post(`${baseUrl}/api/account/get-account-info`, {userId: user_id})
@@ -74,6 +91,41 @@ const AccountSettings = () => {
         setErrorMessage(error.data ? error.data.message : 'Error reaching server');
     });
   }
+  // Function to handle password change
+  const handleChangePassword = async () => {
+    if (newPassword !== confirmNewPassword) {
+      setPasswordChangeError('New passwords do not match.');
+      return;
+    }
+
+    try {
+      const response = await axios.post(`${baseUrl}/api/account/change-password`, {
+        currentPassword,
+        newPassword,
+        userId: user_id
+      });
+      setPasswordChangeSuccess(response.data.message);
+    } catch (error) {
+      setPasswordChangeError(error.response.data.message);
+    }
+  };
+
+  // Function to handle account deletion
+  const handleDeleteAccount = async () => {
+    try {
+      const response = await axios.post(`${baseUrl}/api/account/delete-account`, {
+        userId: user_id,
+        reason: deleteReason
+      });
+      setDeleteAccountSuccess(response.data.message);
+      logout();
+      navigate('/');
+    } catch (error) {
+      setDeleteAccountError(error.response.data.message);
+    }
+    setOpenDeleteDialog(false);
+  };
+
 
   return (
     <div className="account-settings-page">
@@ -132,6 +184,58 @@ const AccountSettings = () => {
         {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
         {successMessage && <Alert severity="success">{successMessage}</Alert>}
       </div>
+       {/* Reset Password Section */}
+       <div>
+        <h2 style={{ fontWeight: 'normal', margin: '10px'}}>Reset Password</h2>
+      </div>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
+        <TextField
+          label="Current Password"
+          type="password"
+          value={currentPassword}
+          onChange={(e) => setCurrentPassword(e.target.value)}
+          sx={{ margin: '0 140px 30px 0', width: '250px' }}
+        />
+        <TextField
+          label="New Password"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          sx={{ margin: '0 140px 30px 0', width: '250px' }}
+        />
+        <TextField
+          label="Confirm New Password"
+          type="password"
+          value={confirmNewPassword}
+          onChange={(e) => setConfirmNewPassword(e.target.value)}
+          sx={{ margin: '0 140px 30px 0', width: '250px' }}
+        />
+        <Button onClick={handleChangePassword} variant='contained' sx={{ marginBottom: '20px' }}>Change Password</Button>
+        </div>
+        {passwordChangeError && <Alert severity="error">{passwordChangeError}</Alert>}
+        {passwordChangeSuccess && <Alert severity="success">{passwordChangeSuccess}</Alert>}
+      
+
+      {/* Delete Account Section */}
+      <Button variant="contained" color="primary" onClick={() => setOpenDeleteDialog(true)} sx={{ marginTop: '20px' }}>
+        Delete Account
+      </Button>
+      <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
+        <DialogTitle>{"Delete Account"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            This action is irreversible. Please enter your reason for deleting the account.
+          </DialogContentText>
+          <TextField autoFocus margin="dense" label="Reason" fullWidth variant="standard" onChange={(e) => setDeleteReason(e.target.value)} />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
+          <Button onClick={handleDeleteAccount} color="primary">Delete</Button>
+        </DialogActions>
+      </Dialog>
+      {deleteAccountError && <Alert severity="error">{deleteAccountError}</Alert>}
+      {deleteAccountSuccess && <Alert severity="success">{deleteAccountSuccess}</Alert>}
+    
     </div>
   );
 };
