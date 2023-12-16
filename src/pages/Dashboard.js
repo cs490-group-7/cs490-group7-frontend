@@ -213,13 +213,17 @@ function Dashboard () {
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Goal Overview</Typography>
-                        {goalMessage !== null ? (
-                            <div>
+                        {goalMessage !== null ? (weightGoal !== "Maintain" ?
+                            (<div>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{goalMessage}</Typography>
                                 <div>Goal Baseline: {goalBaseline}</div>
                                 <div>Goal Target: {goalTarget}</div>
                                 <div>Current Goal Standing: {goalCurrent}</div>
                             </div>)
+                            : (<div>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{goalMessage}</Typography>
+                                <div>Current Weight: {goalCurrent}</div>
+                                </div>))
                             : <i>No current goal.</i>}
                     </Card>
                 </Grid>
