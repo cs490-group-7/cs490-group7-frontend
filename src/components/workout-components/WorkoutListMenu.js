@@ -9,7 +9,7 @@ function WorkoutListMenu (props) {
 
     const location = useLocation();
 
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
 
     const [workoutList, setWorkoutList] = useState();
     const [selectedWorkout, setSelectedWorkout] = useState();
@@ -18,11 +18,12 @@ function WorkoutListMenu (props) {
 
         getWorkouts();
 
-    }, []);
+    }, [props]);
 
     function getWorkouts () {
 
-        axios.post(`${baseUrl}/api/workout/workout-list`, {userId: user_id})
+        console.log(client);
+        axios.post(`${baseUrl}/api/workout/workout-list`, {userId: client ? client.client_id : user_id})
             .then((response) => {
                 setWorkoutList(response.data);
             })
@@ -57,6 +58,7 @@ function WorkoutListMenu (props) {
                     return <Grid item xs={12} sx={{ width: 1 }}>
                         <Card variant="outlined" sx={{ padding: 1, borderColor: selectedWorkout === workout.workout_id ? '#00008b' : '#d9d9d9' }}>
                             <div style={{ fontSize: '18px'}}><b>{workout.workout_name}</b></div>
+                            {!workout.yours ? <div><i>Created by Coach {workout.first_name} {workout.last_name}</i></div> : ""}
                             <div><i>{workout.description}</i></div>
                             <Button id="viewDetailsBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                 setSelectedWorkout(null);

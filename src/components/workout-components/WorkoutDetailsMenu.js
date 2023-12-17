@@ -36,8 +36,11 @@ function WorkoutDetailsMenu (props) {
 
           {(typeof workout !== 'undefined') && <div>
               <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{workout.workout.workout_name}</Typography>
+              {workout.workout.yours ? 
+                <div><i>Created by you</i></div> :
+                <div><i>Created by {workout.workout.first_name} {workout.workout.last_name}</i></div>
+              }
               <div><i>{workout.workout.description}</i></div>
-              <div>Set Count: {workout.workout.set_count}</div>
               <Grid container spacing={0.5} padding={0.5}>
                   {workout.exercises.map((exercise) => {
                       return <Grid item xs={12} spacing={0.5} sx={{ width: 1 }}>
@@ -47,7 +50,7 @@ function WorkoutDetailsMenu (props) {
                                       <div><b>{exercise.exercise_name}</b></div>
                                   </Grid>
                                   <Grid item xs={6} spacing={0.5} sx={{ width: 1 }}>
-                                      <div><i>{exercise.reps} reps</i></div>
+                                      <div><i>{exercise.set_count} sets, {exercise.reps} reps each</i></div>
                                   </Grid>
                               </Grid>
                           </Card>
