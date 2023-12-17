@@ -156,13 +156,20 @@ style={{
 >
 {/* Display messages */}
 {messages.map((message, index) => (
-  <Box key={index} mb={1}>
-      <Typography variant="body1" component="div">
-          {message.from_coach ? 'Coach: ' : 'You: '}
-          {message.message}
-      </Typography>
-  </Box>
-))}
+            <Box key={index} mb={1}>
+                {message.from_coach ? (
+                    <>
+                        <Typography variant="body1" component="div" color="purple">
+                            You: {message.message}
+                        </Typography>
+                    </>
+                ) : (
+                    <Typography variant="body1" component="div" color="blue">
+                        {currentCoach.first_name}: {message.message}
+                    </Typography>
+                )}
+            </Box>
+        ))}
 
 </Box>
 {/* Message input */}
