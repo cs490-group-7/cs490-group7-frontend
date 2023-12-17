@@ -222,7 +222,7 @@ export default function MyProgress () {
         })
         .catch((error) => {
             setSuccessMessage(null)
-            setErrorMessage(error.data ? error.data.message : 'Error reaching server');
+            setErrorMessage(error.response ? error.response.data.message : error.message);
         });
         setTimeout(function(){
             setErrorMessage(null);
