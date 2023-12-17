@@ -39,12 +39,7 @@ export default function MyClient() {
     const navigate = useNavigate();
     const handleNavigate = (refresh) => {
         if(refresh){
-            window.
-              
-              
-              
-              
-              .reload();
+            window.location.reload();
         }else{
             navigate("./requests", { state: location.state })
         }
