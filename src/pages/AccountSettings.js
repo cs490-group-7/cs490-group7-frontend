@@ -13,8 +13,8 @@ const AccountSettings = () => {
   const {logout } = useContext(AuthContext);
 
   const [accountInfo, setAccountInfo] = useState([]);
-  const [inputErrors, setInputErrors] = useState({first_name: '', last_name: '', email:'', phone: ''})
-  const [hasError, setHasError] = useState({first_name: false, last_name: false, email:false, phone: false})
+  const [inputErrors, setInputErrors] = useState({first_name: '', last_name: '', email:'', phone: '', currentPassword: '', newPassword: '', confirmNewPassword: ''})
+  const [hasError, setHasError] = useState({first_name: false, last_name: false, email:false, phone: false, currentPassword: false, newPassword: false, confirmNewPassword: false})
   const [successMessage, setSuccessMessage] = useState(null)
   const [errorMessage, setErrorMessage] = useState(null);
   const [formDisabled, setFormDisabled] = useState(true);
@@ -49,7 +49,6 @@ const AccountSettings = () => {
     setFormDisabled(false)
   }
   const handleSubmit = () => {
-    console.log(accountInfo)
     if(accountInfo.first_name === ""){
       setInputErrors({...inputErrors, first_name: 'First Name is required'});
       setHasError({...hasError, first_name: true})
@@ -93,10 +92,23 @@ const AccountSettings = () => {
   }
   // Function to handle password change
   const handleChangePassword = async () => {
-    setPasswordChangeError('');
-    setPasswordChangeSuccess('');
+    setPasswordChangeError(null);
+    setPasswordChangeSuccess(null);
 
-    if (newPassword !== confirmNewPassword) {
+    if(currentPassword === ""){
+      setInputErrors({...inputErrors, currentPassword: 'Current password is required'});
+      setHasError({...hasError, currentPassword: true})
+      return;
+    }
+    else if(newPassword === ""){
+      setInputErrors({...inputErrors, newPassword: 'New password is required'});
+      setHasError({...hasError, newPassword: true})
+      return;
+    }else if(confirmNewPassword === ""){
+      setInputErrors({...inputErrors, confirmNewPassword: 'Confirm new password is required'});
+      setHasError({...hasError, confirmNewPassword: true})
+      return;
+    }else if (newPassword !== confirmNewPassword) {
       setPasswordChangeError('New passwords do not match.');
       return;
     }
@@ -112,12 +124,9 @@ const AccountSettings = () => {
       setNewPassword('');
       setConfirmNewPassword('');
     } catch (error) {
+      console.log(error)
       // Handle error response from the backend
-      if (error.response && error.response.data && error.response.data.message) {
-          setPasswordChangeError(error.response.data.message);
-      } else {
-          setPasswordChangeError('An error occurred while changing the password.');
-      }
+      setPasswordChangeError(error.response.data ? error.response.data.message : 'Error reaching server');
     }
   };
 
@@ -200,38 +209,61 @@ const AccountSettings = () => {
       </div>
        {/* Reset Password Section */}
        <div>
-        <h2 style={{ fontWeight: 'normal', margin: '10px'}}>Reset Password</h2>
+        <h2 style={{ fontWeight: 'normal'}}>Reset Password</h2>
       </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
         <TextField
           label="Current Password"
           type="password"
           value={currentPassword}
-          onChange={(e) => setCurrentPassword(e.target.value)}
+          onChange={(e) => {
+            setCurrentPassword(e.target.value)
+            setInputErrors({...inputErrors, currentPassword: ''})
+            setHasError({...hasError, currentPassword: false})
+          }}
           sx={{ margin: '0 140px 30px 0', width: '250px' }}
+          variant='filled'
+          error={hasError.currentPassword}
+          helperText={inputErrors.currentPassword}
         />
         <TextField
           label="New Password"
           type="password"
           value={newPassword}
-          onChange={(e) => setNewPassword(e.target.value)}
+          onChange={(e) => {
+            setNewPassword(e.target.value)
+            setInputErrors({...inputErrors, newPassword: ''})
+            setHasError({...hasError, newPassword: false})
+          }}
           sx={{ margin: '0 140px 30px 0', width: '250px' }}
+          variant='filled'
+          error={hasError.newPassword}
+          helperText={inputErrors.newPassword}
         />
         <TextField
           label="Confirm New Password"
           type="password"
           value={confirmNewPassword}
-          onChange={(e) => setConfirmNewPassword(e.target.value)}
-          sx={{ margin: '0 140px 30px 0', width: '250px' }}
+          onChange={(e) => {
+            setConfirmNewPassword(e.target.value)
+            setInputErrors({...inputErrors, confirmNewPassword: ''})
+            setHasError({...hasError, confirmNewPassword: false})
+          }}
+          sx={{ margin: '0 140px 20px 0', width: '250px' }}
+          variant='filled'
+          error={hasError.confirmNewPassword}
+          helperText={inputErrors.confirmNewPassword}
         />
         <Button onClick={handleChangePassword} variant='contained' sx={{ marginBottom: '20px' }}>Change Password</Button>
         </div>
-        {passwordChangeError && <Alert severity="error">{passwordChangeError}</Alert>}
-        {passwordChangeSuccess && <Alert severity="success">{passwordChangeSuccess}</Alert>}
+        <div style={{ width: '40%'}}>
+          {passwordChangeError && <Alert severity="error">{passwordChangeError}</Alert>}
+          {passwordChangeSuccess && <Alert severity="success">{passwordChangeSuccess}</Alert>}
+        </div>
       
 
       {/* Delete Account Section */}
-      <Button variant="contained" color="primary" onClick={() => setOpenDeleteDialog(true)} sx={{ marginTop: '20px' }}>
+      <Button variant="contained" color="error" onClick={() => setOpenDeleteDialog(true)} sx={{ marginTop: '20px' }}>
         Delete Account
       </Button>
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
@@ -247,8 +279,10 @@ const AccountSettings = () => {
           <Button onClick={handleDeleteAccount} color="primary">Delete</Button>
         </DialogActions>
       </Dialog>
-      {deleteAccountError && <Alert severity="error">{deleteAccountError}</Alert>}
-      {deleteAccountSuccess && <Alert severity="success">{deleteAccountSuccess}</Alert>}
+      <div style={{ width: '40%'}}>
+        {deleteAccountSuccess && <Alert severity="success">{deleteAccountSuccess}</Alert>}
+        {deleteAccountError && <Alert severity="error">{deleteAccountError}</Alert>}
+      </div>
     
     </div>
   );

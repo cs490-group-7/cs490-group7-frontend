@@ -231,8 +231,10 @@ export default function InitialSurvey () {
       <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
-      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
-      {successMessage && <Alert severity="success">{successMessage}</Alert>}
+      <div style={{ width: '40%'}}>
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+        {successMessage && <Alert severity="success">{successMessage}</Alert>}
+      </div>
       </Box>
     )
 }
