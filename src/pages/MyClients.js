@@ -6,7 +6,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyClient() {
     const location = useLocation();
-    const user_id = localStorage.getItem('userId');
+    const user_id = parseInt(localStorage.getItem('userId'));
     const [selectedClient, setSelectedClient] = useState(null);
     const [selectedClientFName, setSelectedClientFname] = useState(null);
     const [currentClients, setCurrentClients] = useState([]);

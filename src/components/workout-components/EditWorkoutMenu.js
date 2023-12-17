@@ -10,7 +10,7 @@ function EditWorkoutMenu (props) {
     const location = useLocation();
 
     const { client } = location.state || {  user_id: false, client: false };
-    const user_id = localStorage.getItem('userId');
+    const user_id = parseInt(localStorage.getItem('userId'));
     
     const [workoutName, setWorkoutName] = useState("");
     const [description, setDescription] = useState("");

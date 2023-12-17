@@ -10,7 +10,7 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 export default function MyProgress () {
-    const user_id = localStorage.getItem('userId');
+    const user_id = parseInt(localStorage.getItem('userId'));
 
     const [dataPoints1, setDataPoints1] = useState([]);
     const [dataPoints2, setDataPoints2] = useState([]);

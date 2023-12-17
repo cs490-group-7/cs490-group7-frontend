@@ -12,7 +12,7 @@ function WorkoutCalendar (props) {
     const currentDate = new Date(); currentDate.setDate(currentDate.getDate() - 1);
 
     const { client } = location.state || {  user_id: false, client: false };
-    const user_id = localStorage.getItem('userId');
+    const user_id = parseInt(localStorage.getItem('userId'));
 
     const [assignmentList, setAssignmentList] = useState();
 

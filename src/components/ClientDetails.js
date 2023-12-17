@@ -13,7 +13,7 @@ export default function ClientDetails () {
     const { clientId } = useParams();
     const location = useLocation();
     const { client } = location.state || { client: false };
-    const user_id = localStorage.getItem('userId');
+    const user_id = parseInt(localStorage.getItem('userId'));
     const navigate = useNavigate();
 
     const [dataPoints1] = useState([]);
