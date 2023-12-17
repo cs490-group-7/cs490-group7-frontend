@@ -19,6 +19,8 @@ export default function CoachSurvey() {
   const [stateError, setStateError] = useState("");
   const [priceError, setPriceError] = useState("");
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
   const user_id = location.state.user_id;
@@ -93,8 +95,11 @@ export default function CoachSurvey() {
 
       axios.post(`${baseUrl}/api/surveys/coach-survey`, surveyData)
         .then(response => {
-          console.log('Coach survey submitted:', response.data);
-          navigate('/login');
+          setSuccessMessage("Coach survey submitted successfully!");
+          setTimeout(() => {
+            console.log('Coach survey submitted:', response.data);
+            navigate('/login');
+          }, 1000);
         })
         .catch(error => {
           console.error('Coach survey submission error:', error.response ? error.response.data : error.message);
@@ -176,7 +181,11 @@ export default function CoachSurvey() {
       <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
-      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      <div style={{ width: '40%'}}>
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+        {successMessage && <Alert severity="success">{successMessage}</Alert>}
+      </div>
+
     </Box>
   );
 }

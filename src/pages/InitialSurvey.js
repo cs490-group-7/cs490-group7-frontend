@@ -24,6 +24,8 @@ export default function InitialSurvey () {
   const [weightGoalError, setWeightGoalError] = useState("");
   const [weightGoalValueError, setWeightGoalValueError] = useState("");
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   const navigate = useNavigate();
   const location = useLocation();
   const user_id = location.state.user_id
@@ -106,12 +108,15 @@ export default function InitialSurvey () {
           // Determine the endpoint based on whether the user is a coach or not
           axios.post(`${baseUrl}/api/surveys/initial-survey`, surveyData)
             .then(response => {
+              setSuccessMessage("Survey submitted successfully!");
               console.log('Survey submitted:', response.data);
-              if (isCoach) {
-                navigate('/coach-survey', { state: { isCoach, user_id }});
-              } else {
-                navigate('/login');
-              }
+              setTimeout(() => {
+                if (isCoach) {
+                  navigate('/coach-survey', { state: { isCoach, user_id }});
+                } else {
+                  navigate('/login');
+                }
+              }, 1000);
             })
             .catch(error => {
               console.error('Survey submission error:', error.response ? error.response.data : error.message);
@@ -226,7 +231,10 @@ export default function InitialSurvey () {
       <Button id="submitBtn" variant="contained" onClick={submit}>
         Submit
       </Button>
-      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      <div style={{ width: '40%'}}>
+        {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+        {successMessage && <Alert severity="success">{successMessage}</Alert>}
+      </div>
       </Box>
     )
 }

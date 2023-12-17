@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button } from '@mui/material'
+import { Box, Grid, Card, Typography, TextField, Select, MenuItem, Button, Alert } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -21,6 +21,8 @@ function CreateAccountPage () {
   const [passwordError, setPasswordError] = useState("");
   const [passwordConfError, setPasswordConfError] = useState("");
   const [phoneError, setPhoneError] = useState("");
+
+  const [successMessage, setSuccessMessage] = useState("");
 
   const navigate = useNavigate();
   const [generalError, setGeneralError] = useState("");
@@ -114,9 +116,12 @@ function CreateAccountPage () {
         .then(response => {
           // Handle success
           console.log(response.data.message);
+          setSuccessMessage("Account created successfully!");
           let user_id = response.data.ident;
-          // Navigate to the initial survey or other user-specific page
-          navigate('/initial-survey', { state: { isCoach, user_id }});
+          setTimeout(() => {
+            // Navigate to the initial survey or other user-specific page
+            navigate('/initial-survey', { state: { isCoach, user_id }});
+          }, 1000);
         })
         .catch(error => {
           // Handle errors
@@ -198,6 +203,7 @@ function CreateAccountPage () {
           </Button>
         </Grid>
       </Grid>
+      {successMessage && <Alert severity="success">{successMessage}</Alert>}
     </Box>
   )
 

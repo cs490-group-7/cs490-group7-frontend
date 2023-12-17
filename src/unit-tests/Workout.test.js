@@ -28,10 +28,10 @@ test('Client can create a personalized workout plan', async () => {
     userEvent.click(createWorkout)
     
     await waitFor(() => {
-        expect(getByText("Workout Name")).toBeInTheDocument();
-        expect(getByText("Set Count")).toBeInTheDocument();
-        expect(getByText("Description")).toBeInTheDocument();
-        expect(getByText("Exercise 1")).toBeInTheDocument();
+        expect(getAllByText("Workout Name")[0]).toBeInTheDocument();
+        expect(getAllByText("Set Count")[0]).toBeInTheDocument();
+        expect(getAllByText("Description")[0]).toBeInTheDocument();
+        expect(getAllByText("Exercise 1")[0]).toBeInTheDocument();
         expect(getAllByText("Create Workout")[0]).toBeInTheDocument();
     });
 
