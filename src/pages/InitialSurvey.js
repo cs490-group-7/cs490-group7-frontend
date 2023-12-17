@@ -84,6 +84,9 @@ export default function InitialSurvey () {
     } else if (weightGoal === "Maintain") {
       setWeightGoalValue(weight);
       setWeightGoalValueError(null);
+    } else if (!/^[1-9][0-9]*$/.test(weightGoalValue)) {
+      setWeightGoalValueError("Incorrect weight format.");
+      valid = false;
     } else {
       setWeightGoalValueError(null);
     }
@@ -115,7 +118,7 @@ export default function InitialSurvey () {
             })
             .catch(error => {
               console.error('Survey submission error:', error.response ? error.response.data : error.message);
-              setErrorMessage('Survey submission error:', error.response ? error.response.data : error.message);
+              setErrorMessage(error.response ? error.response.data.message : error.message);
             });
         }
       } //ends here
@@ -192,7 +195,7 @@ export default function InitialSurvey () {
         onChange={(event) => {
           setWeightGoal(event.target.value);
           if (event.target.value === "Maintain") {
-            setWeightGoalValue(0);
+            setWeightGoalValue(weight);
           }
         }}
         select
