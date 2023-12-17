@@ -9,14 +9,12 @@ function EditWorkoutMenu (props) {
 
     const location = useLocation();
 
-    const { user_id } = location.state || { user_id: false };
+    const { client, user_id } = location.state || {  user_id: false, client: false };
     
     const [workoutName, setWorkoutName] = useState("");
-    const [setCount, setSetCount] = useState(0);
     const [description, setDescription] = useState("");
 
     const [workoutNameError, setWorkoutNameError] = useState("");
-    const [setCountError, setSetCountError] = useState("");
     const [descriptionError, setDescriptionError] = useState("");
 
     const [successMessage, setSuccessMessage] = useState(null)
@@ -42,11 +40,10 @@ function EditWorkoutMenu (props) {
         axios.post(`${baseUrl}/api/workout/workout-details`, workoutIdData)
             .then((response) => {
                 setWorkoutName(response.data.workout.workout_name);
-                setSetCount(response.data.workout.set_count);
                 setDescription(response.data.workout.description);
                 var tempExercises = [];
                 response.data.exercises.map((exercise, i) => {
-                    tempExercises.push({exercise_id: exercise.exercise_id, rep_count: exercise.reps, exercise_error: "", rep_error: ""})
+                    tempExercises.push({exercise_id: exercise.exercise_id, set_count: exercise.set_count, rep_count: exercise.reps, exercise_error: "", set_error: "", rep_error: ""})
                 });
                 setExercises(tempExercises);
                 console.log(response.data);
@@ -73,19 +70,6 @@ function EditWorkoutMenu (props) {
         } else {
           setWorkoutNameError(null);
         }
-    
-        if (setCount === 0) {
-          setSetCountError("Missing set count.");
-          valid = false
-        } else if (setCount % 1 !== 0) {
-          setSetCountError("Set count must be an integer.");
-          valid = false
-        } else if (setCount < 0) {
-          setSetCountError("Set count must be positive.");
-          valid = false
-        } else {
-          setSetCountError(null);
-        }
 
         exercises.map((exercise, i) => {
           
@@ -94,6 +78,19 @@ function EditWorkoutMenu (props) {
                 valid = false;
             } else {
                 exercise.exercise_error = null;
+            }
+
+            if (exercise.set_count === 0) {
+                exercise.set_error = "Missing set count.";
+                valid = false
+            } else if (exercise.set_count % 1 !== 0) {
+                exercise.set_error = "Set count must be an integer.";
+                valid = false
+            } else if (exercise.set_count < 0) {
+                exercise.set_error = "Set count must be positive.";
+                valid = false
+            } else {
+                exercise.set_error = null;
             }
 
             if (exercise.rep_count === 0) {
@@ -118,8 +115,7 @@ function EditWorkoutMenu (props) {
             const workoutData = {
                 workoutId: props.workoutId,
                 workoutName,
-                creatorId: user_id,
-                setCount,
+                assigneeId: client ? client.client_id : user_id,
                 description,
                 exercises
             }
@@ -154,11 +150,6 @@ function EditWorkoutMenu (props) {
                     }}/>
                 </Grid>
                 <Grid item xs={12}>
-                    <TextField id="inpSetCount" label="Set Count" variant="filled" required error={Boolean(setCountError)} helperText={setCountError || ' '} type="number" value={setCount} onChange={(event) => {
-                        setSetCount(event.target.value);
-                    }}/>
-                </Grid>
-                <Grid item xs={12}>
                     <TextField id="inpDescription" label="Description" variant="filled" error={Boolean(descriptionError)} helperText={descriptionError || ' '} value={description} onChange={(event) => {
                         setDescription(event.target.value);
                     }}/>
@@ -172,7 +163,7 @@ function EditWorkoutMenu (props) {
 
                 {exercises.map((exercise, i) => {
                     return <Grid container item xs={12} spacing={0.5} sx={{ width: 1 }}>
-                        <Grid item xs={6} sx={{ width: 1 }}>
+                        <Grid item xs={5} sx={{ width: 1 }}>
                             <FormControl sx={{ width: 1 }}>
                                 <TextField
                                     select
@@ -195,7 +186,14 @@ function EditWorkoutMenu (props) {
                                 </TextField>
                             </FormControl>
                         </Grid>
-                        <Grid item xs={3}>
+                        <Grid item xs={2}>
+                            <TextField id={"setCount" + (i+1).toString()} label="Set Count" variant="outlined" required error={Boolean(exercise.set_error)} helperText={exercise.set_error || ' '} type="number" value={exercise.set_count} onChange={(event) => {
+                                exercise.set_count = event.target.value;
+                                const newList = [...exercises];
+                                setExercises(newList);
+                            }}/>
+                        </Grid>
+                        <Grid item xs={2}>
                             <TextField id={"repCount" + (i+1).toString()} label="Rep Count" variant="outlined" required error={Boolean(exercise.rep_error)} helperText={exercise.rep_error || ' '} type="number" value={exercise.rep_count} onChange={(event) => {
                                 exercise.rep_count = event.target.value;
                                 const newList = [...exercises];
@@ -231,7 +229,7 @@ function EditWorkoutMenu (props) {
                 })}
 
                 <Button id="addExerciseBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
-                    exercises.push({exercise_id: 0, rep_count: 0, exercise_error: "", rep_error: ""})
+                    exercises.push({exercise_id: 0, set_count: 0, rep_count: 0, exercise_error: "", set_error: "", rep_error: ""})
                     const newList = [...exercises];
                     setExercises(newList);
                 }}>+</Button>
