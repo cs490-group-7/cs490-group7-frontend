@@ -117,13 +117,15 @@ export default function MyCoachClient() {
 
 useEffect(() => {
   // Fetch the messages when the component mounts
-  axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
-  .then((response) => {
-      setMessages(response.data);
-  })
-  .catch((error) => {
-      console.error('Error:', error);
-  });
+  if(hasCoach){
+    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+    .then((response) => {
+        setMessages(response.data);
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+  }
 }, [currentCoach.coach_id, user_id]);
 
   // Function to handle "Enter" key press in the message input
@@ -155,21 +157,27 @@ style={{
 }}
 >
 {/* Display messages */}
-{messages.map((message, index) => (
-            <Box key={index} mb={1}>
-                {message.from_coach ? (
-                    <>
-                        <Typography variant="body1" component="div" color="purple">
-                            You: {message.message}
-                        </Typography>
-                    </>
-                ) : (
-                    <Typography variant="body1" component="div" color="blue">
-                        {currentCoach.first_name}: {message.message}
-                    </Typography>
-                )}
-            </Box>
-        ))}
+{messages ? (
+  messages.map((message, index) => (
+    <Box key={index} mb={1}>
+        {message.from_coach ? (
+            <>
+                <Typography variant="body1" component="div" color="purple">
+                  {currentCoach.first_name}: {message.message}
+                </Typography>
+            </>
+        ) : (
+            <Typography variant="body1" component="div" color="blue">
+                You: {message.message}
+            </Typography>
+        )}
+    </Box>
+))
+) : (
+  <Typography variant="body1" component="div" color="grey">
+    No messages...
+  </Typography>
+)}
 
 </Box>
 {/* Message input */}
@@ -216,11 +224,11 @@ const renderCoachDetailsBox = () => (
   <br></br>
   <br></br>
   <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
-</Box>
-{/* Remove Coach button */}
-<Button variant="contained" style={{backgroundColor:'white', color:'red', zIndex: '4', marginTop: '90%', left: "37%"}} onClick={handleRemoveCoach}>
+  <Button variant="contained" style={{backgroundColor:'white', color:'red', margin: '0 auto', display: 'block', marginTop: '100px'}} onClick={handleRemoveCoach}>
     Remove Coach
   </Button>
+</Box>
+{/* Remove Coach button */}
 </Box>
 );
 

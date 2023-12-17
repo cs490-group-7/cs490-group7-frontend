@@ -130,21 +130,27 @@ export default function MyClient() {
             }}
         >
         {/* Display messages */}
-        {messages.map((message, index) => (
-            <Box key={index} mb={1}>
-                {message.from_coach ? (
-                    <>
-                        <Typography variant="body1" component="div" color="purple">
-                            You: {message.message}
+        {messages.length !== 0 ? (
+            messages.map((message, index) => (
+                <Box key={index} mb={1}>
+                    {message.from_coach ? (
+                        <>
+                            <Typography variant="body1" component="div" color="purple">
+                                You: {message.message}
+                            </Typography>
+                        </>
+                    ) : (
+                        <Typography variant="body1" component="div" color="blue">
+                            {selectedClientFName}: {message.message}
                         </Typography>
-                    </>
-                ) : (
-                    <Typography variant="body1" component="div" color="blue">
-                        {selectedClientFName}: {message.message}
-                    </Typography>
-                )}
-            </Box>
-        ))}
+                    )}
+                </Box>
+            ))
+        ) : (
+            <Typography variant="body1" component="div" color="grey">
+                No messages...
+            </Typography>
+        )}
 
         </Box>
         {/* Message input */}
