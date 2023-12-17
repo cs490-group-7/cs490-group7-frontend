@@ -58,6 +58,10 @@ const AppRouter = () => {
         element: isAuthenticated ? (userType !== 'Client' ? <ClientDetails/> : <Navigate to="/dashboard" />) : <Navigate to="/login" />,
       },
       {
+        path: "/my-clients/workouts/:clientId",
+        element: isAuthenticated ? (userType !== 'Client' ? <Workouts/> : <Navigate to="/dashboard" />) : <Navigate to="/login" />,
+      },
+      {
         path:'/my-clients/requests',
         element: isAuthenticated ? (userType !== 'Client' ? <ClientRequests/> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
@@ -87,7 +91,7 @@ const AppRouter = () => {
       },
       {
       path: "/admin",
-          element: isAuthenticated ? (userType === 'Admin' ? <AdminPage /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
+          element: isAuthenticated ? ((userType !== 'Client' && userType !== 'Coach') ? <AdminPage /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       
     ]

@@ -16,24 +16,20 @@ jest.mock('react-router-dom', () => ({
         useLocation: () => mockUsedLocation
 }));
 
-test('initial survey for client', async () => {
-    const { getAllByText } = render(<InitialSurvey/>)
+test('Initial Survey for both Client & Coach', async () => {
+    const initialSurvey = render(<InitialSurvey/>)
+    expect(initialSurvey.getAllByText("Date of Birth")[0]).toBeInTheDocument();
+    expect(initialSurvey.getAllByText("Gender")[0]).toBeInTheDocument();
+    expect(initialSurvey.getAllByText("Height (ft'in'')")[0]).toBeInTheDocument();
+    expect(initialSurvey.getAllByText("Weight (lbs)")[0]).toBeInTheDocument();
+    expect(initialSurvey.getAllByText("Weight Goal")[0]).toBeInTheDocument();
+    expect(initialSurvey.getAllByText("Submit")[0]).toBeInTheDocument();
 
-    expect(getAllByText("Date of Birth")[0]).toBeInTheDocument();
-    expect(getAllByText("Gender")[0]).toBeInTheDocument();
-    expect(getAllByText("Height (ft'in'')")[0]).toBeInTheDocument();
-    expect(getAllByText("Weight (lbs)")[0]).toBeInTheDocument();
-    expect(getAllByText("Weight Goal")[0]).toBeInTheDocument();
-    expect(getAllByText("Submit")[0]).toBeInTheDocument();
-});
-
-test('initial survey for coach', async () => {
-    const { getAllByText } = render(<CoachSurvey/>)
-
-    expect(getAllByText("Experience (years)")[0]).toBeInTheDocument();
-    expect(getAllByText("Specialization")[0]).toBeInTheDocument();
-    expect(getAllByText("City")[0]).toBeInTheDocument();
-    expect(getAllByText("State")[0]).toBeInTheDocument();
-    expect(getAllByText("Price per Hour")[0]).toBeInTheDocument();
-    expect(getAllByText("Submit")[0]).toBeInTheDocument();
+    const coachSurvey = render(<CoachSurvey/>)
+    expect(coachSurvey.getAllByText("Experience (years)")[0]).toBeInTheDocument();
+    expect(coachSurvey.getAllByText("Specialization")[0]).toBeInTheDocument();
+    expect(coachSurvey.getAllByText("City")[0]).toBeInTheDocument();
+    expect(coachSurvey.getAllByText("State")[0]).toBeInTheDocument();
+    expect(coachSurvey.getAllByText("Price per Hour")[0]).toBeInTheDocument();
+    expect(coachSurvey.getAllByText("Submit")[0]).toBeInTheDocument();
 });

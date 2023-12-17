@@ -103,14 +103,6 @@ export default function Home() {
             )}
           </Box>
         </Grid>
-
-        {/* Right half of the screen */}
-        <Grid item xs={6}>
-          <Box border={1} p={2} height="100%">
-            <Typography variant="h6">Feature to be Added</Typography>
-            {/* Add your feature content here */}
-          </Box>
-        </Grid>
       </Grid>
     </div>
   );
