@@ -162,12 +162,12 @@ style={{
     <Box key={index} mb={1}>
         {message.from_coach ? (
             <>
-                <Typography variant="body1" component="div" color="purple">
+                <Typography variant="body1" component="div" color="blue">
                   {currentCoach.first_name}: {message.message}
                 </Typography>
             </>
         ) : (
-            <Typography variant="body1" component="div" color="blue">
+            <Typography variant="body1" component="div" color="purple">
                 You: {message.message}
             </Typography>
         )}

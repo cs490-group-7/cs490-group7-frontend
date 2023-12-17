@@ -135,12 +135,12 @@ export default function MyClient() {
                 <Box key={index} mb={1}>
                     {message.from_coach ? (
                         <>
-                            <Typography variant="body1" component="div" color="purple">
+                            <Typography variant="body1" component="div" color="blue">
                                 You: {message.message}
                             </Typography>
                         </>
                     ) : (
-                        <Typography variant="body1" component="div" color="blue">
+                        <Typography variant="body1" component="div" color="purple">
                             {selectedClientFName}: {message.message}
                         </Typography>
                     )}
