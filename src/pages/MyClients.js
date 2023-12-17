@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar, Link, Dialog, DialogTitle, DialogContent} from '@mui/material';
+import { Box, TextField, Button, Grid, Card, CardContent, CardActions, Typography, AppBar, Toolbar, Link, Dialog, DialogTitle, DialogContent} from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 const baseUrl = process.env.REACT_APP_BACKEND_URL;
@@ -7,11 +7,12 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 export default function MyClient() {
     const location = useLocation();
     const { user_id } = location.state || { user_id: false };
-    console.log("Location State:", location.state); // Log location.state
-    console.log("User ID:" , user_id);
+    const [selectedClient, setSelectedClient] = useState(null);
+    const [selectedClientFName, setSelectedClientFname] = useState(null);
     const [currentClients, setCurrentClients] = useState([]);
     const [isPendingApproval, setIsPendingApproval] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
+    const [messageClosed, setMessageClosed] = useState(true);
 
     useEffect(() => {
         //fetch coach status
@@ -44,6 +45,131 @@ export default function MyClient() {
         }
     }
 
+    // State for the message input
+    const [messageInput, setMessageInput] = useState('');
+    // State for displaying messages
+    const [messages, setMessages] = useState([]);
+
+    // Modify the handleMessageBox function to fetch the messages and update the state
+    const handleMessageBox = (client_id, clientFirstName) => {
+        setMessageClosed(false);
+        setSelectedClient(client_id); // Set the selected client
+        setSelectedClientFname(clientFirstName);
+
+        axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: client_id })
+        .then((response) => {
+            setMessages(response.data); // Update the messages state
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    };
+
+    // Function to handle sending a message
+    const handleSendMessage = () => {
+        if (messageInput.trim() !== '') {
+            // Prepare the message data
+            const messageData = {
+                user_id: user_id,
+                user_type: 'Coach',
+                coach_id: user_id,
+                client_id: selectedClient,
+                message: messageInput,
+            };
+
+            // Make a POST request to the '/send-message' endpoint
+            axios.post(`${baseUrl}/api/chat/send-message`, messageData)
+            .then((response) => {
+                if (response.data.message === 'Message saved successfully.') {
+                    // Fetch the messages for the selected client
+                    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
+                    .then((response) => {
+                        setMessages(response.data); // Update the messages state
+                        setMessageInput(''); // Clear the message input
+                    })
+                    .catch((error) => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    console.error('Error:', response.data.error);
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        }
+    };
+
+    // Function to handle "Enter" key press in the message input
+    const handleEnterKeyPress = (event) => {
+        if (event.key === 'Enter') {
+            handleSendMessage();
+        }
+    };
+
+    // Render message box
+    const renderMessageBox = () => (
+        <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+        {/* Header */}
+        <Box
+            style={{
+            background: '#f0f0f0', 
+            padding: '8px',
+            }}
+        >
+            <Typography variant="h5" style={{fontWeight: 'bold'}} >Message {selectedClientFName}:</Typography>
+            <Button sx={{ float: 'right'}} onClick={() => setMessageClosed(true)}>Close</Button>
+        </Box>
+        {/* Message history */}
+        <Box
+            style={{
+            flex: 1, 
+            overflowY: 'auto', 
+            background: '#fff', 
+            padding: '8px',
+            }}
+        >
+        {/* Display messages */}
+        {messages.length !== 0 ? (
+            messages.map((message, index) => (
+                <Box key={index} mb={1}>
+                    {message.from_coach ? (
+                        <>
+                            <Typography variant="body1" component="div" color="purple">
+                                You: {message.message}
+                            </Typography>
+                        </>
+                    ) : (
+                        <Typography variant="body1" component="div" color="blue">
+                            {selectedClientFName}: {message.message}
+                        </Typography>
+                    )}
+                </Box>
+            ))
+        ) : (
+            <Typography variant="body1" component="div" color="grey">
+                No messages...
+            </Typography>
+        )}
+
+        </Box>
+        {/* Message input */}
+        <TextField
+            id="messageInput"
+            label="Send a message..."
+            variant="outlined"
+            value={messageInput}
+            onChange={(event) => setMessageInput(event.target.value)}
+            onKeyPress={handleEnterKeyPress}
+            style={{
+            background: '#f0f0f0', 
+            margin: '10px',
+            width: '95%',
+            }}
+        />
+        </Box>
+    );
+
     return (
         <div className="my-clients-page">
             <h1>My Clients</h1>
@@ -53,13 +179,13 @@ export default function MyClient() {
                     <Button color="inherit" onClick={() => handleNavigate(false)} >Client Requests</Button>
                 </Toolbar>
             </AppBar>
-            <div id="current-clients">
+            <div id="current-clients" style={{ width: '40%'}}>
                 <h2>Your current clients:</h2>
                 {currentClients.length === 0 && (
                     <p>No results</p>
                 )}
             {currentClients.map((client) => (
-                <Card key={client.client_id} sx={{ maxWidth: 345, marginBottom: 2, marginTop: 3 }}>
+                <Card key={client.client_id} sx={{ maxWidth: 1100, marginBottom: 2, marginTop: 3 }}>
                     <CardContent
                         onClick={() => navigate(`/my-clients/${client.client_id}`, { state: { user_id, client } })}
                         style={{ cursor: 'pointer' }}
@@ -71,6 +197,14 @@ export default function MyClient() {
                             Click for client details
                         </Typography>
                     </CardContent>
+                    <Button 
+                        color="primary" 
+                        onClick={() => handleMessageBox(client.client_id, client.first_name)} 
+                        style={{ margin: '0 0 15px 15px' }}
+                        variant='contained'
+                    >
+                        Message
+                    </Button>
                 </Card>
             ))}
                 {isPendingApproval && (
@@ -84,6 +218,9 @@ export default function MyClient() {
                     </DialogContent>
                 </Dialog>
                 )}
+            </div>
+            <div className='message-box' style={{ position: 'fixed', bottom: 20, right: 30, width: '25%' }}>
+                {selectedClient && !messageClosed && renderMessageBox()}
             </div>
         </div>
     );
