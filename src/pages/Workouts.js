@@ -67,8 +67,8 @@ function Workouts () {
 
             {client ? 
                 <div>
-                    <Button variant='contained' sx={{ marginTop: '20px'}} onClick={() => {location.state.client = false; navigate('/my-clients', { state: location.state })}}> {"<- Back"}</Button>
-                    <Button variant='contained' sx={{ marginTop: '20px'}} onClick={() => navigate(`/my-clients/${client.client_id}`, { state: location.state })}> {"Progress"}</Button>
+                    <Button variant='outlined' sx={{ marginTop: '20px'}} onClick={() => {location.state.client = false; navigate('/my-clients', { state: location.state })}}> {"<- Back"}</Button>
+                    <Button variant='contained' sx={{ marginTop: '20px', marginLeft: '20px'}} onClick={() => navigate(`/my-clients/${client.client_id}`, { state: location.state })}> {"View Progress"}</Button>
                     <h1>{client.first_name} {client.last_name}'s Workouts</h1>
                 </div>
                 :

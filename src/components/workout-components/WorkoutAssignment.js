@@ -42,7 +42,7 @@ function WorkoutAssignment (props) {
 
           <Card variant="outlined" sx={{ margin: 0.5, padding: 0.5, borderRadius: 0, borderColor: '#e8e8e8', backgroundColor: '#e8e8e8', color: "#00008b" }}>
             <div><b>{props.workoutName}</b></div>
-            {!props.yours ? <div><i>Assigned by {props.first_name} {props.last_name}</i></div> : ""}
+            {!props.yours ? <div><i>Assigned by Coach {props.first_name} {props.last_name}</i></div> : ""}
             <div>
               {(props.loggable && !client) && <Button id="logBtn" variant="text" size="small" sx={{ borderRadius: 0, minWidth: 30, minHeight: 0, padding: 0.25, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff" }} onClick={() => {
                 props.logFunc(props.workoutId, props.currentDate);

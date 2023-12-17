@@ -58,7 +58,7 @@ function WorkoutListMenu (props) {
                     return <Grid item xs={12} sx={{ width: 1 }}>
                         <Card variant="outlined" sx={{ padding: 1, borderColor: selectedWorkout === workout.workout_id ? '#00008b' : '#d9d9d9' }}>
                             <div style={{ fontSize: '18px'}}><b>{workout.workout_name}</b></div>
-                            {!workout.yours ? <div><i>Created by {workout.first_name} {workout.last_name}</i></div> : ""}
+                            {!workout.yours ? <div><i>Created by Coach {workout.first_name} {workout.last_name}</i></div> : ""}
                             <div><i>{workout.description}</i></div>
                             <Button id="viewDetailsBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
                                 setSelectedWorkout(null);
