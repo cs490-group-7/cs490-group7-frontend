@@ -204,20 +204,6 @@ const renderCoachDetailsBox = () => (
     zIndex: 1, 
   }}
 />
-{/* Circle for Coach pfp */}
-<Box
-  style={{
-    position: 'absolute',
-    top: '10%',
-    left: '50%',  
-    transform: 'translateX(-50%)', 
-    width: '100px',
-    height: '100px',
-    borderRadius: '50%',
-    background: '#ccc',
-    zIndex: 2, 
-  }}
-/>
 {/* Coach details */}
 <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
   {/* Replace City and Stae with coach details */}
