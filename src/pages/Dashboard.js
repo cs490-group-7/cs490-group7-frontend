@@ -148,10 +148,21 @@ function Dashboard () {
 }
 
     function getProgress () {
+        let progress = 0
         if (goalTarget - goalBaseline === 0 || weightGoal === "Maintain"){
             return 1-(Math.abs(goalTarget - goalCurrent) / goalTarget);
         }
-        return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
+        else if (weightGoal === "Lose"){
+            progress = (goalBaseline - goalCurrent)  / (goalBaseline - goalTarget);
+        }
+        else { //weightGoal === "Gain"
+            progress = (goalCurrent - goalBaseline)  / (goalTarget - goalBaseline);
+        }
+        if (progress > 1){
+            return 1;
+        }
+        
+        return progress;
     }
 
     setTimeout(function(){
@@ -218,7 +229,7 @@ function Dashboard () {
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{goalMessage}</Typography>
                                 <div>Goal Baseline: {goalBaseline}</div>
                                 <div>Goal Target: {goalTarget}</div>
-                                <div>Current Goal Standing: {goalCurrent}</div>
+                                <div>Current Weight: {goalCurrent}</div>
                             </div>)
                             : (<div>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{goalMessage}</Typography>
@@ -258,7 +269,7 @@ function Dashboard () {
                             <Typography align="center" variant="h6" color="primary" sx={{ margin: 2 }}>{Math.floor(progress*100)}%</Typography>
                             <LinearProgress determinate thickness={15} value={progress*100} />
                             <Typography align="center" sx={{ margin: 2 }}>{
-                                progress === 0 ? 
+                                progress <= 0 ? 
                                     "Let's get started!"
                                 : progress < 1 ?
                                     "Keep it up!"
