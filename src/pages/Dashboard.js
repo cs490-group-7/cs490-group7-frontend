@@ -148,10 +148,21 @@ function Dashboard () {
 }
 
     function getProgress () {
+        let progress = 0
         if (goalTarget - goalBaseline === 0 || weightGoal === "Maintain"){
             return 1-(Math.abs(goalTarget - goalCurrent) / goalTarget);
         }
-        return Math.abs((goalCurrent - goalBaseline)  / (goalTarget - goalBaseline));
+        else if (weightGoal === "Lose"){
+            progress = (goalBaseline - goalCurrent)  / (goalBaseline - goalTarget);
+        }
+        else { //weightGoal === "Gain"
+            progress = (goalCurrent - goalBaseline)  / (goalTarget - goalBaseline);
+        }
+        if (progress > 1){
+            return 1;
+        }
+        
+        return progress;
     }
 
     setTimeout(function(){
@@ -213,13 +224,17 @@ function Dashboard () {
                 <Grid item xs={4}>
                     <Card variant="outlined" sx={{ padding: 2 }}>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Goal Overview</Typography>
-                        {goalMessage !== null ? (
-                            <div>
+                        {goalMessage !== null ? (weightGoal !== "Maintain" ?
+                            (<div>
                                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{goalMessage}</Typography>
                                 <div>Goal Baseline: {goalBaseline}</div>
                                 <div>Goal Target: {goalTarget}</div>
-                                <div>Current Goal Standing: {goalCurrent}</div>
+                                <div>Current Weight: {goalCurrent}</div>
                             </div>)
+                            : (<div>
+                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{goalMessage}</Typography>
+                                <div>Current Weight: {goalCurrent}</div>
+                                </div>))
                             : <i>No current goal.</i>}
                     </Card>
                 </Grid>
@@ -233,16 +248,17 @@ function Dashboard () {
                             <div>
                                 {workoutName}
                                 <div>{workoutCompletion ? <i>Workout completed today.</i> : 
-                                    <a
-                                        className='active'
-                                        href="/workouts"
+                                    <a 
+                                        className={location.pathname === '/workouts' ? 'active' : ''} 
+                                        onClick={() => navigate("/workouts", { state: location.state })} 
+                                        style={{cursor: "pointer", color: "blue", textDecoration: "underline"}}
                                     >
                                         Go to Workouts
-                                    </a>
+                                        </a>
                                 }</div>
                             </div>
                         :
-                            <i>No workout for today.</i>
+                            <i>Rest Day</i>
                         }
                     </Card>
 
@@ -253,7 +269,7 @@ function Dashboard () {
                             <Typography align="center" variant="h6" color="primary" sx={{ margin: 2 }}>{Math.floor(progress*100)}%</Typography>
                             <LinearProgress determinate thickness={15} value={progress*100} />
                             <Typography align="center" sx={{ margin: 2 }}>{
-                                progress === 0 ? 
+                                progress <= 0 ? 
                                     "Let's get started!"
                                 : progress < 1 ?
                                     "Keep it up!"
