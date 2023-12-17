@@ -91,7 +91,7 @@ const AppRouter = () => {
       },
       {
       path: "/admin",
-          element: isAuthenticated ? (userType === 'Admin' ? <AdminPage /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
+          element: isAuthenticated ? ((userType !== 'Client' && userType !== 'Coach') ? <AdminPage /> : <Navigate to="/dashboard" />) : <Navigate to="/login" />
       },
       
     ]
