@@ -61,11 +61,11 @@ export default function InitialSurvey () {
     if (weight.length === 0) {
       setWeightError("Missing weight.");
       valid = false
-    } else if (weight.length > 3) {
-      setWeightError("Weight too long.");
-      valid = false
     } else if (!/^[1-9][0-9]*$/.test(weight)) {
       setWeightError("Incorrect weight format.");
+      valid = false
+    } else if (weight.length > 3) {
+      setWeightError("Weight too long.");
       valid = false
     } else {
       setWeightError(null);
@@ -87,6 +87,9 @@ export default function InitialSurvey () {
     } else if (!/^[1-9][0-9]*$/.test(weightGoalValue)) {
       setWeightGoalValueError("Incorrect weight format.");
       valid = false;
+    } else if (weightGoalValue.length > 3) {
+      setWeightError("Weight too long.");
+      valid = false
     } else {
       setWeightGoalValueError(null);
     }

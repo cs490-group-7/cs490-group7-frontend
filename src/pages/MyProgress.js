@@ -204,6 +204,11 @@ export default function MyProgress () {
             setHasError({...hasError, weightGoalValue: true})
             return;
         }
+        else if (goalInfo.weightGoalValue.length > 3) {
+            setInputErrors({...inputErrors, weightGoalValue: 'Weight too long'});
+            setHasError({...hasError, weightGoalValue: true})
+            return;
+        }
         if (goalInfo.weightGoal === "Maintain" && createNew){
             goalInfo.weightGoalValue = currentWeight;
         }
@@ -213,12 +218,12 @@ export default function MyProgress () {
         .then((response) => {
             setErrorMessage(null)
             setSuccessMessage(response.data.message);
+            setOriginalGoalInfo(goalInfo);
         })
         .catch((error) => {
             setSuccessMessage(null)
             setErrorMessage(error.data ? error.data.message : 'Error reaching server');
         });
-        setOriginalGoalInfo(goalInfo);
         setTimeout(function(){
             setErrorMessage(null);
             setSuccessMessage(null);
@@ -363,7 +368,14 @@ export default function MyProgress () {
                             <br/>
                             { (goalInfo.weightGoal === "Gain" || goalInfo.weightGoal === "Lose") && 
                             <div>
-                            <TextField id="inpWeightGoalValue" label="Target Weight (lbs)" variant="filled" error={Boolean(hasError.weightGoalValueError)} helperText={inputErrors.weightGoalValue || ' '} required value={goalInfo.weightGoalValue} onChange={(event) => {
+                            <TextField 
+                            InputLabelProps={{ shrink: true}}
+                            label="Target Weight (lbs)" 
+                            value={goalInfo.weightGoalValue}
+                            variant="filled" 
+                            error={hasError.weightGoalValue} 
+                            helperText={inputErrors.weightGoalValue || ' '} 
+                            onChange={(event) => {
                                 handleChange(event, 'weightGoalValue');
                             }}/>
                             </div>}
