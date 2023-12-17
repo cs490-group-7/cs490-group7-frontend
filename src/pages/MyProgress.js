@@ -207,7 +207,7 @@ export default function MyProgress () {
         if (goalInfo.weightGoal === "Maintain" && createNew){
             goalInfo.weightGoalValue = currentWeight;
         }
-        const reqBody = {...goalInfo, userId: user_id}
+        const reqBody = {...goalInfo, userId: user_id, currentWeight: currentWeight, createNew: createNew}
 
         axios.post(`${baseUrl}/api/progress/update-goal-info`, reqBody)
         .then((response) => {
