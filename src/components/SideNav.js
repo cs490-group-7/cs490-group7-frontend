@@ -33,7 +33,7 @@ export default function SideNav() {
       </a>
       <a
         className={location.pathname === '/workouts' ? 'active' : ''}
-        onClick={() => navigate("/workouts", { state: location.state })}
+        onClick={() => {location.state.client = false; navigate("/workouts", { state: location.state })}}
         >
         Workouts
       </a>

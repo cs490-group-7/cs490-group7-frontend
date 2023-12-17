@@ -75,7 +75,7 @@ function LoginPage () {
             }
           })
           .catch(error => {
-            setErrorMessage('Login error');
+            setErrorMessage('Email or password is incorrect');
             if (error.response) {
               console.error('Login error:', error.response.data);
               // Show user feedback here
@@ -119,7 +119,7 @@ function LoginPage () {
           Don't have an account? <Link to="/register">Sign up</Link>
         </Grid>
       </Grid>
-      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      {errorMessage && <Alert severity="error" sx={{ width: '40%'}}>{errorMessage}</Alert>}
     </Box>
   )
 
