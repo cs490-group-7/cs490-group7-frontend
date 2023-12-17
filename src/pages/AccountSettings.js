@@ -8,7 +8,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 const AccountSettings = () => {
   const location = useLocation();
-  const { user_id } = location.state || { user_id: false };
+  const user_id = localStorage.getItem('userId');
   const navigate = useNavigate();
   const {logout } = useContext(AuthContext);
 

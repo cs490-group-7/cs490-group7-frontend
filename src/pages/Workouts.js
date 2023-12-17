@@ -24,7 +24,8 @@ function Workouts () {
 
     const { clientId } = useParams();
     const location = useLocation();
-    const { client, user_id } = location.state || {  user_id: false, client: false };
+    const { client } = location.state || {  user_id: false, client: false };
+    const user_id = localStorage.getItem('userId');
 
     const [rightMenu, setRightMenu] = useState(RightMenu.List);
     const [workoutId, setWorkoutId] = useState(null);

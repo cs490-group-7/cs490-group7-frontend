@@ -7,9 +7,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 function LogSessionMenu (props) {
 
-    const location = useLocation();
-
-    const { client, user_id } = location.state || {  user_id: false, client: false };
+    const user_id = localStorage.getItem('userId');
     
     const [workoutName, setWorkoutName] = useState("");
     const [description, setDescription] = useState("");

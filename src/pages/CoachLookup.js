@@ -16,9 +16,7 @@ const getAllStates = () => [
 ];
 
 export default function CoachLookup() {
-  const location = useLocation();
-  const { user_id } = location.state || { user_id: false };
-  const [searchQuery, setSearchQuery] = useState('');
+  const user_id = localStorage.getItem('userId');
   const [searchResults, setSearchResults] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const resultsPerPage = 5;

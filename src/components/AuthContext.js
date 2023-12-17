@@ -44,6 +44,8 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     try {
         localStorage.removeItem('userToken');
+        localStorage.removeItem('userType');
+        localStorage.removeItem('userId');
         setIsAuthenticated(false);
         console.log('Logout function called, user logged out');
       } catch (err) {

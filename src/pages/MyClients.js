@@ -6,9 +6,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyClient() {
     const location = useLocation();
-    const { user_id } = location.state || { user_id: false };
-    console.log("Location State:", location.state); // Log location.state
-    console.log("User ID:" , user_id);
+    const user_id = localStorage.getItem('userId');
     const [currentClients, setCurrentClients] = useState([]);
     const [isPendingApproval, setIsPendingApproval] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
