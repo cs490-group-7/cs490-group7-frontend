@@ -6,7 +6,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyClient() {
     const location = useLocation();
-    const { user_id } = location.state || { user_id: false };
+    const user_id = parseInt(localStorage.getItem('userId'));
     const [selectedClient, setSelectedClient] = useState(null);
     const [selectedClientFName, setSelectedClientFname] = useState(null);
     const [currentClients, setCurrentClients] = useState([]);
@@ -135,12 +135,12 @@ export default function MyClient() {
                 <Box key={index} mb={1}>
                     {message.from_coach ? (
                         <>
-                            <Typography variant="body1" component="div" color="purple">
+                            <Typography variant="body1" component="div" color="blue">
                                 You: {message.message}
                             </Typography>
                         </>
                     ) : (
-                        <Typography variant="body1" component="div" color="blue">
+                        <Typography variant="body1" component="div" color="purple">
                             {selectedClientFName}: {message.message}
                         </Typography>
                     )}

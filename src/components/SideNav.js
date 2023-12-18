@@ -20,6 +20,12 @@ export default function SideNav() {
       {isAuthenticated && (
         <>
       <a
+        className={location.pathname === '/' ? 'active' : ''}
+        onClick={() => navigate("/", { state: location.state })}
+        >
+        Home
+      </a>
+      <a
         className={location.pathname === '/dashboard' ? 'active' : ''}
         onClick={() => navigate("/dashboard", { state: location.state })}
         >

@@ -8,7 +8,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyCoachClient() {
     const location = useLocation();
-    const { user_id } = location.state || { user_id: false };
+    const user_id = parseInt(localStorage.getItem('userId'));
     const navigate = useNavigate();
 
     const [currentCoach, setCurrentCoach] = useState([]);
@@ -162,12 +162,12 @@ style={{
     <Box key={index} mb={1}>
         {message.from_coach ? (
             <>
-                <Typography variant="body1" component="div" color="purple">
+                <Typography variant="body1" component="div" color="blue">
                   {currentCoach.first_name}: {message.message}
                 </Typography>
             </>
         ) : (
-            <Typography variant="body1" component="div" color="blue">
+            <Typography variant="body1" component="div" color="purple">
                 You: {message.message}
             </Typography>
         )}

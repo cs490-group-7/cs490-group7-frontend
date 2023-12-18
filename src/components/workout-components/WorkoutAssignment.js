@@ -10,7 +10,8 @@ function WorkoutAssignment (props) {
     const location = useLocation();
     const currentDate = new Date(); currentDate.setDate(currentDate.getDate() - 1);
 
-    const { client, user_id } = location.state || {  user_id: false, client: false };
+    const { client } = location.state || {  user_id: false, client: false };
+    const user_id = parseInt(localStorage.getItem('userId'));
 
     const [successMessage, setSuccessMessage] = useState(null)
     const [errorMessage, setErrorMessage] = useState(null);
