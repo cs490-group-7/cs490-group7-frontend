@@ -12,8 +12,11 @@ export default function MyCoachClient() {
     const navigate = useNavigate();
 
     const [currentCoach, setCurrentCoach] = useState([]);
+    const [currentCoachFName, setCurrentCoachFName] = useState(null);
     const [hasCoach, setHasCoach] = useState();
     const [requestPending, setRequestPending] = useState();
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [messageClosed, setMessageClosed] = useState(true);
 
     // Coach Removal Components
     const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false);
@@ -81,52 +84,85 @@ export default function MyCoachClient() {
   const [messages, setMessages] = useState([]);
   const [showMessageBox, setShowMessageBox] = useState(false);
 
-  // Function to handle sending a message
-  const handleSendMessage = () => {
-    if (messageInput.trim() !== '') {
-        // Prepare the message data
-        const messageData = {
-            user_id: user_id,
-            user_type: 'Client',
-            coach_id: currentCoach.coach_id,
-            client_id: user_id,
-            message: messageInput,
-        };
-        // Make a POST request to the '/send-message' endpoint
-        axios.post(`${baseUrl}/api/chat/send-message`, messageData)
-        .then((response) => {
-            if (response.data.message === 'Message saved successfully.') {
-                // Fetch the messages for the selected client
-                axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
-                .then((response) => {
-                    setMessages(response.data); // Update the messages state
-                    setMessageInput(''); // Clear the message input
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            } else {
-                console.error('Error:', response.data.error);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
+    // Modify the handleMessageBox function to fetch the messages and update the state
+    const handleMessageBox = (coach_id, coachFirstName) => {
+      setMessageClosed(false);
+      setCurrentCoach(coach_id);
+      setCurrentCoachFName(coachFirstName);
+
+      axios.post(`${baseUrl}/api/chat/get-messages`, { user_id: user_id, coach_id: coach_id })
+      .then((response) => {
+          setMessages(response.data); // Update the messages state
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+      });
+  };
+
+// Function to handle sending a message
+const handleSendMessage = () => {
+  if (messageInput.trim() !== '') {
+      // Prepare the message data
+      const messageData = {
+          user_id: user_id,
+          user_type: 'Client',
+          coach_id: currentCoach.coach_id,
+          client_id: user_id,
+          message: messageInput,
+      };
+
+      // Make a POST request to the '/send-message' endpoint
+      axios.post(`${baseUrl}/api/chat/send-message`, messageData)
+      .then((response) => {
+          if (response.data.message === 'Message saved successfully.') {
+              setMessageInput(''); // Clear the message input
+
+              // Fetch the messages for the selected client
+              axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+              .then((response) => {
+                  setMessages(response.data); // Update the messages state
+              })
+              .catch((error) => {
+                  console.error('Error:', error);
+              });
+          } else {
+              console.error('Error:', response.data.error);
+          }
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+      });
+  }
 };
 
+  // State for the interval ID
+  const [intervalId, setIntervalId] = useState(null);
+
 useEffect(() => {
-  // Fetch the messages when the component mounts
-  if(hasCoach){
-    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
-    .then((response) => {
-        setMessages(response.data);
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-    });
+  let interval = null;
+
+  if (hasCoach && showMessageBox) {
+      // Fetch the messages when the message box is opened
+      interval = setInterval(() => {
+          axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+          .then((response) => {
+              setMessages(response.data);
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          });
+      }, 5000); // Fetches messages every 5 seconds
+  } else if (!showMessageBox && interval !== null) {
+      // Clear the interval when the message box is closed
+      clearInterval(interval);
   }
-}, [currentCoach.coach_id, user_id]);
+
+    // Save the interval ID
+    setIntervalId(interval);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+}, [currentCoach.coach_id, user_id, hasCoach, showMessageBox]);
 
   // Function to handle "Enter" key press in the message input
   const handleEnterKeyPress = (event) => {
@@ -137,64 +173,65 @@ useEffect(() => {
 
   // Render message box
 const renderMessageBox = () => (
-<Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-{/* Header */}
-<Box
-style={{
-  background: '#f0f0f0', 
-  padding: '8px',
-}}
->
-<Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
-</Box>
-{/* Message history */}
-<Box
-style={{
-  flex: 1, 
-  overflowY: 'auto', 
-  background: '#fff', 
-  padding: '8px',
-}}
->
-{/* Display messages */}
-{messages ? (
-  messages.map((message, index) => (
-    <Box key={index} mb={1}>
-        {message.from_coach ? (
-            <>
-                <Typography variant="body1" component="div" color="purple">
-                  {currentCoach.first_name}: {message.message}
-                </Typography>
-            </>
-        ) : (
-            <Typography variant="body1" component="div" color="blue">
-                You: {message.message}
-            </Typography>
-        )}
-    </Box>
-))
-) : (
-  <Typography variant="body1" component="div" color="grey">
-    No messages...
-  </Typography>
-)}
+  <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+  {/* Header */}
+  <Box
+  style={{
+    background: '#f0f0f0', 
+    padding: '8px',
+  }}
+  >
+  <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
+  <Button onClick={() => setShowMessageBox(false)}>Close</Button>
+  </Box>
+  {/* Message history */}
+  <Box
+  style={{
+    flex: 1, 
+    overflowY: 'auto', 
+    background: '#fff', 
+    padding: '8px',
+  }}
+  >
+  {/* Display messages */}
+  {messages ? (
+    messages.map((message, index) => (
+      <Box key={index} mb={1}>
+          {message.from_coach ? (
+              <>
+                  <Typography variant="body1" component="div" color="purple">
+                    {currentCoach.first_name}: {message.message}
+                  </Typography>
+              </>
+          ) : (
+              <Typography variant="body1" component="div" color="blue">
+                  You: {message.message}
+              </Typography>
+          )}
+      </Box>
+  ))
+  ) : (
+    <Typography variant="body1" component="div" color="grey">
+      No messages...
+    </Typography>
+  )}
 
-</Box>
-{/* Message input */}
-<TextField
-id="messageInput"
-label="Send a message..."
-variant="outlined"
-value={messageInput}
-onChange={(event) => setMessageInput(event.target.value)}
-onKeyPress={handleEnterKeyPress}
-style={{
-  background: '#f0f0f0', 
-  margin: '10px',
-  width: '95%',
-}}
-/>
-</Box>
+  </Box>
+  {/* Message input */}
+  <TextField
+  id="messageInput"
+  label="Send a message..."
+  variant="outlined"
+  value={messageInput}
+  onChange={(event) => setMessageInput(event.target.value)}
+  onKeyPress={handleEnterKeyPress}
+  style={{
+    background: '#f0f0f0', 
+    margin: '10px',
+    width: '95%',
+  }}
+  />
+  </Box>
 );
 
 // Render coach details box
@@ -227,6 +264,9 @@ const renderCoachDetailsBox = () => (
   <Button variant="contained" style={{backgroundColor:'white', color:'red', margin: '0 auto', display: 'block', marginTop: '100px'}} onClick={handleRemoveCoach}>
     Remove Coach
   </Button>
+  <Button variant="contained" style={{backgroundColor:'white', color:'blue', margin: '0 auto', display: 'block', marginTop: '10px'}} onClick={() => handleMessageBox(currentCoach.coach_id, currentCoach.first_name)}>
+    Message
+  </Button>
 </Box>
 {/* Remove Coach button */}
 </Box>
@@ -254,10 +294,19 @@ return (
             
           </Box>
         </div>}
-        <Grid item xs={5}>
-            {(hasCoach === true) && renderCoachDetailsBox()}
-          
-
+        {(hasCoach === true) && 
+          <>
+            <Grid item xs={4}>
+              {renderCoachDetailsBox()}
+            </Grid>
+            {/* Message box */}
+            {showMessageBox && 
+              <Grid item xs={8}>
+                {renderMessageBox()}
+              </Grid>
+            }
+          </>
+        }
       {/* Remove Coach Dialog */}
       <Dialog open={isRemoveDialogOpen} onClose={handleRemoveDialogClose}>
         <DialogTitle>Remove Coach</DialogTitle>
@@ -280,12 +329,6 @@ return (
           </Button>
         </DialogActions>
       </Dialog>
-
-        </Grid>
-        {/* Message box */}
-        <Grid item xs={7}>
-          {(hasCoach === true) && renderMessageBox()}
-        </Grid>
       </Grid>
     </div>
   );

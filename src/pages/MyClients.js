@@ -49,7 +49,23 @@ export default function MyClient() {
     const [messageInput, setMessageInput] = useState('');
     // State for displaying messages
     const [messages, setMessages] = useState([]);
-
+      // State for the interval ID
+    const [intervalId, setIntervalId] = useState(null);
+    useEffect(() => {
+        const interval = setInterval(() => {
+          axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
+          .then((response) => {
+              setMessages(response.data);
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          });
+        }, 5000); // Fetch every 5 seconds
+      
+        // Clear the interval when the component unmounts
+        return () => clearInterval(interval);
+      }, [user_id, selectedClient]);
+      
     // Modify the handleMessageBox function to fetch the messages and update the state
     const handleMessageBox = (client_id, clientFirstName) => {
         setMessageClosed(false);
@@ -65,40 +81,41 @@ export default function MyClient() {
         });
     };
 
-    // Function to handle sending a message
-    const handleSendMessage = () => {
-        if (messageInput.trim() !== '') {
-            // Prepare the message data
-            const messageData = {
-                user_id: user_id,
-                user_type: 'Coach',
-                coach_id: user_id,
-                client_id: selectedClient,
-                message: messageInput,
-            };
-
-            // Make a POST request to the '/send-message' endpoint
-            axios.post(`${baseUrl}/api/chat/send-message`, messageData)
-            .then((response) => {
-                if (response.data.message === 'Message saved successfully.') {
-                    // Fetch the messages for the selected client
-                    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
-                    .then((response) => {
-                        setMessages(response.data); // Update the messages state
-                        setMessageInput(''); // Clear the message input
-                    })
-                    .catch((error) => {
-                        console.error('Error:', error);
-                    });
-                } else {
-                    console.error('Error:', response.data.error);
-                }
-            })
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        }
-    };
+// Function to handle sending a message
+const handleSendMessage = () => {
+    if (messageInput.trim() !== '') {
+        // Prepare the message data
+        const messageData = {
+            user_id: user_id,
+            user_type: 'Coach',
+            coach_id: user_id,
+            client_id: selectedClient,
+            message: messageInput,
+        };
+  
+        // Make a POST request to the '/send-message' endpoint
+        axios.post(`${baseUrl}/api/chat/send-message`, messageData)
+        .then((response) => {
+            if (response.data.message === 'Message saved successfully.') {
+                setMessageInput(''); // Clear the message input
+  
+                // Fetch the messages for the selected client
+                axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
+                .then((response) => {
+                    setMessages(response.data); // Update the messages state
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            } else {
+                console.error('Error:', response.data.error);
+            }
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
+  };  
 
     // Function to handle "Enter" key press in the message input
     const handleEnterKeyPress = (event) => {
