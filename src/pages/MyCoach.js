@@ -180,7 +180,7 @@ const renderMessageBox = () => (
   }}
   >
   <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
-  <Button onClick={() => setShowMessageBox(false)}>Close</Button>
+  <Button sx={{ float: 'right'}} onClick={() => setShowMessageBox(false)}>Close</Button>
   </Box>
   {/* Message history */}
   <Box
