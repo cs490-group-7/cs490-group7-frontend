@@ -171,7 +171,7 @@ useEffect(() => {
 
   // Render message box
 const renderMessageBox = () => (
-  <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+  <Box style={{ height: '650px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
   {/* Header */}
   <Box
   style={{
@@ -192,7 +192,7 @@ const renderMessageBox = () => (
   }}
   >
   {/* Display messages */}
-  {messages ? (
+  {messages.length > 0 ? (
     messages.map((message, index) => (
       <Box key={index} mb={1}>
           {message.from_coach ? (
@@ -234,7 +234,7 @@ const renderMessageBox = () => (
 
 // Render coach details box
 const renderCoachDetailsBox = () => (
-  <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
+  <Box style={{ height: '650px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
   {/* Dark blue box */}
   <Box
     style={{
@@ -248,9 +248,10 @@ const renderCoachDetailsBox = () => (
     }}
   />
   {/* Coach details */}
-  <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
+  <Box p={2} style={{ position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
     {/* Replace City and Stae with coach details */}
     <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
+    <br></br>
     <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
     <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
     <br></br>
@@ -258,12 +259,12 @@ const renderCoachDetailsBox = () => (
     <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
     <br></br>
     <br></br>
-    <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
-    <Button variant="contained" style={{backgroundColor:'white', color:'red', margin: '0 auto', display: 'block', marginTop: '100px'}} onClick={handleRemoveCoach}>
-      Remove Coach
-    </Button>
-    <Button variant="contained" style={{backgroundColor:'white', color:'blue', margin: '0 auto', display: 'block', marginTop: '10px'}} onClick={() => setShowMessageBox(true)}>
+    <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach:</Typography>
+    <Button variant="contained" style={{ margin: '0 auto', display: 'block', marginTop: '10px'}} onClick={() => setShowMessageBox(true)}>
       Message
+    </Button>
+    <Button variant="contained" color="error" style={{ margin: '0 auto', display: 'block', marginTop: '120px'}} onClick={handleRemoveCoach}>
+      Remove Coach
     </Button>
   </Box>
   {/* Remove Coach button */}
