@@ -11,9 +11,12 @@ export default function MyCoachClient() {
     const user_id = parseInt(localStorage.getItem('userId'));
     const navigate = useNavigate();
 
-    const [currentCoach, setCurrentCoach] = useState([]);
+    const [currentCoach, setCurrentCoach] = useState({});
+    const [currentCoachFName, setCurrentCoachFName] = useState(null);
     const [hasCoach, setHasCoach] = useState();
     const [requestPending, setRequestPending] = useState();
+    const [errorMessage, setErrorMessage] = useState(null);
+    const [messageClosed, setMessageClosed] = useState(true);
 
     // Coach Removal Components
     const [isRemoveDialogOpen, setRemoveDialogOpen] = useState(false);
@@ -81,52 +84,83 @@ export default function MyCoachClient() {
   const [messages, setMessages] = useState([]);
   const [showMessageBox, setShowMessageBox] = useState(false);
 
-  // Function to handle sending a message
-  const handleSendMessage = () => {
-    if (messageInput.trim() !== '') {
-        // Prepare the message data
-        const messageData = {
-            user_id: user_id,
-            user_type: 'Client',
-            coach_id: currentCoach.coach_id,
-            client_id: user_id,
-            message: messageInput,
-        };
-        // Make a POST request to the '/send-message' endpoint
-        axios.post(`${baseUrl}/api/chat/send-message`, messageData)
-        .then((response) => {
-            if (response.data.message === 'Message saved successfully.') {
-                // Fetch the messages for the selected client
-                axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
-                .then((response) => {
-                    setMessages(response.data); // Update the messages state
-                    setMessageInput(''); // Clear the message input
-                })
-                .catch((error) => {
-                    console.error('Error:', error);
-                });
-            } else {
-                console.error('Error:', response.data.error);
-            }
-        })
-        .catch((error) => {
-            console.error('Error:', error);
-        });
-    }
-};
-
-useEffect(() => {
-  // Fetch the messages when the component mounts
-  if(hasCoach){
-    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+  const handleMessageBox = (coach_id, coachFirstName) => {
+    setMessageClosed(false);
+    setCurrentCoach({ coach_id: coach_id, first_name: coachFirstName }); // Set the selected coach as an object
+  
+    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: coach_id, client_id: user_id })
     .then((response) => {
-        setMessages(response.data);
+        setMessages(response.data); // Update the messages state
     })
     .catch((error) => {
         console.error('Error:', error);
     });
+  };  
+
+// Function to handle sending a message
+const handleSendMessage = () => {
+  if (messageInput.trim() !== '' && currentCoach) {
+      // Prepare the message data
+      const messageData = {
+          user_id: user_id,
+          user_type: 'Client',
+          coach_id: currentCoach.coach_id,
+          client_id: user_id,
+          message: messageInput,
+      };
+
+      // Make a POST request to the '/send-message' endpoint
+      axios.post(`${baseUrl}/api/chat/send-message`, messageData)
+      .then((response) => {
+          if (response.data.message === 'Message saved successfully.') {
+              setMessageInput(''); // Clear the message input
+
+              // Fetch the messages for the selected client
+              axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+              .then((response) => {
+                  setMessages(response.data); // Update the messages state
+              })
+              .catch((error) => {
+                  console.error('Error:', error);
+              });
+          } else {
+              console.error('Error:', response.data.error);
+          }
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+      });
   }
-}, [currentCoach.coach_id, user_id]);
+};
+
+  // State for the interval ID
+  const [intervalId, setIntervalId] = useState(null);
+
+useEffect(() => {
+  let interval = null;
+
+  if (hasCoach && showMessageBox) {
+      // Fetch the messages when the message box is opened
+      interval = setInterval(() => {
+          axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+          .then((response) => {
+              setMessages(response.data);
+          })
+          .catch((error) => {
+              console.error('Error:', error);
+          });
+      }, 5000); // Fetches messages every 5 seconds
+  } else if (!showMessageBox && interval !== null) {
+      // Clear the interval when the message box is closed
+      clearInterval(interval);
+  }
+
+    // Save the interval ID
+    setIntervalId(interval);
+
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+}, [currentCoach.coach_id, user_id, hasCoach, showMessageBox]);
 
   // Function to handle "Enter" key press in the message input
   const handleEnterKeyPress = (event) => {
@@ -137,100 +171,105 @@ useEffect(() => {
 
   // Render message box
 const renderMessageBox = () => (
-<Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
-{/* Header */}
-<Box
-style={{
-  background: '#f0f0f0', 
-  padding: '8px',
-}}
->
-<Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
-</Box>
-{/* Message history */}
-<Box
-style={{
-  flex: 1, 
-  overflowY: 'auto', 
-  background: '#fff', 
-  padding: '8px',
-}}
->
-{/* Display messages */}
-{messages ? (
-  messages.map((message, index) => (
-    <Box key={index} mb={1}>
-        {message.from_coach ? (
-            <>
-                <Typography variant="body1" component="div" color="blue">
-                  {currentCoach.first_name}: {message.message}
-                </Typography>
-            </>
-        ) : (
-            <Typography variant="body1" component="div" color="purple">
-                You: {message.message}
-            </Typography>
-        )}
-    </Box>
-))
-) : (
-  <Typography variant="body1" component="div" color="grey">
-    No messages...
-  </Typography>
-)}
+  <Box style={{ height: '650px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+  {/* Header */}
+  <Box
+  style={{
+    background: '#f0f0f0', 
+    padding: '8px',
+  }}
+  >
+  <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
+  <Button onClick={() => setShowMessageBox(false)}>Close</Button>
+  </Box>
+  {/* Message history */}
+  <Box
+  style={{
+    flex: 1, 
+    overflowY: 'auto', 
+    background: '#fff', 
+    padding: '8px',
+  }}
+  >
+  {/* Display messages */}
+  {messages.length > 0 ? (
+    messages.map((message, index) => (
+      <Box key={index} mb={1}>
+          {message.from_coach ? (
+              <>
+                  <Typography variant="body1" component="div" color="purple">
+                    {currentCoach.first_name}: {message.message}
+                  </Typography>
+              </>
+          ) : (
+              <Typography variant="body1" component="div" color="blue">
+                  You: {message.message}
+              </Typography>
+          )}
+      </Box>
+  ))
+  ) : (
+    <Typography variant="body1" component="div" color="grey">
+      No messages...
+    </Typography>
+  )}
 
-</Box>
-{/* Message input */}
-<TextField
-id="messageInput"
-label="Send a message..."
-variant="outlined"
-value={messageInput}
-onChange={(event) => setMessageInput(event.target.value)}
-onKeyPress={handleEnterKeyPress}
-style={{
-  background: '#f0f0f0', 
-  margin: '10px',
-  width: '95%',
-}}
-/>
-</Box>
+  </Box>
+  {/* Message input */}
+  <TextField
+  id="messageInput"
+  label="Send a message..."
+  variant="outlined"
+  value={messageInput}
+  onChange={(event) => setMessageInput(event.target.value)}
+  onKeyPress={handleEnterKeyPress}
+  style={{
+    background: '#f0f0f0', 
+    margin: '10px',
+    width: '95%',
+  }}
+  />
+  </Box>
 );
 
 // Render coach details box
 const renderCoachDetailsBox = () => (
-<Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
-{/* Dark blue box */}
-<Box
-  style={{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '20%',
-    background: 'darkblue', 
-    zIndex: 1, 
-  }}
-/>
-{/* Coach details */}
-<Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
-  {/* Replace City and Stae with coach details */}
-  <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
-  <br></br>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
-  <br></br>
-  <br></br>
-  <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
-  <Button variant="contained" style={{backgroundColor:'white', color:'red', margin: '0 auto', display: 'block', marginTop: '100px'}} onClick={handleRemoveCoach}>
-    Remove Coach
-  </Button>
-</Box>
-{/* Remove Coach button */}
-</Box>
-);
+  <Box style={{ height: '650px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
+  {/* Dark blue box */}
+  <Box
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '20%',
+      background: 'darkblue', 
+      zIndex: 1, 
+    }}
+  />
+  {/* Coach details */}
+  <Box p={2} style={{ position: 'absolute', top: '25%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
+    {/* Replace City and Stae with coach details */}
+    <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
+    <br></br>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
+    <br></br>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
+    <br></br>
+    <br></br>
+    <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach:</Typography>
+    <Button variant="contained" style={{ margin: '0 auto', display: 'block', marginTop: '10px'}} onClick={() => setShowMessageBox(true)}>
+      Message
+    </Button>
+    <Button variant="contained" color="error" style={{ margin: '0 auto', display: 'block', marginTop: '120px'}} onClick={handleRemoveCoach}>
+      Remove Coach
+    </Button>
+  </Box>
+  {/* Remove Coach button */}
+  </Box>
+  );  
 
 return (
     <div className="my-coach-client-page">
@@ -254,10 +293,19 @@ return (
             
           </Box>
         </div>}
-        <Grid item xs={5}>
-            {(hasCoach === true) && renderCoachDetailsBox()}
-          
-
+        {(hasCoach === true) && 
+          <>
+            <Grid item xs={4}>
+              {renderCoachDetailsBox()}
+            </Grid>
+            {/* Message box */}
+            {showMessageBox && 
+              <Grid item xs={8}>
+                {renderMessageBox()}
+              </Grid>
+            }
+          </>
+        }
       {/* Remove Coach Dialog */}
       <Dialog open={isRemoveDialogOpen} onClose={handleRemoveDialogClose}>
         <DialogTitle>Remove Coach</DialogTitle>
@@ -280,12 +328,6 @@ return (
           </Button>
         </DialogActions>
       </Dialog>
-
-        </Grid>
-        {/* Message box */}
-        <Grid item xs={7}>
-          {(hasCoach === true) && renderMessageBox()}
-        </Grid>
       </Grid>
     </div>
   );
