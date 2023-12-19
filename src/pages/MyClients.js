@@ -12,7 +12,6 @@ export default function MyClient() {
     const [currentClients, setCurrentClients] = useState([]);
     const [isPendingApproval, setIsPendingApproval] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
-    const [messageClosed, setMessageClosed] = useState(true);
 
     useEffect(() => {
         //fetch coach status
@@ -49,26 +48,39 @@ export default function MyClient() {
     const [messageInput, setMessageInput] = useState('');
     // State for displaying messages
     const [messages, setMessages] = useState([]);
-      // State for the interval ID
+    const [showMessageBox, setShowMessageBox] = useState(false);
+    // State for the interval ID
     const [intervalId, setIntervalId] = useState(null);
     useEffect(() => {
-        const interval = setInterval(() => {
-          axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
-          .then((response) => {
-              setMessages(response.data);
-          })
-          .catch((error) => {
-              console.error('Error:', error);
-          });
-        }, 5000); // Fetch every 5 seconds
+        let interval = null;
       
-        // Clear the interval when the component unmounts
-        return () => clearInterval(interval);
-      }, [user_id, selectedClient]);
+        if (showMessageBox) {
+            // Fetch the messages when the message box is opened
+            interval = setInterval(() => {
+                axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: user_id, client_id: selectedClient })
+                .then((response) => {
+                    setMessages(response.data);
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }, 5000); // Fetches messages every 5 seconds
+        } else if (!showMessageBox && interval !== null) {
+            // Clear the interval when the message box is closed
+            clearInterval(interval);
+        }
+      
+          // Save the interval ID
+          setIntervalId(interval);
+      
+          // Clear the interval when the component unmounts
+          return () => clearInterval(interval);
+      }, [user_id, selectedClient, showMessageBox]);
+
       
     // Modify the handleMessageBox function to fetch the messages and update the state
     const handleMessageBox = (client_id, clientFirstName) => {
-        setMessageClosed(false);
+        setShowMessageBox(true);
         setSelectedClient(client_id); // Set the selected client
         setSelectedClientFname(clientFirstName);
 
@@ -135,7 +147,7 @@ const handleSendMessage = () => {
             }}
         >
             <Typography variant="h5" style={{fontWeight: 'bold'}} >Message {selectedClientFName}:</Typography>
-            <Button sx={{ float: 'right'}} onClick={() => setMessageClosed(true)}>Close</Button>
+            <Button sx={{ float: 'right'}} onClick={() => setShowMessageBox(false)}>Close</Button>
         </Box>
         {/* Message history */}
         <Box
@@ -237,7 +249,7 @@ const handleSendMessage = () => {
                 )}
             </div>
             <div className='message-box' style={{ position: 'fixed', bottom: 20, right: 30, width: '25%' }}>
-                {selectedClient && !messageClosed && renderMessageBox()}
+                {selectedClient && showMessageBox && renderMessageBox()}
             </div>
         </div>
     );

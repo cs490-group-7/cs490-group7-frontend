@@ -11,7 +11,7 @@ export default function MyCoachClient() {
     const { user_id } = location.state || { user_id: false };
     const navigate = useNavigate();
 
-    const [currentCoach, setCurrentCoach] = useState([]);
+    const [currentCoach, setCurrentCoach] = useState({});
     const [currentCoachFName, setCurrentCoachFName] = useState(null);
     const [hasCoach, setHasCoach] = useState();
     const [requestPending, setRequestPending] = useState();
@@ -84,24 +84,22 @@ export default function MyCoachClient() {
   const [messages, setMessages] = useState([]);
   const [showMessageBox, setShowMessageBox] = useState(false);
 
-    // Modify the handleMessageBox function to fetch the messages and update the state
-    const handleMessageBox = (coach_id, coachFirstName) => {
-      setMessageClosed(false);
-      setCurrentCoach(coach_id);
-      setCurrentCoachFName(coachFirstName);
-
-      axios.post(`${baseUrl}/api/chat/get-messages`, { user_id: user_id, coach_id: coach_id })
-      .then((response) => {
-          setMessages(response.data); // Update the messages state
-      })
-      .catch((error) => {
-          console.error('Error:', error);
-      });
-  };
+  const handleMessageBox = (coach_id, coachFirstName) => {
+    setMessageClosed(false);
+    setCurrentCoach({ coach_id: coach_id, first_name: coachFirstName }); // Set the selected coach as an object
+  
+    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: coach_id, client_id: user_id })
+    .then((response) => {
+        setMessages(response.data); // Update the messages state
+    })
+    .catch((error) => {
+        console.error('Error:', error);
+    });
+  };  
 
 // Function to handle sending a message
 const handleSendMessage = () => {
-  if (messageInput.trim() !== '') {
+  if (messageInput.trim() !== '' && currentCoach) {
       // Prepare the message data
       const messageData = {
           user_id: user_id,
@@ -236,41 +234,41 @@ const renderMessageBox = () => (
 
 // Render coach details box
 const renderCoachDetailsBox = () => (
-<Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
-{/* Dark blue box */}
-<Box
-  style={{
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: '100%',
-    height: '20%',
-    background: 'darkblue', 
-    zIndex: 1, 
-  }}
-/>
-{/* Coach details */}
-<Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
-  {/* Replace City and Stae with coach details */}
-  <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
-  <br></br>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
-  <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
-  <br></br>
-  <br></br>
-  <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
-  <Button variant="contained" style={{backgroundColor:'white', color:'red', margin: '0 auto', display: 'block', marginTop: '100px'}} onClick={handleRemoveCoach}>
-    Remove Coach
-  </Button>
-  <Button variant="contained" style={{backgroundColor:'white', color:'blue', margin: '0 auto', display: 'block', marginTop: '10px'}} onClick={() => handleMessageBox(currentCoach.coach_id, currentCoach.first_name)}>
-    Message
-  </Button>
-</Box>
-{/* Remove Coach button */}
-</Box>
-);
+  <Box style={{ height: '600px', position: 'relative', border: '2px solid rgba(0,0,0,0.10)', borderRadius: '15px', overflowY: 'auto' }}>
+  {/* Dark blue box */}
+  <Box
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '20%',
+      background: 'darkblue', 
+      zIndex: 1, 
+    }}
+  />
+  {/* Coach details */}
+  <Box p={2} style={{ position: 'absolute', top: '30%', left: '50%', transform: 'translateX(-50%)', width: '80%', zIndex: 3 }}>
+    {/* Replace City and Stae with coach details */}
+    <Typography variant="h5" style={{fontWeight: 'bold', textAlign: 'center'}}>{currentCoach.first_name} {currentCoach.last_name}</Typography>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>Specializes in {currentCoach.specializations}</Typography>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.experience} years of experience</Typography>
+    <br></br>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>{currentCoach.city}, {currentCoach.state}</Typography>
+    <Typography variant="body1" style={{ textAlign: 'center' }}>${currentCoach.price}/hour</Typography>
+    <br></br>
+    <br></br>
+    <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach</Typography>
+    <Button variant="contained" style={{backgroundColor:'white', color:'red', margin: '0 auto', display: 'block', marginTop: '100px'}} onClick={handleRemoveCoach}>
+      Remove Coach
+    </Button>
+    <Button variant="contained" style={{backgroundColor:'white', color:'blue', margin: '0 auto', display: 'block', marginTop: '10px'}} onClick={() => setShowMessageBox(true)}>
+      Message
+    </Button>
+  </Box>
+  {/* Remove Coach button */}
+  </Box>
+  );  
 
 return (
     <div className="my-coach-client-page">
