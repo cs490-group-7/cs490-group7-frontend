@@ -139,16 +139,21 @@ const handleSendMessage = () => {
 useEffect(() => {
   let interval = null;
 
+  const getMessages = () => {
+    axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
+      .then((response) => {
+          setMessages(response.data);
+      })
+      .catch((error) => {
+          console.error('Error:', error);
+    });
+  }
+
   if (hasCoach && showMessageBox) {
       // Fetch the messages when the message box is opened
+      getMessages();
       interval = setInterval(() => {
-          axios.post(`${baseUrl}/api/chat/get-messages`, { coach_id: currentCoach.coach_id, client_id: user_id })
-          .then((response) => {
-              setMessages(response.data);
-          })
-          .catch((error) => {
-              console.error('Error:', error);
-          });
+          getMessages();
       }, 5000); // Fetches messages every 5 seconds
   } else if (!showMessageBox && interval !== null) {
       // Clear the interval when the message box is closed
