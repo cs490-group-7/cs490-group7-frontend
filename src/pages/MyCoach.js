@@ -8,7 +8,7 @@ const baseUrl = process.env.REACT_APP_BACKEND_URL;
 
 export default function MyCoachClient() {
     const location = useLocation();
-    const { user_id } = location.state || { user_id: false };
+    const user_id = parseInt(localStorage.getItem('userId'));
     const navigate = useNavigate();
 
     const [currentCoach, setCurrentCoach] = useState({});

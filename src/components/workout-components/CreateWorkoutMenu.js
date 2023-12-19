@@ -9,7 +9,8 @@ function CreateWorkoutMenu (props) {
 
     const location = useLocation();
 
-    const { client, user_id } = location.state || {  user_id: false, client: false };
+    const { client } = location.state || {  user_id: false, client: false };
+    const user_id = parseInt(localStorage.getItem('userId'));
 
     const [workoutName, setWorkoutName] = useState("");
     const [description, setDescription] = useState("");

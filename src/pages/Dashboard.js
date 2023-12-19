@@ -11,7 +11,7 @@ function Dashboard () {
     const navigate = useNavigate();
     const location = useLocation();
 
-    const { user_id } = location.state || { user_id: false };
+    const user_id = parseInt(localStorage.getItem('userId'));
 
     const [signedIn, setSignedIn] = useState(user_id);
 
