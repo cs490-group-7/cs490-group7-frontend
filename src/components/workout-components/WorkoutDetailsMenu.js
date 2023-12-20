@@ -30,9 +30,9 @@ function WorkoutDetailsMenu (props) {
 
           <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Workout Details</Typography>
 
-          <Button id="backBtn" variant="contained" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
+          <Button id="backBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
               props.backFunc();
-          }}>{"<"} Back</Button>
+          }}>← Back</Button>
 
           {(typeof workout !== 'undefined') && <div>
               <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{workout.workout.workout_name}</Typography>

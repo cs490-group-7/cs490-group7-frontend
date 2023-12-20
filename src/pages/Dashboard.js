@@ -209,7 +209,7 @@ function Dashboard () {
                                 <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError} onChange={(event) => {
                                     setMood(event.target.value);
                                 }}/><br></br>
-                                <Button id="submitDailyBtn" variant="contained" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
+                                <Button id="submitDailyBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                                     submitDaily();
                                 }}>
                                     Submit Check-in

@@ -194,7 +194,7 @@ export default function CoachLookup() {
                     onClick={() => handleCoachDetails(coach)}
                     style={{ cursor: 'pointer', fontSize: '24px' }}
                   >
-                    {`${coach.first_name} ${coach.last_name}`}
+                    <b>{`${coach.first_name} ${coach.last_name}`}</b>
                   </Typography>
                 </Card>
               ))}
@@ -233,7 +233,7 @@ export default function CoachLookup() {
               <Typography>City: {selectedCoach.city}</Typography>
               <Typography>State: {selectedCoach.state}</Typography>
               <Typography>Price Per Hour: {selectedCoach.price}</Typography>
-              <Button onClick={() => handleRequestCoach(selectedCoach)} variant='contained' sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }}>
+              <Button onClick={() => handleRequestCoach(selectedCoach)} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }}>
                 Request Coach
               </Button>
               <div>

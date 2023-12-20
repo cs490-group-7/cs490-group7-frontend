@@ -129,8 +129,8 @@ export default function AdminPage() {
                                 <Typography variant="body1">City: {coach.city}</Typography>
                                 <Typography variant="body1">State: {coach.state}</Typography>
                                 <Typography variant="body1">Price: {coach.price}</Typography>
-                                <Button color="primary" onClick={() => handleApproval(coach.id, true)} variant='contained' sx={{ margin: '10px 0 0 5px'}}>Approve</Button>
-                                <Button color="secondary" onClick={() => handleApproval(coach.id, false)} variant='contained' sx={{ margin: '10px 0 0 5px'}}>Reject</Button>
+                                <Button color="primary" onClick={() => handleApproval(coach.id, true)} sx={{ margin: '10px 0 0 5px'}}>Approve</Button>
+                                <Button color="secondary" onClick={() => handleApproval(coach.id, false)} sx={{ margin: '10px 0 0 5px'}}>Reject</Button>
                             </CardContent>
                         </Card>
                     ))
@@ -165,7 +165,7 @@ export default function AdminPage() {
                                 <MenuItem value="Calf">Calf</MenuItem>
                             </Select>
                         </FormControl>
-                        <Button onClick={handleAddExercise} variant='contained' sx={{ height: '55px'}}>Add Exercise</Button>
+                        <Button onClick={handleAddExercise} sx={{ height: '55px'}}>Add Exercise</Button>
                         <div style={{ width: '60%'}}>
                             {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
                             {successMessage && <Alert severity="success">{successMessage}</Alert>}
@@ -199,7 +199,7 @@ export default function AdminPage() {
           <Box  p={2} height="100%">
             {displayedExercises.map((exercise, index) => (
               <Box key={index} borderBottom={1} p={1} borderColor="lightgrey">
-                <Button variant='contained' color='error' sx={{ float: 'right', marginRight: '50px'}} onClick={() => handleDeleteExercise(exercise.exercise_id)}>
+                <Button color='error' sx={{ float: 'right', marginRight: '50px'}} onClick={() => handleDeleteExercise(exercise.exercise_id)}>
                     Delete
                 </Button>
                 <Typography variant="body1" sx={{ color: 'darkblue'}}>{exercise.exercise_name}</Typography>

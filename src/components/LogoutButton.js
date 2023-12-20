@@ -42,8 +42,8 @@ const LogoutButton = () => {
           {"Are you sure you want to logout?"}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleLogout} autoFocus>
+          <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', color: "#00008b", '&:hover': { backgroundColor: "#E0E0F1" } }} onClick={handleClose}>Cancel</Button>
+          <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', color: "#00008b", '&:hover': { backgroundColor: "#E0E0F1" } }} onClick={handleLogout} autoFocus>
             Logout
           </Button>
         </DialogActions>

@@ -79,6 +79,7 @@ export default function MyProgress () {
         if (type === 0){
             chart.options.title.text = "Weight";
             chart.options.data[0].dataPoints = dataPoints1;
+            chart.options.data[0].color = "#00008b";
             //Find min & max
             let minValue = Infinity;
             let maxValue = -Infinity;
@@ -96,8 +97,8 @@ export default function MyProgress () {
                     value : goalInfo.weightGoalValue,
                     label : "Current Goal",
                     thickness : 3,
-                    color:"blue",
-                    labelFontColor:"blue"
+                    color:"#8080C5",
+                    labelFontColor:"#8080C5"
                 }
                 ]
             }
@@ -105,12 +106,14 @@ export default function MyProgress () {
         } else if (type === 1){
             chart.options.title.text = "Calorie Intake";
             chart.options.data[0].dataPoints = dataPoints2;
+            chart.options.data[0].color = "#00008b";
             chart.options.axisY = {
                 stripLines:[{}]
             }
         } else if (type === 2){
             chart.options.title.text = "Water Intake";
             chart.options.data[0].dataPoints = dataPoints3;
+            chart.options.data[0].color = "#00008b";
             chart.options.axisY = {
                 stripLines:[{}]
             }
@@ -118,15 +121,15 @@ export default function MyProgress () {
             chart.options.title.text = "Workouts";
             chart.options.data[0].dataPoints = dataPoints4;
             chart.options.data[0].type = "scatter";
-            chart.options.data[0].color = "blue";
+            chart.options.data[0].color = "#00008b";
             chart.options.axisY = {
                 stripLines:[
                     {      
                         value : 1,
                         label : "100%",
                         thickness : 3,
-                        color:"blue",
-                        labelFontColor:"blue"
+                        color:"#00008b",
+                        labelFontColor:"#00008b"
                     }
                 ]
             }
@@ -266,28 +269,28 @@ export default function MyProgress () {
                 <Grid item xs={2}>
                     <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
                         <Grid item xs={12}>
-                            <Button id="weight" variant={selectedButton === "Weight" ? "contained" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Weight" ? "#00008b" : "#ffffff", color: selectedButton !== "Weight" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Weight" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
+                            <Button id="weight" variant={selectedButton === "Weight" ? "" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Weight" ? "#00008b" : "#ffffff", color: selectedButton !== "Weight" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Weight" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
                                 graphType = 0;
                                 setSelectedButton("Weight");
                                 generateGraph(graphType);
                             }}>Weight</Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button id="calorieIntake" variant={selectedButton === "Calorie" ? "contained" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Calorie" ? "#00008b" : "#ffffff", color: selectedButton !== "Calorie" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Calorie" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
+                            <Button id="calorieIntake" variant={selectedButton === "Calorie" ? "" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Calorie" ? "#00008b" : "#ffffff", color: selectedButton !== "Calorie" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Calorie" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
                                 graphType = 1;
                                 setSelectedButton("Calorie");
                                 generateGraph(graphType);
                             }}>Calorie Intake</Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button id="waterIntake" variant={selectedButton === "Water" ? "contained" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Water" ? "#00008b" : "#ffffff", color: selectedButton !== "Water" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Water" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
+                            <Button id="waterIntake" variant={selectedButton === "Water" ? "" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Water" ? "#00008b" : "#ffffff", color: selectedButton !== "Water" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Water" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
                                 graphType = 2;
                                 setSelectedButton("Water");
                                 generateGraph(graphType);
                             }}>Water Intake</Button>
                         </Grid>
                         <Grid item xs={12}>
-                            <Button id="workouts" variant={selectedButton === "Workouts" ? "contained" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Workouts" ? "#00008b" : "#ffffff", color: selectedButton !== "Workouts" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Workouts" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
+                            <Button id="workouts" variant={selectedButton === "Workouts" ? "" : "outlined"} sx={{ borderRadius: 1, width: 1, minHeight: 0, padding: 0.8, borderColor: "#00008b", backgroundColor: selectedButton === "Workouts" ? "#00008b" : "#ffffff", color: selectedButton !== "Workouts" ? "#4040A8" : "#ffffff", '&:hover': { backgroundColor: selectedButton === "Workouts" ? "#4040A8" : "#C0C0E2", borderColor: "#00008b" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
                                 graphType = 3;
                                 setSelectedButton("Workouts");
                                 generateGraph(graphType);
@@ -308,7 +311,7 @@ export default function MyProgress () {
             <p> Current Weight: {currentWeight} pounds</p>
                 <Grid container item xs={12} spacing={1} sx={{ width: 1 }}>
                     <Grid item xs={2}>
-                        <Button variant='contained' onClick={handleEditGoal} disabled={editGoal || createGoal} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
+                        <Button onClick={handleEditGoal} disabled={editGoal || createGoal} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
                             Edit Goal
                         </Button>
                         <br/>
@@ -326,7 +329,7 @@ export default function MyProgress () {
                             />
                             <br/>
                             <br/>
-                            <Button variant='contained' onClick={() => handleSubmit(false)} disabled={formDisabled} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
+                            <Button onClick={() => handleSubmit(false)} disabled={formDisabled} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
                                 Save Changes
                             </Button>
                             <div style={{ width: '100%'}}>
@@ -337,7 +340,7 @@ export default function MyProgress () {
                     <Grid item xs={4}>
                         {(editGoal === true) && 
                         <div>
-                        <Button variant='contained' onClick={handleCreateGoal} disabled={createGoal} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
+                        <Button onClick={handleCreateGoal} disabled={createGoal} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
                             Create New Goal
                         </Button>
                         <br/>
@@ -378,7 +381,7 @@ export default function MyProgress () {
                                 handleChange(event, 'weightGoalValue');
                             }}/>
                             </div>}
-                            <Button variant='contained' onClick={() => handleSubmit(true)} disabled={formDisabled} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
+                            <Button onClick={() => handleSubmit(true)} disabled={formDisabled} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}>
                                 Save Changes
                             </Button>
                             <div style={{ width: '80%'}}>

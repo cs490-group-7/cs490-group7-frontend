@@ -87,7 +87,7 @@ function WorkoutCalendar (props) {
                               <b>{currentDate.toLocaleDateString('en-us', { weekday: "long" })}, {currentDate.toLocaleDateString('en-us', { month: "long", day: "numeric" })}</b>
                             </Grid>
                             <Grid item xs={1} sx={{ width: 1 }}>
-                              <Button id="assignBtn" variant="text" size="small" sx={{ minWidth: 30, minHeight: 0, padding: 0 }} disabled={props.selectedWorkout === null} onClick={() => {
+                              <Button id="assignBtn" variant="text" size="small" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0, margin: 0, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#C0C0E2" } }} disabled={props.selectedWorkout === null} onClick={() => {
                                 assignWorkout(dayOfWeek);
                               }}>+</Button>
                             </Grid>

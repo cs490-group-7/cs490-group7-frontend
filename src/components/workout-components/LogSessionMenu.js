@@ -101,9 +101,9 @@ function LogSessionMenu (props) {
 
             <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Log Session</Typography>
 
-            <Button id="backBtn" variant="contained" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
+            <Button id="backBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
               props.backFunc();
-            }}>{"<"} Back</Button>
+            }}>← Back</Button>
 
             <div>
                 <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{workoutName}</Typography>
@@ -147,7 +147,7 @@ function LogSessionMenu (props) {
 
             </Grid>
 
-    <Button id="saveSessionBtn" variant="contained" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
+    <Button id="saveSessionBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
         saveSession();
     }}>Log Session</Button>
     <div style={{ width: '50%'}}>
