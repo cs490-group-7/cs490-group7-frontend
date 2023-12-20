@@ -75,14 +75,13 @@ function WorkoutCalendar (props) {
 
             <Grid container spacing={0.5} padding={0.5}>
 
-                {[0,1,2,3,4,5,6].map((i) => {
+                {[0,1,2,3,4,5,6].map((i, index) => {
                   currentDate.setDate(currentDate.getDate() + 1);
                   var copiedDate = new Date(currentDate.getTime()); 
                   const dayOfWeek = currentDate.getDay();
-                  return <Grid item xs={12} sx={{ width: 1 }}>
-                      
-                      <Card variant="outlined" sx={{ padding: 0, borderRadius: 0, borderColor: '#d9d9d9' }}>
-                        <Card variant="outlined" sx={{ padding: 0.5, borderRadius: 0, bgcolor: '#d9d9d9', color: '#00008b', borderColor: '#d9d9d9' }}>
+                  return <Grid item key={"day" + index.toString()} xs={12} sx={{ width: 1 }}>
+                      <Card variant="outlined" sx={{ padding: 0, borderRadius: 2, borderColor: '#C0C0E2' }}>
+                        <Card variant="outlined" sx={{ padding: 0.5, borderRadius: 0, bgcolor: '#C0C0E2', color: '#00008b', borderColor: '#C0C0E2' }}>
                           <Grid container spacing={0} padding={0}>
                             <Grid item xs={11} sx={{ width: 1 }}>
                               <b>{currentDate.toLocaleDateString('en-us', { weekday: "long" })}, {currentDate.toLocaleDateString('en-us', { month: "long", day: "numeric" })}</b>
@@ -95,8 +94,8 @@ function WorkoutCalendar (props) {
                           </Grid>
                         </Card>
                         <Card variant="outlined" sx={{ padding: 0.5, borderRadius: 0, border: 'none' }}>
-                          {(typeof assignmentList === 'undefined') || assignmentList[dayOfWeek].length === 0 ? <Box sx={{ padding: 0.5 }}>Rest Day</Box> : assignmentList[dayOfWeek].map((assignment) => {
-                            return <WorkoutAssignment workoutName={assignment.workoutName} yours={assignment.yours} first_name={assignment.first_name} last_name={assignment.last_name} workoutId={assignment.workoutId} loggable={assignment.loggable} currentDate={copiedDate} viewFunc={props.viewFunc} logFunc={props.logFunc} rerenderFunc={getAssignments}/>;
+                          {(typeof assignmentList === 'undefined') || assignmentList[dayOfWeek].length === 0 ? <Box sx={{ padding: 0.5, color: '#00008b' }}><i>Rest Day</i></Box> : assignmentList[dayOfWeek].map((assignment, j) => {
+                            return <WorkoutAssignment key={"assignment" + j.toString()} workoutName={assignment.workoutName} yours={assignment.yours} first_name={assignment.first_name} last_name={assignment.last_name} workoutId={assignment.workoutId} loggable={assignment.loggable} currentDate={copiedDate} viewFunc={props.viewFunc} logFunc={props.logFunc} rerenderFunc={getAssignments}/>;
                           })}
                         </Card>
                       </Card>

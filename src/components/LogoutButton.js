@@ -30,7 +30,7 @@ const LogoutButton = () => {
 
   return (
     <>
-      <Button variant="outlined" onClick={handleClickOpen} sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderWidth: '2px'}}>
+      <Button variant="outlined" onClick={handleClickOpen} sx={{ width: '60%', marginLeft: '20%', fontWeight: 'bold', borderRadius: 1, minWidth: 30, minHeight: 0, color: "#00008b", borderColor: "#00008b", borderWidth: 2, '&:hover': { backgroundColor: "#E0E0F1", borderColor: "#00008b", borderWidth: 2 } }}>
         Log Out
       </Button>
       <Dialog

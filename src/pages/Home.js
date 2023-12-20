@@ -88,6 +88,7 @@ export default function Home() {
               <Box mt={2} display="flex" justifyContent="center">
                 <Button
                   disabled={currentPage === 1}
+                  sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}
                   onClick={() => setCurrentPage((prevPage) => prevPage - 1)}
                 >
                   Previous Page
@@ -95,6 +96,7 @@ export default function Home() {
                 <Typography sx={{ marginX: 2 }}>{currentPage}</Typography>
                 <Button
                   disabled={filteredExercises.length <= endIdx}
+                  sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}
                   onClick={() => setCurrentPage((prevPage) => prevPage + 1)}
                 >
                   Next Page

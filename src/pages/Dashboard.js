@@ -209,7 +209,7 @@ function Dashboard () {
                                 <TextField id="inpMood" label="Mood" variant="filled" sx={{ margin: 1 }} error={moodError} helperText={moodError} onChange={(event) => {
                                     setMood(event.target.value);
                                 }}/><br></br>
-                                <Button id="submitDailyBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                                <Button id="submitDailyBtn" variant="contained" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                                     submitDaily();
                                 }}>
                                     Submit Check-in
@@ -266,8 +266,8 @@ function Dashboard () {
                     <Card variant="outlined" sx={{ padding: 2 }}>
                         <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Progress Status</Typography>
                         {goalMessage !== null ? <div>
-                            <Typography align="center" variant="h6" color="primary" sx={{ margin: 2 }}>{Math.floor(progress*100)}%</Typography>
-                            <LinearProgress determinate thickness={15} value={progress*100} />
+                            <Typography align="center" variant="h6" sx={{ color: "#00008b", margin: 2 }}>{Math.floor(progress*100)}%</Typography>
+                            <LinearProgress determinate thickness={15} sx={{ color: "#00008b" }} value={progress*100} />
                             <Typography align="center" sx={{ margin: 2 }}>{
                                 progress <= 0 ? 
                                     "Let's get started!"

@@ -78,13 +78,13 @@ function Workouts () {
             <Grid container spacing={2}>
 
                 <Grid item xs={4}>
-                    <Card variant="outlined" sx={{ padding: 2 }}>
+                    <Card variant="outlined" sx={{ padding: 2, borderRadius: 2 }}>
                         <WorkoutCalendar selectedWorkout={workoutId} viewFunc={viewWorkoutDetails} logFunc={logSession}/>
                     </Card>
                 </Grid>
 
                 <Grid item xs={8}>
-                    <Card variant="outlined" sx={{ padding: 2 }}>
+                    <Card variant="outlined" sx={{ padding: 2, borderRadius: 2 }}>
 
                         {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails} selectFunc={selectWorkout}>
                         </WorkoutListMenu>}

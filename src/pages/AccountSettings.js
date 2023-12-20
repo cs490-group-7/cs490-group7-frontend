@@ -199,7 +199,7 @@ const AccountSettings = () => {
         variant='filled'
       />
       <br></br>
-      <Button variant='contained' onClick={handleSubmit} disabled={formDisabled}>
+      <Button variant='contained' onClick={handleSubmit} disabled={formDisabled} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }}>
         Save Changes
       </Button>
       <div style={{ width: '40%'}}>
@@ -253,7 +253,7 @@ const AccountSettings = () => {
           error={hasError.confirmNewPassword}
           helperText={inputErrors.confirmNewPassword}
         />
-        <Button onClick={handleChangePassword} variant='contained' sx={{ marginBottom: '20px' }}>Change Password</Button>
+        <Button onClick={handleChangePassword} variant='contained' sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", marginBottom: '20px', '&:hover': { backgroundColor: "#4040A8" } }}>Change Password</Button>
         </div>
         <div style={{ width: '40%'}}>
           {passwordChangeError && <Alert severity="error">{passwordChangeError}</Alert>}
@@ -262,7 +262,7 @@ const AccountSettings = () => {
       
 
       {/* Delete Account Section */}
-      <Button variant="contained" color="error" onClick={() => setOpenDeleteDialog(true)} sx={{ marginTop: '20px' }}>
+      <Button variant="contained" color="error" onClick={() => setOpenDeleteDialog(true)} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#8C0044", color: "#ffffff", marginTop: '20px', '&:hover': { backgroundColor: "#A94073" } }}>
         Delete Account
       </Button>
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
