@@ -146,13 +146,18 @@ export default function MyProgress () {
 
 
     useEffect(() => {
-        for(var i = 0; i < progressData.length; i++){
-            dataPoints1.push({x: new Date(progressData[i].date), y: Number(progressData[i].weight)});
-            dataPoints2.push({x: new Date(progressData[i].date), y: Number(progressData[i].calorie_intake)});
-            dataPoints3.push({x: new Date(progressData[i].date), y: Number(progressData[i].water_intake)});
+        if (dataPoints1.length == 0){
+            for(var i = 0; i < progressData.length; i++){
+                dataPoints1.push({x: new Date(progressData[i].date), y: Number(progressData[i].weight)});
+                dataPoints2.push({x: new Date(progressData[i].date), y: Number(progressData[i].calorie_intake)});
+                dataPoints3.push({x: new Date(progressData[i].date), y: Number(progressData[i].water_intake)});
+            }
+            console.log(dataPoints1);
         }
-        for(var i = 0; i < workoutData.length; i++){
-            dataPoints4.push({x: new Date(workoutData[i].session_date), y: Number(workoutData[i].completed/workoutData[i].listed)});
+        if (dataPoints4.length == 0){
+            for(var i = 0; i < workoutData.length; i++){
+                dataPoints4.push({x: new Date(workoutData[i].session_date), y: Number(workoutData[i].completed/workoutData[i].listed)});
+            }
         }
         setGraphDataLoaded(true);
         }, [progressData, workoutData])
