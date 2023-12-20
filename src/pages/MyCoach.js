@@ -185,7 +185,7 @@ const renderMessageBox = () => (
   }}
   >
   <Typography variant="h5" style={{fontWeight: 'bold'}} >Message Your Coach:</Typography>
-  <Button sx={{ float: 'right'}} onClick={() => setShowMessageBox(false)}>Close</Button>
+  <Button sx={{ float: 'right', borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', color: "#00008b", '&:hover': { backgroundColor: "#E0E0F1" } }} onClick={() => setShowMessageBox(false)}>Close</Button>
   </Box>
   {/* Message history */}
   <Box
@@ -265,10 +265,10 @@ const renderCoachDetailsBox = () => (
     <br></br>
     <br></br>
     <Typography variant="body1" style={{ textAlign: 'center' }}> Stay updated with your coach:</Typography>
-    <Button variant="contained" style={{ margin: '0 auto', display: 'block', marginTop: '10px'}} onClick={() => setShowMessageBox(true)}>
+    <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: '0 auto', display: 'block', marginTop: '10px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => setShowMessageBox(true)}>
       Message
     </Button>
-    <Button variant="contained" color="error" style={{ margin: '0 auto', display: 'block', marginTop: '120px'}} onClick={handleRemoveCoach}>
+    <Button color="error" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: '0 auto', display: 'block', marginTop: '120px', backgroundColor: "#8C0044", color: "#ffffff", '&:hover': { backgroundColor: "#A94073" } }} onClick={handleRemoveCoach}>
       Remove Coach
     </Button>
   </Box>
@@ -327,8 +327,8 @@ return (
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleRemoveDialogClose}>Cancel</Button>
-          <Button onClick={handleRemoveSubmit} variant="contained" color="error">
+          <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', color: "#00008b", '&:hover': { backgroundColor: "#E0E0F1" } }} onClick={handleRemoveDialogClose}>Cancel</Button>
+          <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', color: "#00008b", '&:hover': { backgroundColor: "#E0E0F1" } }} onClick={handleRemoveSubmit} variant="contained" color="error">
             Submit
           </Button>
         </DialogActions>

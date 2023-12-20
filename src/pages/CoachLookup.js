@@ -188,19 +188,20 @@ export default function CoachLookup() {
           {displayedResults.length > 0 ? (
             <>
               {displayedResults.map((coach, index) => (
-                <Card key={index} variant="outlined" sx={{ padding: 2, marginBottom: 2 }}>
+                <Card key={index} variant="outlined" sx={{ margin: 0.5, padding: 2, borderRadius: 2, borderColor: '#E8E8F5', backgroundColor: '#E8E8F5', color: "#00008b", marginBottom: 2 }}>
                   <Typography
                     variant="h6"
                     onClick={() => handleCoachDetails(coach)}
                     style={{ cursor: 'pointer', fontSize: '24px' }}
                   >
-                    {`${coach.first_name} ${coach.last_name}`}
+                    <b>{`${coach.first_name} ${coach.last_name}`}</b>
                   </Typography>
                 </Card>
               ))}
               <Box mt={2} display="flex" justifyContent="center">
                 <Button
                   disabled={currentPage === 1}
+                  sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}
                   onClick={() => setCurrentPage((prevPage) => prevPage - 1)}
                 >
                   Previous Page
@@ -208,6 +209,7 @@ export default function CoachLookup() {
                 <Typography sx={{ marginX: 2 }}>{currentPage}</Typography>
                 <Button
                   disabled={searchResults.length <= endIdx}
+                  sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }}
                   onClick={() => setCurrentPage((prevPage) => prevPage + 1)}
                 >
                   Next Page
@@ -231,7 +233,7 @@ export default function CoachLookup() {
               <Typography>City: {selectedCoach.city}</Typography>
               <Typography>State: {selectedCoach.state}</Typography>
               <Typography>Price Per Hour: {selectedCoach.price}</Typography>
-              <Button onClick={() => handleRequestCoach(selectedCoach)} variant='contained' sx={{ marginTop: '10px' }}>
+              <Button onClick={() => handleRequestCoach(selectedCoach)} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }}>
                 Request Coach
               </Button>
               <div>
@@ -242,7 +244,7 @@ export default function CoachLookup() {
           )}
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => setOpenDialog(false)}>Close</Button>
+          <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', color: "#00008b", '&:hover': { backgroundColor: "#E0E0F1" } }} onClick={() => setOpenDialog(false)}>Close</Button>
         </DialogActions>
       </Dialog>
     </div>

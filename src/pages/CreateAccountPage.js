@@ -196,7 +196,7 @@ function CreateAccountPage () {
         </Grid>
         {/* ends here */}
         <Grid item xs={12}>
-          <Button id="createAccountBtn" variant="contained" onClick={() => {
+          <Button id="createAccountBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
             createAccount();
           }}>
             Create Account

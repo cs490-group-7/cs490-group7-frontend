@@ -7,6 +7,7 @@
     background-color: white;
     padding-top: 20px;
     border: 1px solid rgba(0,0,0,0.10);
+    top: 7%;
   }
   
   .side-nav a {
@@ -20,14 +21,16 @@
     color: black;
     display: block;
     caret-color: transparent;
+    transition: background-color 200ms;
   }
   
   .side-nav a:hover {
-    background-color: rgba(0,0,0,0.15);
+    background-color: #E0E0F1;
+    transition: background-color 200ms;
   }
 
   .side-nav a.active {
-    background-color: lightgrey;
+    background-color: #C0C0E2;
     position: relative;
 
     &::before {
@@ -48,12 +51,12 @@
     text-decoration: underline;
   }
   .side-nav a.login-button {
-    background-color: #007bff; 
+    background-color: #C0C0E2; 
     color: white; 
     margin-top: 2%; 
     border-radius: 4px; 
   }
   .side-nav a.login-button:hover {
-    background-color: #0056b3; 
+    background-color: #C0C0E2; 
   
   }

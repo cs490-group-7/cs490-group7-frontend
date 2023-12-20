@@ -47,10 +47,10 @@ export default function ClientRequests() {
     return (
         <div className="my-clients-page">
             <h1>My Clients</h1>
-            <AppBar position="static">
+            <AppBar variant="contained" position="static" sx={{ borderRadius: 2, backgroundColor: "#C0C0E2" }}>
                 <Toolbar>
-                    <Button color="inherit" onClick={() => handleNavigate(false)} sx={{ marginRight: '10px'}} >Current Clients</Button>
-                    <Button color="inherit" onClick={() => handleNavigate(true)} sx={{ color: 'black'}} variant='contained'>Client Requests</Button>
+                    <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginRight: '10px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => handleNavigate(false)} >Current Clients</Button>
+                    <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => handleNavigate(true)} >Client Requests</Button>
                 </Toolbar>
             </AppBar>
             <div id="client-requests">
@@ -75,8 +75,8 @@ export default function ClientRequests() {
                             <p style={{ marginBottom: '0'}}>Goal Value: {client.weightGoalValue} lbs</p>
                         </CardContent>
                         <CardActions sx={{ marginLeft: '10px'}}>
-                            <Button variant="contained" color="primary" onClick={() => handlRequest(client.client_id, true)}>Accept</Button>
-                            <Button variant="contained" color="secondary" onClick={() => handlRequest(client.client_id, false)}>Decline</Button>
+                            <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => handlRequest(client.client_id, true)}>Accept</Button>
+                            <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => handlRequest(client.client_id, false)}>Decline</Button>
                         </CardActions>
                         <br></br>
                     </Card>

@@ -147,7 +147,7 @@ const handleSendMessage = () => {
             }}
         >
             <Typography variant="h5" style={{fontWeight: 'bold'}} >Message {selectedClientFName}:</Typography>
-            <Button sx={{ float: 'right'}} onClick={() => setShowMessageBox(false)}>Close</Button>
+            <Button sx={{ float: 'right', borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '10px', color: "#00008b", '&:hover': { backgroundColor: "#E0E0F1" } }} onClick={() => setShowMessageBox(false)}>Close</Button>
         </Box>
         {/* Message history */}
         <Box
@@ -202,10 +202,10 @@ const handleSendMessage = () => {
     return (
         <div className="my-clients-page">
             <h1>My Clients</h1>
-            <AppBar position="static">
+            <AppBar position="static" sx={{ borderRadius: 2, backgroundColor: "#C0C0E2" }} variant="contained">
                 <Toolbar>
-                    <Button color="inherit" onClick={() => handleNavigate(true)} sx={{ marginRight: '10px', color: 'black'}} variant='contained'>Current Clients</Button>
-                    <Button color="inherit" onClick={() => handleNavigate(false)} >Client Requests</Button>
+                    <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginRight: '10px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => handleNavigate(true)}>Current Clients</Button>
+                    <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => handleNavigate(false)} >Client Requests</Button>
                 </Toolbar>
             </AppBar>
             <div id="current-clients" style={{ width: '40%'}}>
@@ -214,23 +214,21 @@ const handleSendMessage = () => {
                     <p>No results</p>
                 )}
             {currentClients.map((client) => (
-                <Card key={client.client_id} sx={{ maxWidth: 1100, marginBottom: 2, marginTop: 3 }}>
+                <Card key={client.client_id} variant="contained" sx={{ margin: 0.5, maxWidth: 1100, marginBottom: 2, marginTop: 3, padding: 0.5, borderRadius: 2, backgroundColor: '#E8E8F5', color: "#00008b" }}>
                     <CardContent
                         onClick={() => navigate(`/my-clients/${client.client_id}`, { state: { user_id, client } })}
                         style={{ cursor: 'pointer' }}
                     >
-                        <Typography variant="h5" component="div" sx={{ color: 'purple' }}>
-                            {client.first_name} {client.last_name}
+                        <Typography variant="h5" component="div" sx={{ color: '#00008b' }}>
+                            <b>{client.first_name} {client.last_name}</b>
                         </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                            Click for client details
+                        <Typography variant="body2" sx={{ color: '#00008b' }}>
+                            <i>Click for client details</i>
                         </Typography>
                     </CardContent>
                     <Button 
-                        color="primary" 
                         onClick={() => handleMessageBox(client.client_id, client.first_name)} 
-                        style={{ margin: '0 0 15px 15px' }}
-                        variant='contained'
+                        sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: '0 0 15px 15px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }}
                     >
                         Message
                     </Button>

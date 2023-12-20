@@ -125,9 +125,9 @@ function CreateWorkoutMenu (props) {
 
             <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Create Workout</Typography>
 
-            <Button id="backBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+            <Button id="backBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                 props.backFunc();
-            }}>{"<"} Back</Button>
+            }}>← Back</Button>
 
             <Typography variant="h6" sx={{ fontWeight: 'bold' }}>General Information</Typography>
 
@@ -189,24 +189,20 @@ function CreateWorkoutMenu (props) {
                                 setExercises(newList);
                             }}/>
                         </Grid>
-                        <Grid item xs={1}>
-                            <Button id="deleteExercise" variant="contained" sx={{ width: 1 }} onClick={() => {
+                        <Grid item xs={3}>
+                            <Button id="deleteExercise" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#8C0044", color: "#ffffff", '&:hover': { backgroundColor: "#A94073" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
                                 exercises.splice(i, 1);
                                 const newList = [...exercises];
                                 setExercises(newList);
                             }}>X</Button>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <Button id="upExercise" disabled={i === 0} variant="contained" sx={{ width: 1 }} onClick={() => {
+                            <Button id="upExercise" disabled={i === 0} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
                                 const temp = exercises[i];
                                 exercises[i] = exercises[i-1];
                                 exercises[i-1] = temp;
                                 const newList = [...exercises];
                                 setExercises(newList);
                             }}>↑</Button>
-                        </Grid>
-                        <Grid item xs={1}>
-                            <Button id="downExercise" disabled={i === exercises.length-1} variant="contained" sx={{ width: 1 }} onClick={() => {
+                            <Button id="downExercise" disabled={i === exercises.length-1} sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" }, '&:disabled': { backgroundColor: "#e0e0e0" } }} onClick={() => {
                                 const temp = exercises[i];
                                 exercises[i] = exercises[i+1];
                                 exercises[i+1] = temp;
@@ -217,7 +213,7 @@ function CreateWorkoutMenu (props) {
                     </Grid>
                 })}
             
-                <Button id="addExerciseBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+                <Button id="addExerciseBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                     exercises.push({exercise_id: 0, set_count: 0, rep_count: 0, exercise_error: "", set_error: "", rep_error: ""})
                     const newList = [...exercises];
                     setExercises(newList);
@@ -225,7 +221,7 @@ function CreateWorkoutMenu (props) {
 
             </Grid>
 
-            <Button id="createWorkoutBtn" variant="contained" onClick={() => {
+            <Button id="createWorkoutBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                 createWorkout();
             }}>Create Workout</Button>
             <div style={{ width: '50%'}}>

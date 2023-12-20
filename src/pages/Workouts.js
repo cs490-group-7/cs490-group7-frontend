@@ -68,8 +68,8 @@ function Workouts () {
 
             {client ? 
                 <div>
-                    <Button variant='outlined' sx={{ marginTop: '20px'}} onClick={() => {location.state.client = false; navigate('/my-clients', { state: location.state })}}> {"<- Back"}</Button>
-                    <Button variant='contained' sx={{ marginTop: '20px', marginLeft: '20px'}} onClick={() => navigate(`/my-clients/${client.client_id}`, { state: location.state })}> {"View Progress"}</Button>
+                    <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '20px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {location.state.client = false; navigate('/my-clients', { state: location.state })}}> {"← Back"}</Button>
+                    <Button sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, marginTop: '20px', marginLeft: '20px', backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => navigate(`/my-clients/${client.client_id}`, { state: location.state })}> {"View Progress"}</Button>
                     <h1>{client.first_name} {client.last_name}'s Workouts</h1>
                 </div>
                 :
@@ -78,13 +78,13 @@ function Workouts () {
             <Grid container spacing={2}>
 
                 <Grid item xs={4}>
-                    <Card variant="outlined" sx={{ padding: 2 }}>
+                    <Card variant="outlined" sx={{ padding: 2, borderRadius: 2 }}>
                         <WorkoutCalendar selectedWorkout={workoutId} viewFunc={viewWorkoutDetails} logFunc={logSession}/>
                     </Card>
                 </Grid>
 
                 <Grid item xs={8}>
-                    <Card variant="outlined" sx={{ padding: 2 }}>
+                    <Card variant="outlined" sx={{ padding: 2, borderRadius: 2 }}>
 
                         {rightMenu === RightMenu.List && <WorkoutListMenu createFunc={createNewWorkout} viewFunc={viewWorkoutDetails} editFunc={editWorkoutDetails} selectFunc={selectWorkout}>
                         </WorkoutListMenu>}

@@ -30,9 +30,9 @@ function WorkoutDetailsMenu (props) {
 
           <Typography variant="h5" sx={{ fontWeight: 'bold' }}>Workout Details</Typography>
 
-          <Button id="backBtn" variant="contained" sx={{ margin: 1 }} onClick={() => {
+          <Button id="backBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
               props.backFunc();
-          }}>{"<"} Back</Button>
+          }}>← Back</Button>
 
           {(typeof workout !== 'undefined') && <div>
               <Typography variant="h6" sx={{ fontWeight: 'bold' }}>{workout.workout.workout_name}</Typography>
@@ -42,14 +42,14 @@ function WorkoutDetailsMenu (props) {
               }
               <div><i>{workout.workout.description}</i></div>
               <Grid container spacing={0.5} padding={0.5}>
-                  {workout.exercises.map((exercise) => {
-                      return <Grid item xs={12} spacing={0.5} sx={{ width: 1 }}>
-                          <Card variant="outlined" sx={{ padding: 1 }}>
+                  {workout.exercises.map((exercise, i) => {
+                      return <Grid item key={"exercise" + i.toString()} xs={12} sx={{ width: 1 }}>
+                          <Card variant="outlined" sx={{ margin: 0.5, padding: 0.5, borderRadius: 2, borderColor: '#E8E8F5', backgroundColor: '#E8E8F5', color: "#00008b" }}>
                               <Grid container spacing={0.5} padding={0.5}>
-                                  <Grid item xs={6} spacing={0.5} sx={{ width: 1 }}>
+                                  <Grid item xs={6} sx={{ width: 1 }}>
                                       <div><b>{exercise.exercise_name}</b></div>
                                   </Grid>
-                                  <Grid item xs={6} spacing={0.5} sx={{ width: 1 }}>
+                                  <Grid item xs={6} sx={{ width: 1 }}>
                                       <div><i>{exercise.set_count} sets, {exercise.reps} reps each</i></div>
                                   </Grid>
                               </Grid>

@@ -41,17 +41,17 @@ function WorkoutAssignment (props) {
     return (
         <div className="workout-assignment">
 
-          <Card variant="outlined" sx={{ margin: 0.5, padding: 0.5, borderRadius: 0, borderColor: '#e8e8e8', backgroundColor: '#e8e8e8', color: "#00008b" }}>
-            <div><b>{props.workoutName}</b></div>
-            {!props.yours ? <div><i>Assigned by Coach {props.first_name} {props.last_name}</i></div> : ""}
+          <Card variant="outlined" sx={{ margin: 0.5, padding: 0.5, borderRadius: 2, borderColor: '#E8E8F5', backgroundColor: '#E8E8F5', color: "#00008b" }}>
+            <div style={{ padding: 3 }}><b>{props.workoutName}</b></div>
+            {!props.yours ? <div style={{ paddingLeft: 3, paddingRight: 3, paddingBottom: 3 }}><i>Assigned by Coach {props.first_name} {props.last_name}</i></div> : ""}
             <div>
-              {(props.loggable && !client) && <Button id="logBtn" variant="text" size="small" sx={{ borderRadius: 0, minWidth: 30, minHeight: 0, padding: 0.25, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff" }} onClick={() => {
+              {(props.loggable && !client) && <Button id="logBtn" variant="text" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.35, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                 props.logFunc(props.workoutId, props.currentDate);
               }}>Log</Button>}
-              <Button id="detailsBtn" variant="text" size="small" sx={{ borderRadius: 0, minWidth: 30, minHeight: 0, padding: 0.25, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff" }} onClick={() => {
+              <Button id="detailsBtn" variant="text" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.35, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                 props.viewFunc(props.workoutId);
               }}>Details</Button>
-              <Button id="unassignBtn" variant="text" size="small" sx={{ borderRadius: 0, minWidth: 30, minHeight: 0, padding: 0.25, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff" }} onClick={() => {
+              <Button id="unassignBtn" variant="text" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.35, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={() => {
                 unassignWorkout();
               }}>Unassign</Button>
             </div>

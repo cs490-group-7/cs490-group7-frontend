@@ -178,7 +178,7 @@ export default function CoachSurvey() {
         sx={{ width: '300px'}}
       />
       <br />
-      <Button id="submitBtn" variant="contained" onClick={submit}>
+      <Button id="submitBtn" sx={{ borderRadius: 1, minWidth: 30, minHeight: 0, padding: 0.8, margin: 0.5, backgroundColor: "#00008b", color: "#ffffff", '&:hover': { backgroundColor: "#4040A8" } }} onClick={submit}>
         Submit
       </Button>
       <div style={{ width: '40%'}}>
