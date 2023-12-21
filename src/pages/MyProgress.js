@@ -155,7 +155,6 @@ export default function MyProgress () {
                 dataPoints2.push({x: new Date(progressData[i].date), y: Number(progressData[i].calorie_intake)});
                 dataPoints3.push({x: new Date(progressData[i].date), y: Number(progressData[i].water_intake)});
             }
-            console.log(dataPoints1);
         }
         if (dataPoints4.length == 0){
             for(var i = 0; i < workoutData.length; i++){
